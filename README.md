@@ -31,6 +31,11 @@ npm run dev
 
 ### Recettes 
 - []  `GET /recipes` - Liste des recettes
+  **Query Parameters:**
+    - `category` (string, optional) - Filtrer par catégorie (entrée, plat, dessert)
+    - `diet` (string, optional) - Filtrer par régime alimentaire (végétarien, vegan, sans-gluten, etc.)
+    - `ingredients` (string, optional) - IDs d'ingrédients séparés par virgules
+    - `search` (string, optional) - Recherche par mot-clé dans le titre
 - []  `GET /recipes/{id}` - Liste des détails d'une recette
 - []  `DELETE /recipes/{id}` - Supprimer une recette
 - []  `PUT /recipes/{id}` - Modifier une recette
