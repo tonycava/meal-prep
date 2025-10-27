@@ -33,7 +33,18 @@ npm run dev
 
 - []  `GET /recipes` - Liste des recettes
 - []  `GET /recipes/{id}` - Liste des détails d'une recette
+- []  `DELETE /recipes/{id}` - Supprimer une recette
+- []  `PUT /recipes/{id}` - Modifier une recette
+- []  `POST /recipes/{id}` - Ajouter une recette
+- []  `GET /recipes/{id}/search?ingredients=...` - Recherche une recette avec des ingrédients
 
-- []  `?? /??` - Former un menu sur un nombre de semaine donné
-- []  `?? /??` - Former un menu sur un nombre de jour donné
-- []  `?? /??` - Former un menu selon un régime alimentaire
+- []  `GET /menu?filters=...` - Rechercher un menu celon ses critères
+- 
+- []  `GET /ingredients?ingredients=...` - Recupérer les caractéristiques d'un ou plusieurs ingredients
+- []  `GET /ingredients` - Recuperer tout les ingrédients
+- []  `GET /ingredients/{id}` - Recuperer un ingrédients
+- []  `GET /ingredients/search?name=...` - Recuperer un ingrédient par nom
+
+- []  `GET /cartegories` - Recuperer toutes les catégories
+- 
+
