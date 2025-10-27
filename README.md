@@ -31,4 +31,9 @@ npm run dev
 
 ## Endpoints (v0.1 - Sprint 1)
 
-- [] 
+- []  `GET /recipes` - Liste des recettes
+- []  `GET /recipes/{id}` - Liste des détails d'une recette
+
+- []  `?? /??` - Former un menu sur un nombre de semaine donné
+- []  `?? /??` - Former un menu sur un nombre de jour donné
+- []  `?? /??` - Former un menu selon un régime alimentaire
