@@ -23,6 +23,7 @@ Bon appétit !
 - Github
 
 ## Installation
+
 bash
 npm install
 
