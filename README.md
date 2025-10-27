@@ -25,6 +25,7 @@ Bon appétit !
 ## Installation
 bash
 npm install
+
 npm run dev
 
 ## Endpoints (v0.1 - Sprint 1)
