@@ -3,19 +3,37 @@ info:
   title: MealPrep
   version: 1.0.0
 paths:
-  /v1/hello:
+  /v1/recipes:
     get:
-      operationId: GetV1Hello
+      operationId: GetV1Recipes
       parameters:
-        - name: name
+        - name: category
           in: query
-          required: false
-          description: GET /v1/hello Parameter
+          required: true
+          description: GET /v1/recipes Parameter
+          schema:
+            type: string
+        - name: diet
+          in: query
+          required: true
+          description: GET /v1/recipes Parameter
+          schema:
+            type: string
+        - name: ingredients
+          in: query
+          required: true
+          description: GET /v1/recipes Parameter
+          schema:
+            type: string
+        - name: search
+          in: query
+          required: true
+          description: GET /v1/recipes Parameter
           schema:
             type: string
       responses:
         "200":
-          description: GET /v1/hello Positive response
+          description: GET /v1/recipes Positive response
           content:
             application/json:
               schema:
@@ -37,7 +55,7 @@ paths:
                   - data
                 additionalProperties: false
         "400":
-          description: GET /v1/hello Negative response
+          description: GET /v1/recipes Negative response
           content:
             application/json:
               schema:
@@ -65,19 +83,37 @@ paths:
                     error:
                       message: Sample error message
     head:
-      operationId: HeadV1Hello
+      operationId: HeadV1Recipes
       parameters:
-        - name: name
+        - name: category
           in: query
-          required: false
-          description: HEAD /v1/hello Parameter
+          required: true
+          description: HEAD /v1/recipes Parameter
+          schema:
+            type: string
+        - name: diet
+          in: query
+          required: true
+          description: HEAD /v1/recipes Parameter
+          schema:
+            type: string
+        - name: ingredients
+          in: query
+          required: true
+          description: HEAD /v1/recipes Parameter
+          schema:
+            type: string
+        - name: search
+          in: query
+          required: true
+          description: HEAD /v1/recipes Parameter
           schema:
             type: string
       responses:
         "200":
-          description: HEAD /v1/hello Positive response
+          description: HEAD /v1/recipes Positive response
         "400":
-          description: HEAD /v1/hello Negative response
+          description: HEAD /v1/recipes Negative response
 components:
   schemas: {}
   responses: {}

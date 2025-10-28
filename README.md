@@ -23,11 +23,12 @@ Bon appétit !
 - Github
 
 ## Installation
+```bash
 
-bash
 npm install
 
 npm run dev
+```
 
 ## Endpoints (v0.1 - Sprint 1)
 

@@ -6,7 +6,7 @@ import manifest from "../../package.json";
 
 (async () => {
   await writeFile(
-    "../assets/documentation.yaml",
+    "./assets/documentation.yaml",
     new Documentation({
       routing,
       config,

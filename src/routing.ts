@@ -1,11 +1,11 @@
 import { Routing, ServeStatic } from "express-zod-api";
 import path from "path";
-import { ListRecipeEndpoint } from "../modules/recipe/endpoints/ListRecipe.ts";
+import { ListRecipeEndpoint, recipeEndpoint } from "../modules/recipe/endpoints/ListRecipe.ts";
 
 export const routing: Routing = {
   v1: {
-    recipe: {
-      "/": ListRecipeEndpoint
+    recipes: {
+      "/": recipeEndpoint,
     },
   },
   public: new ServeStatic(path.join(__dirname, "../assets"), {
