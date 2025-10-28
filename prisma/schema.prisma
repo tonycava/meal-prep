@@ -2,8 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -11,146 +10,211 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum IngredientCategoryEnum {
+enum IngredientCategory {
   VEGETABLE
   FRUIT
   MEAT
+  FISH
   DAIRY
   GRAIN
+  LEGUME
+  NUT
   SPICE
+  OIL
   OTHER
 }
 
-enum RecipeCategoryEnum {
+enum RecipeCategory {
   APPETIZER
   MAIN_COURSE
+  SIDE_DISH
   DESSERT
   SNACK
   BEVERAGE
+  BREAKFAST
   OTHER
 }
 
-enum DietEnum {
+enum DietType {
   VEGETARIAN
   VEGAN
   GLUTEN_FREE
+  DAIRY_FREE
   KETO
   PALEO
+  LOW_CARB
   OTHER
 }
 
-enum MealTypeEnum {
+enum MealType {
   BREAKFAST
   LUNCH
   DINNER
   SNACK
-  OTHER
 }
 
-enum MineralName {
+enum MineralType {
   CALCIUM
   IRON
   MAGNESIUM
   POTASSIUM
   SODIUM
+  ZINC
+  PHOSPHORUS
   OTHER
 }
 
-enum VitaminName {
+enum VitaminType {
   VITAMIN_A
-  VITAMIN_B
+  VITAMIN_B1
+  VITAMIN_B2
+  VITAMIN_B3
+  VITAMIN_B6
+  VITAMIN_B12
   VITAMIN_C
   VITAMIN_D
   VITAMIN_E
+  VITAMIN_K
+  OTHER
+}
+
+enum UnitType {
+  GRAM
+  KILOGRAM
+  MILLILITER
+  LITER
+  TEASPOON
+  TABLESPOON
+  CUP
+  PIECE
+  SLICE
+  PINCH
   OTHER
 }
 
 model ApiKey {
-  key     String @id @default(uuid())
+  id        String    @id @default(uuid())
+  key       String    @unique
+  name      String?
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  expiresAt DateTime?
+
   menus   Menu[]
   recipes Recipe[]
 }
 
 model Menu {
-  id_menu String @id @default(uuid())
-  name    String
-  key     String
-  apiKey  ApiKey  @relation(fields: [key], references: [key])
-  items   MenuItem[]
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  apiKeyId    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  @@map("Menu")
+  apiKey ApiKey?    @relation(fields: [apiKeyId], references: [id], onDelete: SetNull)
+  items  MenuItem[]
 }
 
 model Recipe {
-  id_recipe          String            @id @default(uuid())
-  title              String
-  description        String
-  ingredients        String            // Note: seems redundant with RecipeIngredient
-  image              String
-  prepTimeMin        Int?
-  cookTimeMin        Int?
-  is_public          Boolean
-  key                String
-  category           RecipeCategoryEnum?
-  diet               DietEnum?
-  apiKey             ApiKey            @relation(fields: [key], references: [key])
-  steps              RecipeStep[]
-  recipeIngredients  RecipeIngredient[]
-  menuItems          MenuItem[]
+  id          String          @id @default(uuid())
+  title       String
+  description String?
+  imageUrl    String?
+  prepTimeMin Int?
+  cookTimeMin Int?
+  servings    Int             @default(1)
+  isPublic    Boolean         @default(false)
+  category    RecipeCategory?
+  diet        DietType?
+  apiKeyId    String?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
 
-  @@map("Recipe")
+  apiKey      ApiKey?            @relation(fields: [apiKeyId], references: [id], onDelete: SetNull)
+  steps       RecipeStep[]
+  ingredients RecipeIngredient[]
+  menuItems   MenuItem[]
 }
 
 model Ingredient {
-  id_ingredient           String            @id @default(uuid())
-  name                    String
-  proteins                Float
-  fats                    Float
-  carbs                   Float
-  sugars                  Int
-  salt                    Float
-  fiber                   Float
-  caloriesPerUnit         Float
-  category                IngredientCategoryEnum?
-  mineralName             MineralName?
-  mineralValue            Float?
-  vitaminName             VitaminName?
-  vitaminValue            Float?
-  recipeIngredients       RecipeIngredient[]
+  id       String              @id @default(uuid())
+  name     String              @unique
+  category IngredientCategory?
 
-  @@map("Ingredient")
+  proteins Float @default(0)
+  fats     Float @default(0)
+  carbs    Float @default(0)
+  sugars   Float @default(0)
+  fiber    Float @default(0)
+  salt     Float @default(0)
+  calories Float @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  recipes  RecipeIngredient[]
+  minerals IngredientMineral[]
+  vitamins IngredientVitamin[]
+}
+
+model IngredientMineral {
+  id           String      @id @default(uuid())
+  ingredientId String
+  mineralType  MineralType
+  value        Float
+
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
+
+  @@unique([ingredientId, mineralType])
+}
+
+model IngredientVitamin {
+  id           String      @id @default(uuid())
+  ingredientId String
+  vitaminType  VitaminType
+  value        Float
+
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
+
+  @@unique([ingredientId, vitaminType])
 }
 
 model MenuItem {
-  id_menu_item String   @id @default(uuid())
-  position_    Int
-  mealType     MealTypeEnum?
-  id_recipe    String
-  id_menu      String
-  recipe       Recipe   @relation(fields: [id_recipe], references: [id_recipe])
-  menu         Menu     @relation(fields: [id_menu], references: [id_menu])
+  id        String   @id @default(uuid())
+  menuId    String
+  recipeId  String
+  mealType  MealType
+  order     Int
+  dayNumber Int      @default(1)
 
-  @@map("MenuItem")
+  menu   Menu   @relation(fields: [menuId], references: [id], onDelete: Cascade)
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@unique([menuId, mealType, dayNumber, order])
 }
 
 model RecipeStep {
-  id_recipe_step String @id @default(uuid())
-  position_      Int
-  content        String
-  durationMin    Int?
-  id_recipe      String
-  recipe         Recipe @relation(fields: [id_recipe], references: [id_recipe])
+  id          String @id @default(uuid())
+  recipeId    String
+  order       Int
+  instruction String
+  durationMin Int?
 
-  @@map("RecipeStep")
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@unique([recipeId, order])
 }
 
 model RecipeIngredient {
-  id_recipe    String
-  id_ingredient String
+  recipeId     String
+  ingredientId String
   quantity     Float
-  recipe       Recipe  @relation(fields: [id_recipe], references: [id_recipe])
-  ingredient   Ingredient @relation(fields: [id_ingredient], references: [id_ingredient])
+  unit         UnitType @default(GRAM)
+  notes        String?
 
-  @@id([id_recipe, id_ingredient])
-  @@map("RecipeIngredient")
+  recipe     Recipe     @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
+
+  @@id([recipeId, ingredientId])
 }
