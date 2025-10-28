@@ -4,11 +4,25 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
+    "start": "tsx src/index.ts",
+    "dev": "tsx --watch src/index.ts",
+    "build:docs": "tsx src/generate-documentation.ts",
     "build": "tsc"
   },
-  "dependencies": {},
+  "dependencies": {
+    "express": "^5.1.0",
+    "express-zod-api": "^25.5.3",
+    "http-errors": "^2.0.0",
+    "swagger-ui-express": "^5.0.1",
+    "zod": "^4.1.12"
+  },
   "devDependencies": {
-    "typescript": "^5.5.3"
+    "@types/express": "^5.0.5",
+    "@types/http-errors": "^2.0.5",
+    "@types/node": "^24.9.1",
+    "@types/swagger-ui-express": "^4.1.8",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
   },
   "private": true
 }
