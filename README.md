@@ -57,21 +57,21 @@ npm run dev
 - []  `GET /recipes/{id}/nutrition` - Récupérer les informations nutritionnelles de la recette
 
 ### Menus
-- []  `POST /menus/weekly` - Générer un menu pour la semaine
+- []  `GET /menus/weekly` - Générer un menu pour la semaine
 
-  **Body:**
+  **Query Parameters:**
     - `mealsPerDay` - Nombre de repas par jour
     - `servings` -  Nombre de personnes
     - `maxBudget` (optionnel) - Buget maximum
-- []  `POST /menus/daily` - Générer un menu pour la journée
+- []  `GET /menus/daily` - Générer un menu pour la journée
 
-  **Body:**
+  **Query Parameters:**
     - `numberOfMeals` - Nombre de repas par jour
     - `servings` -  Nombre de personnes
     - `maxBudget` (optionnel) - Buget maximum
-- []  `POST /menus/diet` - Générer un menu selon des critères spécifiques
+- []  `GET /menus/diet` - Générer un menu selon des critères spécifiques
 
-  **Body:**
+  **Query Parameters:**
   A voir ensemble
 - [] `GET /menus` - Récupérer tous les menus de l'utilisateur
   
