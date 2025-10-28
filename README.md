@@ -39,6 +39,8 @@ npm run dev
     - `diet` (string) - Filtrer par régime alimentaire (végétarien, vegan, sans-gluten, etc.)
     - `ingredients` (string) - IDs d'ingrédients séparés par virgules
     - `search` (string) - Recherche par mot-clé dans le titre
+    - `limit` - Limiter le nombre de réponse retourné
+    - `offset` - Pagination
 - []  `GET /recipes/{id}` - Liste des détails d'une recette
 - []  `DELETE /recipes/{id}` - Supprimer une recette
 - []  `PUT /recipes/{id}` - Modifier une recette
@@ -58,15 +60,32 @@ npm run dev
 - []  `POST /menus/weekly` - Générer un menu pour la semaine
 
   **Body:**
-  - `mealsPerDay` - Nombre de repas par jour
-  - `servings` -  Nombre de personnes
-  - `maxBudget` (optionnel) - Buget maximum
+    - `mealsPerDay` - Nombre de repas par jour
+    - `servings` -  Nombre de personnes
+    - `maxBudget` (optionnel) - Buget maximum
 - []  `POST /menus/daily` - Générer un menu pour la journée
 
   **Body:**
-  - `numberOfMeals` - Nombre de repas par jour
-  - `servings` -  Nombre de personnes
-  - `maxBudget` (optionnel) - Buget maximum
+    - `numberOfMeals` - Nombre de repas par jour
+    - `servings` -  Nombre de personnes
+    - `maxBudget` (optionnel) - Buget maximum
+- []  `POST /menus/diet` - Générer un menu selon des critères spécifiques
+
+  **Body:**
+  A voir ensemble
+- [] `GET /menus` - Récupérer tous les menus de l'utilisateur
+  
+  **Query Parameters:**
+    - `limit` - Limiter le nombre de réponse retourné
+    - `offset` - Pagination
+- [] `GET /menus/{id}` - Récupérer les détails d'un menu spécifique
+- [] `POST /menus` - Sauvegarder/Créer un menu
+  
+  **Body:**
+    - `nom` - Nom du menu
+    - `meals` - Recettes contenu dans le menu
+- [] `PUT /menus/{id}` - Modifier un menu spécifique
+- [] `DELETE /menus/{id}` - Supprimer un menu specifique
 
 ### Ingrédients
 - []  `GET /ingredients?ingredients=...` - Recupérer les caractéristiques d'un ou plusieurs ingredients
@@ -75,6 +94,8 @@ npm run dev
   **Query Parameters:**
     - `category` (string) - Filtre par catégorie
     - `search` (string) - Recherche par nom
+    - `limit` - Limiter le nombre de réponse retourné
+    - `offset` - Pagination
 - []  `GET /ingredients/{id}` - Recuperer un ingrédients
 - []  `GET /ingredients/search?name=...` - Recuperer un ingrédient par nom
 - []  `POST /ingredients` - Créer un nouvel ingrédient
