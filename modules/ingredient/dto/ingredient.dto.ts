@@ -64,6 +64,13 @@ export const IngredientResponseDto = z.object({
   })).optional()
 });
 
+export const IngredientListQueryDto = z.object({
+  category: IngredientCategoryEnum.optional(),
+  search: z.string().min(1).optional(),
+  limit: z.number().min(1).max(100).default(20).optional(),
+  offset: z.number().min(0).default(0).optional(),
+});
+
 export type IngredientResponseDtoType = z.infer<typeof IngredientResponseDto>;
 export type IngredientCategory = z.infer<typeof IngredientCategoryEnum>;
 export type MineralType = z.infer<typeof MineralTypeEnum>;
