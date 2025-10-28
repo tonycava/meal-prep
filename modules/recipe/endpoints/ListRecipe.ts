@@ -1,5 +1,6 @@
 import { defaultEndpointsFactory } from "express-zod-api";
 import { z } from "zod";
+import { prisma } from "../../../lib/db.ts";
 
 export const ListRecipeEndpoint = defaultEndpointsFactory.build({
   input: z.object({
@@ -9,7 +10,9 @@ export const ListRecipeEndpoint = defaultEndpointsFactory.build({
     greetings: z.string(),
   }),
   handler: async ({ input: { name }, options, logger }) => {
-    logger.debug("Options:", options);
+    const users = await prisma.user.findMany()
+
+    logger.debug("Options:", users);
     return { greetings: `Hello, ${name || "World"}. Happy coding!` };
   },
 });

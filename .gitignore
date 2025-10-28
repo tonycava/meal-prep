@@ -11,3 +11,5 @@ yarn-error.log*
 .vscode/*
 
 .idea
+/src/generated/prisma
+/prisma/dev.db
