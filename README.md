@@ -44,7 +44,7 @@ npm run dev
 - []  `PUT /recipes/{id}` - Modifier une recette
 - []  `POST /recipes` - Ajouter une recette
 
-  **Query Parameters:**
+  **Body:**
     - `title` - Titre de la recette
     - `description` - Description de la recette
     - `category` - Catégorie de la recette
@@ -52,9 +52,21 @@ npm run dev
     - `diet` - Régime lié (compatible) à la recette
     - `image` (optionnel) - Image de la recette
 - []  `GET /recipes/{id}/search?ingredients=...` - Recherche une recette avec des ingrédients
+- []  `GET /recipes/{id}/nutrition` - Récupérer les informations nutritionnelles de la recette
 
 ### Menus
-- []  `GET /menu?filters=...` - Rechercher un menu celon ses critères
+- []  `POST /menus/weekly` - Générer un menu pour la semaine
+
+  **Body:**
+  - `mealsPerDay` - Nombre de repas par jour
+  - `servings` -  Nombre de personnes
+  - `maxBudget` (optionnel) - Buget maximum
+- []  `POST /menus/daily` - Générer un menu pour la journée
+
+  **Body:**
+  - `numberOfMeals` - Nombre de repas par jour
+  - `servings` -  Nombre de personnes
+  - `maxBudget` (optionnel) - Buget maximum
 
 ### Ingrédients
 - []  `GET /ingredients?ingredients=...` - Recupérer les caractéristiques d'un ou plusieurs ingredients
