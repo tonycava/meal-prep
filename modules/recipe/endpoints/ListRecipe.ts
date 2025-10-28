@@ -1,8 +1,7 @@
 import { defaultEndpointsFactory } from "express-zod-api";
 import { z } from "zod";
 
-export const helloWorldEndpoint = defaultEndpointsFactory.build({
-  // method: "get" (default) or array ["get", "post", ...]
+export const ListRecipeEndpoint = defaultEndpointsFactory.build({
   input: z.object({
     name: z.string().optional(),
   }),
@@ -10,7 +9,7 @@ export const helloWorldEndpoint = defaultEndpointsFactory.build({
     greetings: z.string(),
   }),
   handler: async ({ input: { name }, options, logger }) => {
-    logger.debug("Options:", options); // middlewares provide options
-    return { greetings: `Hello, ${name || "World"}. Happy` };
+    logger.debug("Options:", options);
+    return { greetings: `Hello, ${name || "World"}. Happy coding!` };
   },
 });

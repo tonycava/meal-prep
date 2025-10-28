@@ -6,7 +6,7 @@
   "scripts": {
     "start": "tsx src/index.ts",
     "dev": "tsx --watch src/index.ts",
-    "build:docs": "tsx src/generate-documentation.ts",
+    "build:docs": "tsx src/docs/generate-documentation.ts",
     "build": "tsc"
   },
   "dependencies": {
