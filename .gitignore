@@ -13,3 +13,4 @@ yarn-error.log*
 .idea
 /src/generated/prisma
 /prisma/dev.db
+.env
