@@ -66,69 +66,68 @@ enum VitaminName {
 }
 
 model ApiKey {
-  key     String @id @default(uuid())
+  key     String   @id @default(uuid())
   menus   Menu[]
   recipes Recipe[]
 }
 
 model Menu {
-  id_menu String @id @default(uuid())
+  id_menu String     @id @default(uuid())
   name    String
   key     String
-  apiKey  ApiKey  @relation(fields: [key], references: [key])
+  apiKey  ApiKey     @relation(fields: [key], references: [key])
   items   MenuItem[]
 
   @@map("Menu")
 }
 
 model Recipe {
-  id_recipe          String            @id @default(uuid())
-  title              String
-  description        String
-  ingredients        String            // Note: seems redundant with RecipeIngredient
-  image              String
-  prepTimeMin        Int?
-  cookTimeMin        Int?
-  is_public          Boolean
-  key                String
-  category           RecipeCategoryEnum?
-  diet               DietEnum?
-  apiKey             ApiKey            @relation(fields: [key], references: [key])
-  steps              RecipeStep[]
-  recipeIngredients  RecipeIngredient[]
-  menuItems          MenuItem[]
+  id_recipe         String              @id @default(uuid())
+  title             String
+  description       String
+  image             String
+  prepTimeMin       Int?
+  cookTimeMin       Int?
+  is_public         Boolean
+  category          RecipeCategoryEnum?
+  diet              DietEnum?
+  key               String
+  apiKey            ApiKey              @relation(fields: [key], references: [key])
+  steps             RecipeStep[]
+  recipeIngredients RecipeIngredient[]
+  menuItems         MenuItem[]
 
   @@map("Recipe")
 }
 
 model Ingredient {
-  id_ingredient           String            @id @default(uuid())
-  name                    String
-  proteins                Float
-  fats                    Float
-  carbs                   Float
-  sugars                  Int
-  salt                    Float
-  fiber                   Float
-  caloriesPerUnit         Float
-  category                IngredientCategoryEnum?
-  mineralName             MineralName?
-  mineralValue            Float?
-  vitaminName             VitaminName?
-  vitaminValue            Float?
-  recipeIngredients       RecipeIngredient[]
+  id_ingredient     String                  @id @default(uuid())
+  name              String
+  proteins          Float
+  fats              Float
+  carbs             Float
+  sugars            Float
+  salt              Float
+  fiber             Float
+  caloriesPerUnit   Float
+  category          IngredientCategoryEnum?
+  mineralName       MineralName?
+  mineralValue      Float?
+  vitaminName       VitaminName?
+  vitaminValue      Float?
+  recipeIngredients RecipeIngredient[]
 
   @@map("Ingredient")
 }
 
 model MenuItem {
-  id_menu_item String   @id @default(uuid())
+  id_menu_item String        @id @default(uuid())
   position_    Int
   mealType     MealTypeEnum?
   id_recipe    String
   id_menu      String
-  recipe       Recipe   @relation(fields: [id_recipe], references: [id_recipe])
-  menu         Menu     @relation(fields: [id_menu], references: [id_menu])
+  recipe       Recipe        @relation(fields: [id_recipe], references: [id_recipe])
+  menu         Menu          @relation(fields: [id_menu], references: [id_menu])
 
   @@map("MenuItem")
 }
@@ -145,11 +144,12 @@ model RecipeStep {
 }
 
 model RecipeIngredient {
-  id_recipe    String
+  id_recipe     String
   id_ingredient String
-  quantity     Float
-  recipe       Recipe  @relation(fields: [id_recipe], references: [id_recipe])
-  ingredient   Ingredient @relation(fields: [id_ingredient], references: [id_ingredient])
+  quantity      Float
+  unit          String
+  recipe        Recipe     @relation(fields: [id_recipe], references: [id_recipe])
+  ingredient    Ingredient @relation(fields: [id_ingredient], references: [id_ingredient])
 
   @@id([id_recipe, id_ingredient])
   @@map("RecipeIngredient")

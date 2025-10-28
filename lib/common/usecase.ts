@@ -1,4 +1,11 @@
 import { StatusCode } from "../helpers/http.helper";
+import { z } from 'zod';
+
+export const UseCaseResponseSchema = z.object({
+  status: z.number(),
+  data: z.any().optional(),
+  message: z.string().optional(),
+})
 
 export type UseCaseResponse<T> =
   | {
