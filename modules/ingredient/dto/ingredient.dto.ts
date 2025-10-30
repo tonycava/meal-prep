@@ -71,6 +71,7 @@ export const IngredientListQueryDto = z.object({
   offset: z.number().min(0).default(0).optional(),
 });
 
+<<<<<<< HEAD
 export const CreateIngredientDto = z.object({
   name: z.string().optional().refine(val => val !== undefined && val.length > 0, "Le champ 'name' est obligatoire et doit être une chaîne non vide"),
   category: IngredientCategoryEnum.optional(),
@@ -118,6 +119,8 @@ export const GetIngredientByIdDto = z.object({
 export type CreateIngredientDtoType = z.infer<typeof CreateIngredientDto>;
 export type UpdateIngredientDtoType = z.infer<typeof UpdateIngredientDto>;
 export type GetIngredientByIdDtoType = z.infer<typeof GetIngredientByIdDto>;
+=======
+>>>>>>> f0042e960c87c5d309fb746a9b8d6f52bef59228
 export type IngredientResponseDtoType = z.infer<typeof IngredientResponseDto>;
 export type IngredientCategory = z.infer<typeof IngredientCategoryEnum>;
 export type MineralType = z.infer<typeof MineralTypeEnum>;
