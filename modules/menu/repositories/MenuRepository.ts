@@ -39,14 +39,6 @@ export const MenuRepository = (): IMenuRepository => {
     },
 
     async save(menuDto: CreateMenuDto, apiKey: string): Promise<MenuWithMeals> {
-      const existingKey = await prisma.apiKey.findUnique({
-        where: { key: apiKey }
-      });
-
-      if (!existingKey) {
-        throw new Error(`API Key not found: ${apiKey}`);
-      }
-
       const createdMenu = await prisma.menu.create({
         data: {
           name: menuDto.name,
