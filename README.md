@@ -44,7 +44,7 @@ npm run dev
 - []  `GET /recipes/{id}` - Liste des détails d'une recette
 - []  `DELETE /recipes/{id}` - Supprimer une recette
 - []  `PUT /recipes/{id}` - Modifier une recette
-- []  `POST /recipes` - Ajouter une recette
+- [X]  `POST /recipes` - Ajouter une recette
 
   **Body:**
     - `title` - Titre de la recette
