@@ -1,13 +1,16 @@
 import { z } from "zod";
-import { DietEnum, RecipeCategoryEnum } from "../../../src/generated/prisma/enums.ts";
+import { RecipeCategory, DietType } from "../../../src/generated/prisma";
 
 const ingredient = z.object({
   id: z.string(),
   quantity: z.number(),
 })
 
-const recipeCategorySchema = z.enum(RecipeCategoryEnum);
-const recipeDietSchema = z.enum(DietEnum)
+const recipeCategoryValues = Object.values(RecipeCategory) as [string, ...string[]];
+const recipeDietValues = Object.values(DietType) as [string, ...string[]];
+
+const recipeCategorySchema = z.enum(recipeCategoryValues);
+const recipeDietSchema = z.enum(recipeDietValues)
 
 export const createRecipeDto = z.object({
   title: z.string().nonempty("Un titre est requis."),
