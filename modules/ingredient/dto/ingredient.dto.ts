@@ -53,12 +53,12 @@ export const IngredientResponseDto = z.object({
   createdAt: z.date(),
   updatedAt: z.date(),
   minerals: z.array(z.object({
-    id: z.string().uuid(),
+    id: z.uuid(),
     mineralType: MineralTypeEnum,
     value: z.number()
   })).optional(),
   vitamins: z.array(z.object({
-    id: z.string().uuid(),
+    id: z.uuid(),
     vitaminType: VitaminTypeEnum,
     value: z.number()
   })).optional()
@@ -67,8 +67,8 @@ export const IngredientResponseDto = z.object({
 export const IngredientListQueryDto = z.object({
   category: IngredientCategoryEnum.optional(),
   search: z.string().min(1).optional(),
-  limit: z.number().min(1).max(100).default(20).optional(),
-  offset: z.number().min(0).default(0).optional(),
+  limit: z.string().optional().transform((val) => val ? parseInt(val, 10) : 10),
+  offset: z.string().optional().transform((val) => val ? parseInt(val, 10) : 0),
 });
 
 export const CreateIngredientDto = z.object({
