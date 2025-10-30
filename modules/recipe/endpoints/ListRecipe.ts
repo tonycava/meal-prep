@@ -7,9 +7,7 @@ export const ListRecipeEndpoint = defaultEndpointsFactory.build({
   output: z.object({
     data: z.array(z.string()),
   }),
-  handler: async ({ logger }) => {
-    const users = await prisma.user.findMany()
-    logger.debug("Options:", users);
+  handler: async ({ options, logger }) => {
     return { data: [] };
   },
 });
