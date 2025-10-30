@@ -5,7 +5,7 @@ import {ListMenusEndpoint} from "$modules/menu/endpoints/ListMenus.ts";
 
 export const routing: Routing = {
   v1: {
-    recipe: {
+    recipes: {
       "/": ListRecipeEndpoint
     },
     menu: {

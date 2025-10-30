@@ -1,14 +1,6 @@
 import z from "zod";
 
-export const recipeDto = z.object({
-      id: z.uuid(),
-      title: z.string(),
-      description: z.string(),
-      imageUrl: z.string().nullable(),
-      prepTimeMin: z.number(),
-      cookTimeMin: z.number(),
-      servings: z.number().int(),
-      isPublic: z.boolean(),
+export const recipeQueryDto = z.object({
       category: z.enum([
             'APPETIZER',
             'MAIN_COURSE',
@@ -18,7 +10,7 @@ export const recipeDto = z.object({
             'BEVERAGE',
             'BREAKFAST',
             'OTHER'
-      ]),
+      ]).optional(),
       diet: z.enum([
             'VEGETARIAN',
             'VEGAN',
@@ -28,9 +20,11 @@ export const recipeDto = z.object({
             'PALEO',
             'LOW_CARB',
             'OTHER'
-      ]),
-      createdAt: z.string(),
-      updatedAt: z.string(),
+      ]).optional(),
+      ingredients: z.string().optional(),
+      search: z.string().optional(),
+      limit: z.coerce.number().int().nonnegative().default(10),
+      offset: z.coerce.number().int().nonnegative().default(0),
 });
 
-export type RecipeDto = z.infer<typeof recipeDto>;
+export type RecipeQueryDto = z.infer<typeof recipeQueryDto>;
