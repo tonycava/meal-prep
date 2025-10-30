@@ -2,7 +2,7 @@ import { defaultEndpointsFactory } from "express-zod-api";
 import { createMenuDto } from "../dto/createMenu.dto";
 import { SaveMenuUseCase } from "$modules/menu/usecases/SaveMenu.ts";
 import { MenuRepository } from "$modules/menu/repositories/MenuRepository.ts";
-import { UseCaseResponseSchema } from "$lib/common/usecase.ts";
+import { MenuWithMealsSchema } from "../dto/menu.dto";
 import { authMiddleware } from "$lib/middlewares/authMiddleware.ts";
 
 export const CreateMenuEndpoint = defaultEndpointsFactory
@@ -10,7 +10,7 @@ export const CreateMenuEndpoint = defaultEndpointsFactory
   .build({
     method: "post",
     input: createMenuDto,
-    output: UseCaseResponseSchema,
+    output: MenuWithMealsSchema,
     handler: async ({ input, options }) => {
       const saveMenuResponse = await SaveMenuUseCase({
         menuRepository: MenuRepository(),
@@ -21,8 +21,8 @@ export const CreateMenuEndpoint = defaultEndpointsFactory
       }
 
       return {
-        status: saveMenuResponse.status,
-        data: saveMenuResponse.data,
+        ...saveMenuResponse.data,
+        mealCount: saveMenuResponse.data.meals.length,
       };
     },
   });

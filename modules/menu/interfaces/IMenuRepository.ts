@@ -1,8 +1,8 @@
 import { Menu } from "../entities/Menu";
 import { ListMenusOutput } from "../dto/menu.dto";
 
-export type MenuWithItems = Menu & {
-  items: {
+export type MenuWithMeals = Menu & {
+  meals: {
     id: string;
     recipeId: string;
     mealType: string;
@@ -20,7 +20,7 @@ export type MenuWithItems = Menu & {
 export type CreateMenuDto = {
   name: string;
   description?: string;
-  items: {
+  meals: {
     recipeId: string;
     mealType: "BREAKFAST" | "LUNCH" | "DINNER" | "SNACK";
     dayNumber: number;
@@ -31,7 +31,7 @@ export type CreateMenuDto = {
 export type UpdateMenuDto = {
   name?: string;
   description?: string;
-  items?: {
+  meals?: {
     recipeId: string;
     mealType: "BREAKFAST" | "LUNCH" | "DINNER" | "SNACK";
     dayNumber: number;
@@ -44,11 +44,11 @@ export type IMenuRepositoryList = {
 };
 
 export type IMenuRepositorySave = {
-  save(menuDto: CreateMenuDto, apiKey: string): Promise<Menu>;
+  save(menuDto: CreateMenuDto, apiKey: string): Promise<MenuWithMeals>;
 };
 
 export type IMenuRepositoryFindById = {
-  findById(id: string): Promise<MenuWithItems | null>;
+  findById(id: string): Promise<MenuWithMeals | null>;
 };
 
 export type IMenuRepositoryUpdate = {

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const menuItemSchema = z.object({
+const mealSchema = z.object({
   recipeId: z.uuid("L'ID de la recette doit être un UUID valide."),
   mealType: z.enum(["BREAKFAST", "LUNCH", "DINNER", "SNACK"], {
     message: "Le type de repas doit être BREAKFAST, LUNCH, DINNER ou SNACK."
@@ -12,7 +12,7 @@ const menuItemSchema = z.object({
 export const createMenuDto = z.object({
   name: z.string().nonempty("Un nom est requis pour le menu."),
   description: z.string().optional(),
-  items: z.array(menuItemSchema).min(1, "Au moins un élément de menu est requis.")
+  meals: z.array(mealSchema).min(1, "Au moins un repas est requis.")
 });
 
 export type CreateMenuDto = z.infer<typeof createMenuDto>;

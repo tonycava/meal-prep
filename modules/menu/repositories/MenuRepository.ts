@@ -1,4 +1,4 @@
-import { IMenuRepository, CreateMenuDto, UpdateMenuDto, MenuWithItems } from "../interfaces/IMenuRepository";
+import { IMenuRepository, CreateMenuDto, UpdateMenuDto, MenuWithMeals } from "../interfaces/IMenuRepository";
 import { Menu } from "../entities/Menu";
 import { ListMenusOutput } from "../dto/menu.dto";
 import { prisma } from "$lib/db";
@@ -14,7 +14,7 @@ export const MenuRepository = (): IMenuRepository => {
           orderBy: { createdAt: 'desc' },
           include: {
             _count: {
-              select: { items: true }
+              select: { meals: true }
             }
           }
         }),
@@ -28,7 +28,7 @@ export const MenuRepository = (): IMenuRepository => {
           description: menu.description,
           createdAt: menu.createdAt.toISOString(),
           updatedAt: menu.updatedAt,
-          itemCount: menu._count.items
+          itemCount: menu._count.meals
         })),
         meta: {
           total: total,
@@ -38,8 +38,7 @@ export const MenuRepository = (): IMenuRepository => {
       };
     },
 
-    async save(menuDto: CreateMenuDto, apiKey: string): Promise<Menu> {
-      // Vérifier que l'API key existe
+    async save(menuDto: CreateMenuDto, apiKey: string): Promise<MenuWithMeals> {
       const existingKey = await prisma.apiKey.findUnique({
         where: { key: apiKey }
       });
@@ -53,25 +52,62 @@ export const MenuRepository = (): IMenuRepository => {
           name: menuDto.name,
           description: menuDto.description,
           apiKey: { connect: { key: apiKey } },
-          items: {
-            create: menuDto.items.map(item => ({
-              recipeId: item.recipeId,
-              mealType: item.mealType,
-              dayNumber: item.dayNumber,
-              order: item.order
+          meals: {
+            create: menuDto.meals.map(meal => ({
+              recipeId: meal.recipeId,
+              mealType: meal.mealType,
+              dayNumber: meal.dayNumber,
+              order: meal.order
             }))
+          }
+        },
+        include: {
+          meals: {
+            include: {
+              recipe: {
+                select: {
+                  id: true,
+                  title: true,
+                  description: true,
+                  imageUrl: true
+                }
+              }
+            },
+            orderBy: [
+              { dayNumber: 'asc' },
+              { order: 'asc' }
+            ]
           }
         }
       });
 
-      return { id: createdMenu.id };
+      return {
+        id: createdMenu.id,
+        name: createdMenu.name,
+        description: createdMenu.description,
+        createdAt: createdMenu.createdAt.toISOString(),
+        updatedAt: createdMenu.updatedAt,
+        meals: createdMenu.meals.map(meal => ({
+          id: meal.id,
+          recipeId: meal.recipeId,
+          mealType: meal.mealType,
+          order: meal.order,
+          dayNumber: meal.dayNumber,
+          recipe: {
+            id: meal.recipe.id,
+            title: meal.recipe.title,
+            description: meal.recipe.description,
+            imageUrl: meal.recipe.imageUrl
+          }
+        }))
+      };
     },
 
-    async findById(id: string): Promise<MenuWithItems | null> {
+    async findById(id: string): Promise<MenuWithMeals | null> {
       const menu = await prisma.menu.findUnique({
         where: { id },
         include: {
-          items: {
+          meals: {
             include: {
               recipe: {
                 select: {
@@ -94,25 +130,29 @@ export const MenuRepository = (): IMenuRepository => {
 
       return {
         id: menu.id,
-        items: menu.items.map(item => ({
-          id: item.id,
-          recipeId: item.recipeId,
-          mealType: item.mealType,
-          order: item.order,
-          dayNumber: item.dayNumber,
+        name: menu.name,
+        description: menu.description,
+        createdAt: menu.createdAt.toISOString(),
+        updatedAt: menu.updatedAt,
+        meals: menu.meals.map(meal => ({
+          id: meal.id,
+          recipeId: meal.recipeId,
+          mealType: meal.mealType,
+          order: meal.order,
+          dayNumber: meal.dayNumber,
           recipe: {
-            id: item.recipe.id,
-            title: item.recipe.title,
-            description: item.recipe.description,
-            imageUrl: item.recipe.imageUrl
+            id: meal.recipe.id,
+            title: meal.recipe.title,
+            description: meal.recipe.description,
+            imageUrl: meal.recipe.imageUrl
           }
         }))
       };
     },
 
     async update(id: string, menuDto: UpdateMenuDto): Promise<Menu> {
-      if (menuDto.items) {
-        await prisma.menuItem.deleteMany({
+      if (menuDto.meals) {
+        await prisma.meal.deleteMany({
           where: { menuId: id }
         });
       }
@@ -122,20 +162,26 @@ export const MenuRepository = (): IMenuRepository => {
         data: {
           ...(menuDto.name && { name: menuDto.name }),
           ...(menuDto.description !== undefined && { description: menuDto.description }),
-          ...(menuDto.items && {
-            items: {
-              create: menuDto.items.map(item => ({
-                recipeId: item.recipeId,
-                mealType: item.mealType,
-                dayNumber: item.dayNumber,
-                order: item.order
+          ...(menuDto.meals && {
+            meals: {
+              create: menuDto.meals.map(meal => ({
+                recipeId: meal.recipeId,
+                mealType: meal.mealType,
+                dayNumber: meal.dayNumber,
+                order: meal.order
               }))
             }
           })
         }
       });
 
-      return { id: updatedMenu.id };
+      return {
+        id: updatedMenu.id,
+        name: updatedMenu.name,
+        description: updatedMenu.description,
+        createdAt: updatedMenu.createdAt.toISOString(),
+        updatedAt: updatedMenu.updatedAt
+      };
     },
 
     async delete(id: string): Promise<void> {

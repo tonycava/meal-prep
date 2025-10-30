@@ -1,14 +1,13 @@
 import { InputFactory, OutputFactory, UseCase, UseCaseResponseBuilder } from "$lib/common/usecase";
 import { CreateMenuDto } from "../dto/createMenu.dto";
-import { Menu } from "../entities/Menu";
-import { IMenuRepositorySave } from "../interfaces/IMenuRepository";
+import { IMenuRepositorySave, MenuWithMeals } from "../interfaces/IMenuRepository";
 import { tryCatch } from "$lib/errors/tryCatch";
 
 type Input = InputFactory<
   { dto: CreateMenuDto; apiKey: string },
   { menuRepository: IMenuRepositorySave }
 >;
-type Output = OutputFactory<Menu>;
+type Output = OutputFactory<MenuWithMeals>;
 
 export const SaveMenuUseCase: UseCase<Input, Output> = (dependencies) => {
   const { menuRepository } = dependencies;
