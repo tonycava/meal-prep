@@ -6,21 +6,48 @@ export const ListMenusInputSchema = z.object({
 });
 
 export const MenuDTOSchema = z.object({
-  id: z.uuid(),
+  id: z.string(),
   name: z.string(),
   description: z.string().nullable(),
-  createdAt: z.coerce.string(),
+  createdAt: z.string(),
   updatedAt: z.coerce.date(),
   itemCount: z.number(),
 });
 
 export const ListMenusOutputSchema = z.object({
   menus: z.array(MenuDTOSchema),
-  total: z.number(),
-  limit: z.number(),
-  offset: z.number(),
+  meta: z.object({
+    total: z.number(),
+    offset: z.number(),
+    limit: z.number(),
+  }),
+});
+
+export const MealSchema = z.object({
+  id: z.string(),
+  recipeId: z.string(),
+  mealType: z.string(),
+  order: z.number(),
+  dayNumber: z.number(),
+  recipe: z.object({
+    id: z.string(),
+    title: z.string(),
+    description: z.string().nullable(),
+    imageUrl: z.string().nullable(),
+  }),
+});
+
+export const MenuWithMealsSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string().nullable(),
+  createdAt: z.string(),
+  updatedAt: z.coerce.date(),
+  mealCount: z.number(),
+  meals: z.array(MealSchema),
 });
 
 export type ListMenusInput = z.infer<typeof ListMenusInputSchema>;
 export type MenuDTO = z.infer<typeof MenuDTOSchema>;
 export type ListMenusOutput = z.infer<typeof ListMenusOutputSchema>;
+export type MenuWithMealsDTO = z.infer<typeof MenuWithMealsSchema>;

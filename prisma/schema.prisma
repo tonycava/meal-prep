@@ -113,8 +113,8 @@ model Menu {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  apiKey ApiKey?    @relation(fields: [apiKeyId], references: [id], onDelete: SetNull)
-  items  MenuItem[]
+  apiKey ApiKey? @relation(fields: [apiKeyId], references: [id], onDelete: SetNull)
+  meals  Meal[]
 }
 
 model Recipe {
@@ -135,7 +135,7 @@ model Recipe {
   apiKey      ApiKey?            @relation(fields: [apiKeyId], references: [id], onDelete: SetNull)
   steps       RecipeStep[]
   ingredients RecipeIngredient[]
-  menuItems   MenuItem[]
+  meals       Meal[]
 }
 
 model Ingredient {
@@ -181,7 +181,7 @@ model IngredientVitamin {
   @@unique([ingredientId, vitaminType])
 }
 
-model MenuItem {
+model Meal {
   id        String   @id @default(uuid())
   menuId    String
   recipeId  String

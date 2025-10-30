@@ -1,42 +1,25 @@
 import { defaultEndpointsFactory } from "express-zod-api";
-import {
-  ListMenusInputSchema,
-  ListMenusOutputSchema
-} from "../dto/menu.dto.ts";
-import {prisma} from "$lib/db.ts";
+import { ListMenusInputSchema, ListMenusOutputSchema } from "../dto/menu.dto.ts";
+import { MenuRepository } from "$modules/menu/repositories/MenuRepository.ts";
+import { ListMenusUseCase } from "$modules/menu/usecases/ListMenus.ts";
 
 export const ListMenusEndpoint = defaultEndpointsFactory.build({
     method: "get",
     input: ListMenusInputSchema,
     output: ListMenusOutputSchema,
-    handler: async ({ input: { limit, offset }, options, logger}) => {
+    handler: async ({ input: { limit, offset }, logger }) => {
       logger.info(`Fetching menus with limit ${limit} and offset ${offset}`);
 
-      const total = await prisma.menu.count();
+      const response = await ListMenusUseCase({
+        menuRepository: MenuRepository(),
+      }).execute({ limit, offset });
 
-      const menus = await prisma.menu.findMany({
-        take: limit,
-        orderBy: { createdAt: "desc" },
-        include: {
-          _count: {
-            select: { items: true }
-          }
-        }
-      })
+      if (!response.isSuccess) {
+        throw new Error(response.message);
+      }
 
-      logger.info(`Fetched ${menus.length} menus`);
-      return {
-        menus: menus.map(menu => ({
-            id: menu.id,
-            name: menu.name,
-            description: menu.description,
-            createdAt: menu.createdAt.toISOString(),
-            updatedAt: menu.updatedAt,
-            itemCount: menu._count.items,
-        })),
-        total,
-        limit,
-        offset,
-      };
+      logger.info(`Fetched ${response.data.menus.length} menus`);
+
+      return response.data;
     }
 });
