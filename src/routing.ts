@@ -11,6 +11,7 @@ export const routing: Routing = {
       post: CreateRecipeEndPoint,
       delete: DeleteRecipeEndPoint,
     }),
+
   },
   public: new ServeStatic(path.join(__dirname, "../assets"), {
     dotfiles: "deny",
