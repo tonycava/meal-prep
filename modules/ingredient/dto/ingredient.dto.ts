@@ -72,7 +72,7 @@ export const IngredientListQueryDto = z.object({
 });
 
 export const CreateIngredientDto = z.object({
-  name: z.string().min(1, "Le nom est requis"),
+  name: z.string().optional().refine(val => val !== undefined && val.length > 0, "Le champ 'name' est obligatoire et doit être une chaîne non vide"),
   category: IngredientCategoryEnum.optional(),
   proteins: z.number().min(0).default(0),
   fats: z.number().min(0).default(0),

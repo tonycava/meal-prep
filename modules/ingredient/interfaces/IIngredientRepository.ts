@@ -5,11 +5,15 @@ export type IIngredientRepositoryCreate = {
 };
 
 export type IIngredientRepositoryUpdate = {
-  update(id: string, ingredientDto: UpdateIngredientDtoType): Promise<IngredientResponseDtoType>;
+  update(id: string, ingredientDto: UpdateIngredientDtoType): Promise<IngredientResponseDtoType | null>;
 };
 
 export type IIngredientRepositoryDelete = {
-  delete(id: string): Promise<void>;
+  delete(id: string): Promise<boolean>;
+};
+
+export type IIngredientRepositorySearch = {
+  searchByName(name: string): Promise<IngredientResponseDtoType[]>;
 };
 
 export type IIngredientRepositoryGetById = {
@@ -19,4 +23,5 @@ export type IIngredientRepositoryGetById = {
 export type IIngredientRepository = IIngredientRepositoryCreate &
   IIngredientRepositoryUpdate &
   IIngredientRepositoryDelete &
-  IIngredientRepositoryGetById;
+  IIngredientRepositoryGetById &
+  IIngredientRepositorySearch;

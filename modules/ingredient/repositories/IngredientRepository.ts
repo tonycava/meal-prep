@@ -7,15 +7,15 @@ export const IngredientRepository = (): IIngredientRepository => {
     async create(ingredientDto: CreateIngredientDtoType): Promise<IngredientResponseDtoType> {
       const createdIngredient = await prisma.ingredient.create({
         data: {
-          name: ingredientDto.name,
-          category: ingredientDto.category,
-          proteins: ingredientDto.proteins,
-          fats: ingredientDto.fats,
-          carbs: ingredientDto.carbs,
-          sugars: ingredientDto.sugars,
-          fiber: ingredientDto.fiber,
-          salt: ingredientDto.salt,
-          calories: ingredientDto.calories,
+          name: ingredientDto.name!,
+          category: ingredientDto.category!,
+          proteins: ingredientDto.proteins!,
+          fats: ingredientDto.fats!,
+          carbs: ingredientDto.carbs!,
+          sugars: ingredientDto.sugars!,
+          fiber: ingredientDto.fiber!,
+          salt: ingredientDto.salt!,
+          calories: ingredientDto.calories!,
           minerals: ingredientDto.minerals ? {
             create: ingredientDto.minerals.map(mineral => ({
               mineralType: mineral.mineralType,
@@ -38,7 +38,15 @@ export const IngredientRepository = (): IIngredientRepository => {
       return createdIngredient;
     },
 
-    async update(id: string, ingredientDto: UpdateIngredientDtoType): Promise<IngredientResponseDtoType> {
+    async update(id: string, ingredientDto: UpdateIngredientDtoType): Promise<IngredientResponseDtoType | null> {
+      // Check if ingredient exists
+      const existingIngredient = await prisma.ingredient.findUnique({
+        where: { id }
+      });
+      if (!existingIngredient) {
+        return null;
+      }
+
       if (ingredientDto.minerals !== undefined) {
         await prisma.ingredientMineral.deleteMany({
           where: { ingredientId: id }
@@ -89,10 +97,19 @@ export const IngredientRepository = (): IIngredientRepository => {
       return updatedIngredient;
     },
 
-    async delete(id: string): Promise<void> {
+    async delete(id: string): Promise<boolean> {
+      // Check if ingredient exists
+      const existingIngredient = await prisma.ingredient.findUnique({
+        where: { id }
+      });
+      if (!existingIngredient) {
+        return false;
+      }
+
       await prisma.ingredient.delete({
         where: { id }
       });
+      return true;
     },
 
     async getById(id: string): Promise<IngredientResponseDtoType | null> {
@@ -105,6 +122,18 @@ export const IngredientRepository = (): IIngredientRepository => {
       });
 
       return ingredient;
+    },
+
+    async searchByName(name: string): Promise<IngredientResponseDtoType[]> {
+      const ingredients = await prisma.ingredient.findMany({
+        where: { name: { contains: name } },
+        include: {
+          minerals: true,
+          vitamins: true
+        }
+      });
+
+      return ingredients;
     }
   };
 };

@@ -7,6 +7,9 @@ import {ListMenusEndpoint} from "$modules/menu/endpoints/ListMenus";
 import {ListIngredientsEndpoint} from "$modules/ingredient/endpoints/ListIngredient";
 import {CreateIngredientEndpoint} from "$modules/ingredient/endpoints/CreateIngredient";
 import {DeleteIngredientEndpoint} from "$modules/ingredient/endpoints/DeleteIngredient";
+import { UpdateIngredientEndpoint } from "$modules/ingredient/endpoints/UpdateIngredient";
+import { GetIngredientByIdEndpoint } from "$modules/ingredient/endpoints/GetIngredientByIdEndpoint";
+import { SearchIngredientEndpoint } from "$modules/ingredient/endpoints/SearchIngredient";
 
 export const routing: Routing = {
   v1: {
@@ -18,11 +21,19 @@ export const routing: Routing = {
     menu: {
       "/": ListMenusEndpoint
     },
-    ingredients: new DependsOnMethod({
+    ingredients: {
+      "/": new DependsOnMethod({
         get: ListIngredientsEndpoint,
         post: CreateIngredientEndpoint,
+      }),
+      "/search": new DependsOnMethod({
+        get: SearchIngredientEndpoint,
+      }),
+      "/:id": new DependsOnMethod({
+        get: GetIngredientByIdEndpoint,
+        put: UpdateIngredientEndpoint,
         delete: DeleteIngredientEndpoint,
-      },
+      }),
     },
   },
   public: new ServeStatic(path.join(__dirname, "../assets"), {
