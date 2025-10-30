@@ -4,17 +4,14 @@ import { prisma } from "../../../lib/db.ts";
 import { recipeDto } from "../dto/recipeDto.ts"
 
 export const ListRecipeEndpoint = defaultEndpointsFactory.build({
-      input: z.object({
-            name: z.string().optional(),
-      }),
+      method: "get",
       output: z.object({
-            greetings: z.string(),
+            data: z.array(z.string()),
       }),
-      handler: async ({ input: { name }, options, logger }) => {
+      handler: async ({ logger }) => {
             const users = await prisma.user.findMany()
-
             logger.debug("Options:", users);
-            return { greetings: `Hello, ${name || "World"}. Happy coding!` };
+            return { data: [] };
       },
 });
 
@@ -26,4 +23,4 @@ export const recipeEndpoint = defaultEndpointsFactory.build({
       handler: async ({ input: { }, options, logger }) => {
             return { greetings: `This recipe is from ${recipeDto || "unknown"}.` }
       },
-});
+})
