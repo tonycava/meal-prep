@@ -7,13 +7,12 @@ const ingredient = z.object({
 })
 
 const recipeCategorySchema = z.enum(RecipeCategoryEnum);
-const recipeDietSchema = z.object(DietEnum)
+const recipeDietSchema = z.enum(DietEnum)
 
 export const createRecipeDto = z.object({
   title: z.string().nonempty("Un titre est requis."),
   description: z.string().nonempty("Une description est requise."),
 
-  category: recipeCategorySchema.optional(),
   diet: recipeDietSchema.optional(),
   ingredients: z.array(ingredient).nonempty("Au moins un ingrédients est requis."),
   image: z.string().nonempty("Une image est requise."),
