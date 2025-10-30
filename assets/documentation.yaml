@@ -1,21 +1,96 @@
 openapi: 3.1.0
 info:
-  title: MealPrep
+  title: MealPrep API
   version: 1.0.0
+  description: MealPrep est un web service permettant à ses utilisateurs de leur fournir tout un système de gestion de recette. Ils pourront alors récupérer une liste de recette suivant certains critères ou bien former un menu pour la semaine ou encore ajouter ses propres recettes.
+  contact:
+    name: MealPrep Team
+
+servers:
+  - url: http://localhost:8090
+    description: Development server
+
+tags:
+  - name: Recettes
+    description: Gestion des recettes
+  - name: Menus
+    description: Gestion des menus
+  - name: Ingrédients
+    description: Gestion des ingrédients
+
 paths:
-  /v1/hello:
+  # ============= RECETTES =============
+  /v1/recipes:
     get:
-      operationId: GetV1Hello
+      tags:
+        - Recettes
+      summary: Liste des recettes
+      description: Récupère la liste des recettes avec filtres optionnels
+      operationId: listRecipes
       parameters:
-        - name: name
+        - name: category
           in: query
+          description: Filtrer par catégorie
           required: false
-          description: GET /v1/hello Parameter
           schema:
             type: string
+            enum:
+              - APPETIZER
+              - MAIN_COURSE
+              - SIDE_DISH
+              - DESSERT
+              - SNACK
+              - BEVERAGE
+              - BREAKFAST
+              - OTHER
+        - name: diet
+          in: query
+          description: Filtrer par régime alimentaire
+          required: false
+          schema:
+            type: string
+            enum:
+              - VEGETARIAN
+              - VEGAN
+              - GLUTEN_FREE
+              - DAIRY_FREE
+              - KETO
+              - PALEO
+              - LOW_CARB
+              - OTHER
+        - name: ingredients
+          in: query
+          description: IDs d'ingrédients séparés par virgules
+          required: false
+          schema:
+            type: string
+            example: "uuid1,uuid2,uuid3"
+        - name: search
+          in: query
+          description: Recherche par mot-clé dans le titre
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Limiter le nombre de réponses retournées
+          required: false
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 100
+        - name: offset
+          in: query
+          description: Pagination - nombre d'éléments à sauter
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
       responses:
-        "200":
-          description: GET /v1/hello Positive response
+        '200':
+          description: Liste des recettes récupérée avec succès
           content:
             application/json:
               schema:
@@ -27,17 +102,131 @@ paths:
                   data:
                     type: object
                     properties:
-                      greetings:
-                        type: string
+                      recipes:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Recipe'
+                      total:
+                        type: integer
+                      limit:
+                        type: integer
+                      offset:
+                        type: integer
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+    post:
+      tags:
+        - Recettes
+      summary: Ajouter une recette
+      description: Crée une nouvelle recette
+      operationId: createRecipe
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - description
+                - category
+                - ingredients
+              properties:
+                title:
+                  type: string
+                  description: Titre de la recette
+                description:
+                  type: string
+                  description: Description de la recette
+                category:
+                  type: string
+                  enum:
+                    - APPETIZER
+                    - MAIN_COURSE
+                    - SIDE_DISH
+                    - DESSERT
+                    - SNACK
+                    - BEVERAGE
+                    - BREAKFAST
+                    - OTHER
+                ingredients:
+                  type: array
+                  description: Liste des ingrédients
+                  items:
+                    type: object
                     required:
-                      - greetings
-                    additionalProperties: false
-                required:
-                  - status
-                  - data
-                additionalProperties: false
-        "400":
-          description: GET /v1/hello Negative response
+                      - ingredientId
+                      - quantity
+                      - unit
+                    properties:
+                      ingredientId:
+                        type: string
+                        format: uuid
+                      quantity:
+                        type: number
+                        minimum: 0
+                      unit:
+                        type: string
+                        enum:
+                          - GRAM
+                          - KILOGRAM
+                          - MILLILITER
+                          - LITER
+                          - TEASPOON
+                          - TABLESPOON
+                          - CUP
+                          - PIECE
+                          - SLICE
+                          - PINCH
+                          - OTHER
+                      notes:
+                        type: string
+                diet:
+                  type: string
+                  description: Régime alimentaire compatible
+                  enum:
+                    - VEGETARIAN
+                    - VEGAN
+                    - GLUTEN_FREE
+                    - DAIRY_FREE
+                    - KETO
+                    - PALEO
+                    - LOW_CARB
+                    - OTHER
+                image:
+                  type: string
+                  description: URL de l'image de la recette
+                prepTimeMin:
+                  type: integer
+                  description: Temps de préparation en minutes
+                cookTimeMin:
+                  type: integer
+                  description: Temps de cuisson en minutes
+                servings:
+                  type: integer
+                  description: Nombre de portions
+                  default: 1
+                steps:
+                  type: array
+                  description: Étapes de la recette
+                  items:
+                    type: object
+                    required:
+                      - order
+                      - instruction
+                    properties:
+                      order:
+                        type: integer
+                      instruction:
+                        type: string
+                      durationMin:
+                        type: integer
+      responses:
+        '201':
+          description: Recette créée avec succès
           content:
             application/json:
               schema:
@@ -45,49 +234,1380 @@ paths:
                 properties:
                   status:
                     type: string
-                    const: error
-                  error:
+                    const: success
+                  data:
+                    $ref: '#/components/schemas/Recipe'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /v1/recipes/{id}:
+    get:
+      tags:
+        - Recettes
+      summary: Détails d'une recette
+      description: Récupère les détails complets d'une recette
+      operationId: getRecipe
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la recette
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Détails de la recette
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: success
+                  data:
+                    $ref: '#/components/schemas/RecipeDetail'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+    put:
+      tags:
+        - Recettes
+      summary: Modifier une recette
+      description: Modifie une recette existante
+      operationId: updateRecipe
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la recette
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                category:
+                  type: string
+                  enum:
+                    - APPETIZER
+                    - MAIN_COURSE
+                    - SIDE_DISH
+                    - DESSERT
+                    - SNACK
+                    - BEVERAGE
+                    - BREAKFAST
+                    - OTHER
+                ingredients:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      ingredientId:
+                        type: string
+                        format: uuid
+                      quantity:
+                        type: number
+                      unit:
+                        type: string
+                      notes:
+                        type: string
+                diet:
+                  type: string
+                image:
+                  type: string
+                prepTimeMin:
+                  type: integer
+                cookTimeMin:
+                  type: integer
+                servings:
+                  type: integer
+                steps:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      order:
+                        type: integer
+                      instruction:
+                        type: string
+                      durationMin:
+                        type: integer
+      responses:
+        '200':
+          description: Recette modifiée avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: success
+                  data:
+                    $ref: '#/components/schemas/Recipe'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+    delete:
+      tags:
+        - Recettes
+      summary: Supprimer une recette
+      description: Supprime une recette existante
+      operationId: deleteRecipe
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la recette
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Recette supprimée avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: success
+                  data:
                     type: object
                     properties:
                       message:
                         type: string
+                        example: Recipe deleted successfully
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /v1/recipes/{id}/nutrition:
+    get:
+      tags:
+        - Recettes
+      summary: Informations nutritionnelles
+      description: Récupère les informations nutritionnelles d'une recette
+      operationId: getRecipeNutrition
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la recette
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Informations nutritionnelles de la recette
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: success
+                  data:
+                    $ref: '#/components/schemas/NutritionInfo'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  # ============= MENUS =============
+  /v1/menus:
+    get:
+      tags:
+        - Menus
+      summary: Récupérer tous les menus de l'utilisateur
+      description: Liste tous les menus avec pagination
+      operationId: listMenus
+      parameters:
+        - name: limit
+          in: query
+          description: Limiter le nombre de réponses retournées
+          required: false
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 100
+        - name: offset
+          in: query
+          description: Pagination
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+      responses:
+        '200':
+          description: Liste des menus récupérée avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: success
+                  data:
+                    type: object
+                    properties:
+                      menus:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Menu'
+                      total:
+                        type: integer
+                      limit:
+                        type: integer
+                      offset:
+                        type: integer
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+    post:
+      tags:
+        - Menus
+      summary: Sauvegarder/Créer un menu
+      description: Crée un nouveau menu
+      operationId: createMenu
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - meals
+              properties:
+                name:
+                  type: string
+                  description: Nom du menu
+                description:
+                  type: string
+                  description: Description du menu
+                meals:
+                  type: array
+                  description: Recettes contenues dans le menu
+                  items:
+                    type: object
                     required:
-                      - message
-                    additionalProperties: false
-                required:
-                  - status
-                  - error
-                additionalProperties: false
-              examples:
-                example1:
-                  value:
-                    status: error
-                    error:
-                      message: Sample error message
-    head:
-      operationId: HeadV1Hello
+                      - recipeId
+                      - mealType
+                      - dayNumber
+                      - order
+                    properties:
+                      recipeId:
+                        type: string
+                        format: uuid
+                      mealType:
+                        type: string
+                        enum:
+                          - BREAKFAST
+                          - LUNCH
+                          - DINNER
+                          - SNACK
+                      dayNumber:
+                        type: integer
+                        minimum: 1
+                        maximum: 7
+                        description: Jour de la semaine (1-7)
+                      order:
+                        type: integer
+                        description: Ordre du repas dans la journée
+      responses:
+        '201':
+          description: Menu créé avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: success
+                  data:
+                    $ref: '#/components/schemas/MenuDetail'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /v1/menus/{id}:
+    get:
+      tags:
+        - Menus
+      summary: Récupérer les détails d'un menu spécifique
+      description: Récupère tous les détails d'un menu incluant les recettes
+      operationId: getMenu
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID du menu
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Détails du menu
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: success
+                  data:
+                    $ref: '#/components/schemas/MenuDetail'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+    put:
+      tags:
+        - Menus
+      summary: Modifier un menu spécifique
+      description: Modifie un menu existant
+      operationId: updateMenu
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID du menu
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                meals:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      recipeId:
+                        type: string
+                        format: uuid
+                      mealType:
+                        type: string
+                        enum:
+                          - BREAKFAST
+                          - LUNCH
+                          - DINNER
+                          - SNACK
+                      dayNumber:
+                        type: integer
+                      order:
+                        type: integer
+      responses:
+        '200':
+          description: Menu modifié avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: success
+                  data:
+                    $ref: '#/components/schemas/MenuDetail'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+    delete:
+      tags:
+        - Menus
+      summary: Supprimer un menu spécifique
+      description: Supprime un menu existant
+      operationId: deleteMenu
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID du menu
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Menu supprimé avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: success
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Menu deleted successfully
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /v1/menus/weekly:
+    get:
+      tags:
+        - Menus
+      summary: Générer un menu pour la semaine
+      description: Génère automatiquement un menu hebdomadaire selon les critères
+      operationId: generateWeeklyMenu
+      parameters:
+        - name: mealsPerDay
+          in: query
+          required: true
+          description: Nombre de repas par jour
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 6
+        - name: servings
+          in: query
+          required: true
+          description: Nombre de personnes
+          schema:
+            type: integer
+            minimum: 1
+        - name: maxBudget
+          in: query
+          required: false
+          description: Budget maximum
+          schema:
+            type: number
+            minimum: 0
+        - name: diet
+          in: query
+          required: false
+          description: Régime alimentaire
+          schema:
+            type: string
+            enum:
+              - VEGETARIAN
+              - VEGAN
+              - GLUTEN_FREE
+              - DAIRY_FREE
+              - KETO
+              - PALEO
+              - LOW_CARB
+      responses:
+        '200':
+          description: Menu hebdomadaire généré avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: success
+                  data:
+                    $ref: '#/components/schemas/MenuDetail'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /v1/menus/daily:
+    get:
+      tags:
+        - Menus
+      summary: Générer un menu pour la journée
+      description: Génère automatiquement un menu journalier selon les critères
+      operationId: generateDailyMenu
+      parameters:
+        - name: numberOfMeals
+          in: query
+          required: true
+          description: Nombre de repas par jour
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 6
+        - name: servings
+          in: query
+          required: true
+          description: Nombre de personnes
+          schema:
+            type: integer
+            minimum: 1
+        - name: maxBudget
+          in: query
+          required: false
+          description: Budget maximum
+          schema:
+            type: number
+            minimum: 0
+        - name: diet
+          in: query
+          required: false
+          description: Régime alimentaire
+          schema:
+            type: string
+            enum:
+              - VEGETARIAN
+              - VEGAN
+              - GLUTEN_FREE
+              - DAIRY_FREE
+              - KETO
+              - PALEO
+              - LOW_CARB
+      responses:
+        '200':
+          description: Menu journalier généré avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: success
+                  data:
+                    $ref: '#/components/schemas/MenuDetail'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /v1/menus/diet:
+    get:
+      tags:
+        - Menus
+      summary: Générer un menu selon des critères spécifiques
+      description: Génère un menu personnalisé selon des critères de régime alimentaire
+      operationId: generateDietMenu
+      parameters:
+        - name: diet
+          in: query
+          required: true
+          description: Type de régime alimentaire
+          schema:
+            type: string
+            enum:
+              - VEGETARIAN
+              - VEGAN
+              - GLUTEN_FREE
+              - DAIRY_FREE
+              - KETO
+              - PALEO
+              - LOW_CARB
+        - name: days
+          in: query
+          required: false
+          description: Nombre de jours
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 7
+            default: 7
+        - name: mealsPerDay
+          in: query
+          required: false
+          description: Nombre de repas par jour
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 6
+            default: 3
+        - name: servings
+          in: query
+          required: true
+          description: Nombre de personnes
+          schema:
+            type: integer
+            minimum: 1
+        - name: maxBudget
+          in: query
+          required: false
+          description: Budget maximum
+          schema:
+            type: number
+            minimum: 0
+      responses:
+        '200':
+          description: Menu généré avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: success
+                  data:
+                    $ref: '#/components/schemas/MenuDetail'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  # ============= INGREDIENTS =============
+  /v1/ingredients:
+    get:
+      tags:
+        - Ingrédients
+      summary: Récupérer tous les ingrédients
+      description: Liste tous les ingrédients avec filtres optionnels
+      operationId: listIngredients
+      parameters:
+        - name: category
+          in: query
+          description: Filtrer par catégorie
+          required: false
+          schema:
+            type: string
+            enum:
+              - VEGETABLE
+              - FRUIT
+              - MEAT
+              - FISH
+              - DAIRY
+              - GRAIN
+              - LEGUME
+              - NUT
+              - SPICE
+              - OIL
+              - OTHER
+        - name: search
+          in: query
+          description: Recherche par nom
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Limiter le nombre de réponses retournées
+          required: false
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 100
+        - name: offset
+          in: query
+          description: Pagination
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+      responses:
+        '200':
+          description: Liste des ingrédients récupérée avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: success
+                  data:
+                    type: object
+                    properties:
+                      ingredients:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Ingredient'
+                      total:
+                        type: integer
+                      limit:
+                        type: integer
+                      offset:
+                        type: integer
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+    post:
+      tags:
+        - Ingrédients
+      summary: Créer un nouvel ingrédient
+      description: Ajoute un nouvel ingrédient à la base de données
+      operationId: createIngredient
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  description: Nom de l'ingrédient
+                category:
+                  type: string
+                  enum:
+                    - VEGETABLE
+                    - FRUIT
+                    - MEAT
+                    - FISH
+                    - DAIRY
+                    - GRAIN
+                    - LEGUME
+                    - NUT
+                    - SPICE
+                    - OIL
+                    - OTHER
+                proteins:
+                  type: number
+                  description: Protéines (g/100g)
+                  default: 0
+                fats:
+                  type: number
+                  description: Lipides (g/100g)
+                  default: 0
+                carbs:
+                  type: number
+                  description: Glucides (g/100g)
+                  default: 0
+                sugars:
+                  type: number
+                  description: Sucres (g/100g)
+                  default: 0
+                fiber:
+                  type: number
+                  description: Fibres (g/100g)
+                  default: 0
+                salt:
+                  type: number
+                  description: Sel (g/100g)
+                  default: 0
+                calories:
+                  type: number
+                  description: Calories (kcal/100g)
+                  default: 0
+                minerals:
+                  type: array
+                  description: Minéraux contenus
+                  items:
+                    type: object
+                    properties:
+                      mineralType:
+                        type: string
+                        enum:
+                          - CALCIUM
+                          - IRON
+                          - MAGNESIUM
+                          - POTASSIUM
+                          - SODIUM
+                          - ZINC
+                          - PHOSPHORUS
+                          - OTHER
+                      value:
+                        type: number
+                vitamins:
+                  type: array
+                  description: Vitamines contenues
+                  items:
+                    type: object
+                    properties:
+                      vitaminType:
+                        type: string
+                        enum:
+                          - VITAMIN_A
+                          - VITAMIN_B1
+                          - VITAMIN_B2
+                          - VITAMIN_B3
+                          - VITAMIN_B6
+                          - VITAMIN_B12
+                          - VITAMIN_C
+                          - VITAMIN_D
+                          - VITAMIN_E
+                          - VITAMIN_K
+                          - OTHER
+                      value:
+                        type: number
+      responses:
+        '201':
+          description: Ingrédient créé avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: success
+                  data:
+                    $ref: '#/components/schemas/IngredientDetail'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /v1/ingredients/{id}:
+    get:
+      tags:
+        - Ingrédients
+      summary: Récupérer un ingrédient
+      description: Récupère les détails complets d'un ingrédient
+      operationId: getIngredient
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de l'ingrédient
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Détails de l'ingrédient
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: success
+                  data:
+                    $ref: '#/components/schemas/IngredientDetail'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+    put:
+      tags:
+        - Ingrédients
+      summary: Modifier un ingrédient
+      description: Modifie un ingrédient existant
+      operationId: updateIngredient
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de l'ingrédient
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                category:
+                  type: string
+                proteins:
+                  type: number
+                fats:
+                  type: number
+                carbs:
+                  type: number
+                sugars:
+                  type: number
+                fiber:
+                  type: number
+                salt:
+                  type: number
+                calories:
+                  type: number
+                minerals:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      mineralType:
+                        type: string
+                      value:
+                        type: number
+                vitamins:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      vitaminType:
+                        type: string
+                      value:
+                        type: number
+      responses:
+        '200':
+          description: Ingrédient modifié avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: success
+                  data:
+                    $ref: '#/components/schemas/IngredientDetail'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+    delete:
+      tags:
+        - Ingrédients
+      summary: Supprimer un ingrédient
+      description: Supprime un ingrédient existant
+      operationId: deleteIngredient
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de l'ingrédient
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Ingrédient supprimé avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: success
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Ingredient deleted successfully
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /v1/ingredients/search:
+    get:
+      tags:
+        - Ingrédients
+      summary: Récupérer un ingrédient par nom
+      description: Recherche un ingrédient par son nom
+      operationId: searchIngredientByName
       parameters:
         - name: name
           in: query
-          required: false
-          description: HEAD /v1/hello Parameter
+          required: true
+          description: Nom de l'ingrédient à rechercher
           schema:
             type: string
       responses:
-        "200":
-          description: HEAD /v1/hello Positive response
-        "400":
-          description: HEAD /v1/hello Negative response
+        '200':
+          description: Résultats de la recherche
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: success
+                  data:
+                    type: object
+                    properties:
+                      ingredients:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Ingredient'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+# ============= COMPONENTS =============
 components:
-  schemas: {}
-  responses: {}
-  parameters: {}
-  examples: {}
-  requestBodies: {}
-  headers: {}
-  securitySchemes: {}
-  links: {}
-  callbacks: {}
-tags: []
-servers:
-  - url: http://localhost:8090
+  schemas:
+    Recipe:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        imageUrl:
+          type: string
+          nullable: true
+        prepTimeMin:
+          type: integer
+          nullable: true
+        cookTimeMin:
+          type: integer
+          nullable: true
+        servings:
+          type: integer
+        category:
+          type: string
+          enum:
+            - APPETIZER
+            - MAIN_COURSE
+            - SIDE_DISH
+            - DESSERT
+            - SNACK
+            - BEVERAGE
+            - BREAKFAST
+            - OTHER
+          nullable: true
+        diet:
+          type: string
+          enum:
+            - VEGETARIAN
+            - VEGAN
+            - GLUTEN_FREE
+            - DAIRY_FREE
+            - KETO
+            - PALEO
+            - LOW_CARB
+            - OTHER
+          nullable: true
+        isPublic:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    RecipeDetail:
+      allOf:
+        - $ref: '#/components/schemas/Recipe'
+        - type: object
+          properties:
+            ingredients:
+              type: array
+              items:
+                type: object
+                properties:
+                  ingredient:
+                    $ref: '#/components/schemas/Ingredient'
+                  quantity:
+                    type: number
+                  unit:
+                    type: string
+                    enum:
+                      - GRAM
+                      - KILOGRAM
+                      - MILLILITER
+                      - LITER
+                      - TEASPOON
+                      - TABLESPOON
+                      - CUP
+                      - PIECE
+                      - SLICE
+                      - PINCH
+                      - OTHER
+                  notes:
+                    type: string
+                    nullable: true
+            steps:
+              type: array
+              items:
+                type: object
+                properties:
+                  order:
+                    type: integer
+                  instruction:
+                    type: string
+                  durationMin:
+                    type: integer
+                    nullable: true
+
+    Menu:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        itemCount:
+          type: integer
+          description: Nombre de recettes dans le menu
+
+    MenuDetail:
+      allOf:
+        - $ref: '#/components/schemas/Menu'
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  recipe:
+                    $ref: '#/components/schemas/Recipe'
+                  mealType:
+                    type: string
+                    enum:
+                      - BREAKFAST
+                      - LUNCH
+                      - DINNER
+                      - SNACK
+                  dayNumber:
+                    type: integer
+                    description: Jour de la semaine (1-7)
+                  order:
+                    type: integer
+                    description: Ordre du repas dans la journée
+
+    Ingredient:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        category:
+          type: string
+          enum:
+            - VEGETABLE
+            - FRUIT
+            - MEAT
+            - FISH
+            - DAIRY
+            - GRAIN
+            - LEGUME
+            - NUT
+            - SPICE
+            - OIL
+            - OTHER
+          nullable: true
+        proteins:
+          type: number
+          description: Protéines en grammes pour 100g
+        fats:
+          type: number
+          description: Lipides en grammes pour 100g
+        carbs:
+          type: number
+          description: Glucides en grammes pour 100g
+        sugars:
+          type: number
+          description: Sucres en grammes pour 100g
+        fiber:
+          type: number
+          description: Fibres en grammes pour 100g
+        salt:
+          type: number
+          description: Sel en grammes pour 100g
+        calories:
+          type: number
+          description: Calories en kcal pour 100g
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    IngredientDetail:
+      allOf:
+        - $ref: '#/components/schemas/Ingredient'
+        - type: object
+          properties:
+            minerals:
+              type: array
+              items:
+                type: object
+                properties:
+                  mineralType:
+                    type: string
+                    enum:
+                      - CALCIUM
+                      - IRON
+                      - MAGNESIUM
+                      - POTASSIUM
+                      - SODIUM
+                      - ZINC
+                      - PHOSPHORUS
+                      - OTHER
+                  value:
+                    type: number
+            vitamins:
+              type: array
+              items:
+                type: object
+                properties:
+                  vitaminType:
+                    type: string
+                    enum:
+                      - VITAMIN_A
+                      - VITAMIN_B1
+                      - VITAMIN_B2
+                      - VITAMIN_B3
+                      - VITAMIN_B6
+                      - VITAMIN_B12
+                      - VITAMIN_C
+                      - VITAMIN_D
+                      - VITAMIN_E
+                      - VITAMIN_K
+                      - OTHER
+                  value:
+                    type: number
+
+    NutritionInfo:
+      type: object
+      properties:
+        proteins:
+          type: number
+          description: Protéines totales (g)
+        fats:
+          type: number
+          description: Lipides totaux (g)
+        carbs:
+          type: number
+          description: Glucides totaux (g)
+        sugars:
+          type: number
+          description: Sucres totaux (g)
+        fiber:
+          type: number
+          description: Fibres totales (g)
+        salt:
+          type: number
+          description: Sel total (g)
+        calories:
+          type: number
+          description: Calories totales (kcal)
+        minerals:
+          type: array
+          items:
+            type: object
+            properties:
+              mineralType:
+                type: string
+              value:
+                type: number
+        vitamins:
+          type: array
+          items:
+            type: object
+            properties:
+              vitaminType:
+                type: string
+              value:
+                type: number
+
+  responses:
+    BadRequest:
+      description: Requête invalide
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                const: error
+              error:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Invalid request parameters
+
+    NotFound:
+      description: Ressource non trouvée
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                const: error
+              error:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Resource not found
+
+    InternalError:
+      description: Erreur interne du serveur
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                const: error
+              error:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Internal server error
