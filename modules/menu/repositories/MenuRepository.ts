@@ -5,13 +5,12 @@ import { prisma } from "$lib/db";
 
 export const MenuRepository = (): IMenuRepository => {
   return {
-    async list(per_page: number, page: number): Promise<ListMenusOutput> {
-      const skip = (page - 1) * per_page;
+    async list(limit: number, offset: number): Promise<ListMenusOutput> {
 
       const [menus, total] = await Promise.all([
         prisma.menu.findMany({
-          take: per_page,
-          skip: skip,
+          skip: offset,
+          take: limit,
           orderBy: { createdAt: 'desc' },
           include: {
             _count: {
@@ -22,10 +21,8 @@ export const MenuRepository = (): IMenuRepository => {
         prisma.menu.count()
       ]);
 
-      const total_pages = Math.ceil(total / per_page);
-
       return {
-        data: menus.map(menu => ({
+        menus: menus.map(menu => ({
           id: menu.id,
           name: menu.name,
           description: menu.description,
@@ -34,11 +31,9 @@ export const MenuRepository = (): IMenuRepository => {
           itemCount: menu._count.items
         })),
         meta: {
-          total,
-          count: menus.length,
-          page,
-          per_page,
-          total_pages
+          total: total,
+          offset: offset,
+          limit: limit
         }
       };
     },

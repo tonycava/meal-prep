@@ -40,7 +40,7 @@ export type UpdateMenuDto = {
 };
 
 export type IMenuRepositoryList = {
-  list(per_page: number, page: number): Promise<ListMenusOutput>;
+  list(limit: number, offset: number): Promise<ListMenusOutput>;
 };
 
 export type IMenuRepositorySave = {

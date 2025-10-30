@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
 export const ListMenusInputSchema = z.object({
-  per_page: z.string().optional().transform((val) => val ? parseInt(val, 10) : 20),
-  page: z.string().optional().transform((val) => val ? parseInt(val, 10) : 1),
+  limit: z.string().optional().transform((val) => val ? parseInt(val, 10) : 10),
+  offset: z.string().optional().transform((val) => val ? parseInt(val, 10) : 0),
 });
 
 export const MenuDTOSchema = z.object({
@@ -15,13 +15,11 @@ export const MenuDTOSchema = z.object({
 });
 
 export const ListMenusOutputSchema = z.object({
-  data: z.array(MenuDTOSchema),
+  menus: z.array(MenuDTOSchema),
   meta: z.object({
     total: z.number(),
-    count: z.number(),
-    page: z.number(),
-    per_page: z.number(),
-    total_pages: z.number(),
+    offset: z.number(),
+    limit: z.number(),
   }),
 });
 

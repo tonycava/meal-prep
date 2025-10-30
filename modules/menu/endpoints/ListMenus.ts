@@ -1,25 +1,25 @@
 import { defaultEndpointsFactory } from "express-zod-api";
 import { ListMenusInputSchema, ListMenusOutputSchema } from "../dto/menu.dto.ts";
-import { ListMenusUseCase } from "$modules/menu/usecases/ListMenus.ts";
 import { MenuRepository } from "$modules/menu/repositories/MenuRepository.ts";
+import { ListMenusUseCase } from "$modules/menu/usecases/ListMenus.ts";
 
 export const ListMenusEndpoint = defaultEndpointsFactory.build({
     method: "get",
     input: ListMenusInputSchema,
     output: ListMenusOutputSchema,
-    handler: async ({ input: { per_page, page }, logger }) => {
-      logger.info(`Fetching menus with per_page ${per_page} and page ${page}`);
+    handler: async ({ input: { limit, offset }, logger }) => {
+      logger.info(`Fetching menus with limit ${limit} and offset ${offset}`);
 
-      const listMenusResponse = await ListMenusUseCase({
+      const response = await ListMenusUseCase({
         menuRepository: MenuRepository(),
-      }).execute({ per_page, page });
+      }).execute({ limit, offset });
 
-      logger.info(`Fetched menus successfully`);
-
-      if (!listMenusResponse.isSuccess) {
-        throw new Error(listMenusResponse.message);
+      if (!response.isSuccess) {
+        throw new Error(response.message);
       }
 
-      return listMenusResponse.data;
+      logger.info(`Fetched ${response.data.menus.length} menus`);
+
+      return response.data;
     }
 });
