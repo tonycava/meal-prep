@@ -1,14 +1,16 @@
-import { DependsOnMethod, Routing, ServeStatic } from "express-zod-api";
+import { Routing, ServeStatic } from "express-zod-api";
 import path from "path";
 import { ListRecipeEndpoint } from "../modules/recipe/endpoints/ListRecipe.ts";
-import { CreateRecipeEndPoint } from "$modules/recipe/endpoints/CreateRecipe.ts";
+import {ListMenusEndpoint} from "$modules/menu/endpoints/ListMenus.ts";
 
 export const routing: Routing = {
   v1: {
-    recipe: new DependsOnMethod({
-      get: ListRecipeEndpoint,
-      post: CreateRecipeEndPoint,
-    }),
+    recipe: {
+      "/": ListRecipeEndpoint
+    },
+    menu: {
+      "/": ListMenusEndpoint
+    },
   },
   public: new ServeStatic(path.join(__dirname, "../assets"), {
     dotfiles: "deny",
@@ -16,4 +18,3 @@ export const routing: Routing = {
     redirect: false,
   }),
 };
-

@@ -3,17 +3,19 @@ import { Documentation } from "express-zod-api";
 import { config } from "../config.ts";
 import { routing } from "../routing.ts";
 import manifest from "../../package.json";
+import path from "node:path";
 
 (async () => {
   await writeFile(
-    "../assets/documentation.yaml",
+    path.resolve(__dirname, "../../assets/documentation.yaml"),
     new Documentation({
       routing,
       config,
       version: manifest.version,
-      title: "MealPrep",
+      title: "MealPrep API",
       serverUrl: "http://localhost:8090",
     }).getSpecAsYaml(),
     "utf-8",
   );
+  console.log("Documentation generated successfully at assets/documentation.yaml");
 })();
