@@ -4,8 +4,9 @@ import { ListRecipeEndpoint } from "../modules/recipe/endpoints/ListRecipe.ts";
 import { CreateRecipeEndPoint } from "$modules/recipe/endpoints/CreateRecipe.ts";
 import { DeleteRecipeEndPoint } from "$modules/recipe/endpoints/DeleteRecipe.ts";
 import {ListMenusEndpoint} from "$modules/menu/endpoints/ListMenus";
-import {IngredientsEndpoint} from "$modules/ingredient/endpoints/ListIngredient";
-import {IngredientByIdEndpoint} from "$modules/ingredient/endpoints/GetIngredientById";
+import {ListIngredientsEndpoint} from "$modules/ingredient/endpoints/ListIngredient";
+import {CreateIngredientEndpoint} from "$modules/ingredient/endpoints/CreateIngredient";
+import {DeleteIngredientEndpoint} from "$modules/ingredient/endpoints/DeleteIngredient";
 
 export const routing: Routing = {
   v1: {
@@ -17,9 +18,11 @@ export const routing: Routing = {
     menu: {
       "/": ListMenusEndpoint
     },
-    ingredients: {
-      "/": IngredientsEndpoint,
-      "/:id": IngredientByIdEndpoint,
+    ingredients: new DependsOnMethod({
+        get: ListIngredientsEndpoint,
+        post: CreateIngredientEndpoint,
+        delete: DeleteIngredientEndpoint,
+      },
     },
   },
   public: new ServeStatic(path.join(__dirname, "../assets"), {
