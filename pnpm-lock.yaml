@@ -19,7 +19,7 @@ importers:
         version: 5.1.0
       express-zod-api:
         specifier: ^25.5.3
-        version: 25.5.3(@types/express@5.0.5)(@types/http-errors@2.0.5)(@types/node@24.9.1)(express@5.1.0)(http-errors@2.0.0)(typescript@5.9.3)(zod@4.1.12)
+        version: 25.5.3(@types/express@5.0.5)(@types/http-errors@2.0.5)(@types/node@24.9.2)(express@5.1.0)(http-errors@2.0.0)(typescript@5.9.3)(zod@4.1.12)
       http-errors:
         specifier: ^2.0.0
         version: 2.0.0
@@ -38,7 +38,7 @@ importers:
         version: 2.0.5
       '@types/node':
         specifier: ^24.9.1
-        version: 24.9.1
+        version: 24.9.2
       '@types/swagger-ui-express':
         specifier: ^4.1.8
         version: 4.1.8
@@ -270,8 +270,8 @@ packages:
   '@types/mime@1.3.5':
     resolution: {integrity: sha512-/pyBZWSLD2n0dcHE3hq8s8ZvcETHtEuF+3E7XVt0Ig2nvsVQXdghHVcEkIWjy9A0wKfTn97a/PSDYohKIlnP/w==}
 
-  '@types/node@24.9.1':
-    resolution: {integrity: sha512-QoiaXANRkSXK6p0Duvt56W208du4P9Uye9hWLWgGMDTEoKPhuenzNcC4vGUmrNkiOKTlIrBoyNQYNpSwfEZXSg==}
+  '@types/node@24.9.2':
+    resolution: {integrity: sha512-uWN8YqxXxqFMX2RqGOrumsKeti4LlmIMIyV0lgut4jx7KQBcBiW6vkDtIBvHnHIquwNfJhk8v2OtmO8zXWHfPA==}
 
   '@types/qs@6.14.0':
     resolution: {integrity: sha512-eOunJqu0K1923aExK6y8p6fsihYEn/BYuQ4g0CxAAgFc4b/ZLN4CrsRZ55srTdqoiLzU2B2evC+apEIxprEzkQ==}
@@ -287,6 +287,9 @@ packages:
 
   '@types/serve-static@1.15.10':
     resolution: {integrity: sha512-tRs1dB+g8Itk72rlSI2ZrW6vZg0YrLI81iQSTkMmOqnqCaNr/8Ek4VwWcN5vZgCYWbg/JJSGBlUaYGAOP73qBw==}
+
+  '@types/serve-static@2.2.0':
+    resolution: {integrity: sha512-8mam4H1NHLtu7nmtalF7eyBH14QyOASmcxHhSfEoRyr0nP/YdoesEtU+uSRvMe96TW/HPTtkoKqQLl53N7UXMQ==}
 
   '@types/swagger-ui-express@4.1.8':
     resolution: {integrity: sha512-AhZV8/EIreHFmBV5wAs0gzJUNq9JbbSXgJLQubCC0jtIo6prnI9MIRRxnU4MZX9RB9yXxF1V4R7jtLl/Wcj31g==}
@@ -935,15 +938,15 @@ snapshots:
   '@types/body-parser@1.19.6':
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 24.9.1
+      '@types/node': 24.9.2
 
   '@types/connect@3.4.38':
     dependencies:
-      '@types/node': 24.9.1
+      '@types/node': 24.9.2
 
   '@types/express-serve-static-core@5.1.0':
     dependencies:
-      '@types/node': 24.9.1
+      '@types/node': 24.9.2
       '@types/qs': 6.14.0
       '@types/range-parser': 1.2.7
       '@types/send': 1.2.1
@@ -958,7 +961,7 @@ snapshots:
 
   '@types/mime@1.3.5': {}
 
-  '@types/node@24.9.1':
+  '@types/node@24.9.2':
     dependencies:
       undici-types: 7.16.0
 
@@ -969,22 +972,27 @@ snapshots:
   '@types/send@0.17.6':
     dependencies:
       '@types/mime': 1.3.5
-      '@types/node': 24.9.1
+      '@types/node': 24.9.2
 
   '@types/send@1.2.1':
     dependencies:
-      '@types/node': 24.9.1
+      '@types/node': 24.9.2
 
   '@types/serve-static@1.15.10':
     dependencies:
       '@types/http-errors': 2.0.5
-      '@types/node': 24.9.1
+      '@types/node': 24.9.2
       '@types/send': 0.17.6
+
+  '@types/serve-static@2.2.0':
+    dependencies:
+      '@types/http-errors': 2.0.5
+      '@types/node': 24.9.2
 
   '@types/swagger-ui-express@4.1.8':
     dependencies:
       '@types/express': 5.0.5
-      '@types/serve-static': 1.15.10
+      '@types/serve-static': 2.2.0
 
   accepts@1.3.8:
     dependencies:
@@ -1141,13 +1149,13 @@ snapshots:
 
   etag@1.8.1: {}
 
-  express-zod-api@25.5.3(@types/express@5.0.5)(@types/http-errors@2.0.5)(@types/node@24.9.1)(express@5.1.0)(http-errors@2.0.0)(typescript@5.9.3)(zod@4.1.12):
+  express-zod-api@25.5.3(@types/express@5.0.5)(@types/http-errors@2.0.5)(@types/node@24.9.2)(express@5.1.0)(http-errors@2.0.0)(typescript@5.9.3)(zod@4.1.12):
     dependencies:
       '@express-zod-api/zod-plugin': 2.1.0(zod@4.1.12)
       ansis: 4.2.0
       express: 5.1.0
       http-errors: 2.0.0
-      node-mocks-http: 1.17.2(@types/express@5.0.5)(@types/node@24.9.1)
+      node-mocks-http: 1.17.2(@types/express@5.0.5)(@types/node@24.9.2)
       openapi3-ts: 4.5.0
       ramda: 0.31.3
       typescript: 5.9.3
@@ -1315,7 +1323,7 @@ snapshots:
 
   node-fetch-native@1.6.7: {}
 
-  node-mocks-http@1.17.2(@types/express@5.0.5)(@types/node@24.9.1):
+  node-mocks-http@1.17.2(@types/express@5.0.5)(@types/node@24.9.2):
     dependencies:
       accepts: 1.3.8
       content-disposition: 0.5.4
@@ -1329,7 +1337,7 @@ snapshots:
       type-is: 1.6.18
     optionalDependencies:
       '@types/express': 5.0.5
-      '@types/node': 24.9.1
+      '@types/node': 24.9.2
 
   nypm@0.6.2:
     dependencies:
