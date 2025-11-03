@@ -7,7 +7,8 @@
     "start": "tsx src/index.ts",
     "dev": "tsx --watch src/index.ts",
     "build:docs": "tsx src/docs/generate-documentation.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "import:csv": "node import-csv.js"
   },
   "dependencies": {
     "@prisma/client": "^6.18.0",

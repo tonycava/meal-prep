@@ -496,6 +496,8 @@ paths:
       summary: Sauvegarder/Créer un menu
       description: Crée un nouveau menu
       operationId: createMenu
+      security:
+        - ApiKeyAuth: []
       requestBody:
         required: true
         content:
@@ -1289,6 +1291,13 @@ paths:
 
 # ============= COMPONENTS =============
 components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: Clé API requise pour les opérations protégées
+
   schemas:
     Recipe:
       type: object
