@@ -17,12 +17,13 @@ export interface IRecipeFilters {
 export const ListRecipesInputSchema = z.object({
 	limit: z.string().optional().transform((val) => val ? parseInt(val, 10) : 10),
 	offset: z.string().optional().transform((val) => val ? parseInt(val, 10) : 0),
-	filters: z.object({
-		category: recipeCategorySchema.optional(),
-		diet: recipeDietSchema.optional(),
-		search: z.string().optional(),
-		ingredients: z.array(z.string()).optional(),
-	}).optional(),
+	category: recipeCategorySchema.optional(),
+	diet: recipeDietSchema.optional(),
+	search: z.string().optional(),
+	ingredients: z.union([
+		z.string().transform(val => val.split(',')),
+		z.array(z.string())
+	]).optional(),
 });
 
 export const RecipeDTOSchema = z.object({
