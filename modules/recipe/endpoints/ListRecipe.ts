@@ -1,43 +1,25 @@
 import { defaultEndpointsFactory } from "express-zod-api";
-import { z } from "zod";
-import { recipeQueryDto } from "../dto/recipeQueryDto";
-import { recipeDto, RecipeDto } from "../dto/recipeDto";
-import { ListRecipesUseCase } from "../usecases/ListRecipesUseCase";
+import { ListRecipesInputSchema, ListRecipesOutputSchema } from "../dto/recipeDto";
+import { ListRecipesUseCase } from "../usecases/ListRecipes";
 import { RecipeRepository } from "../repositories/RecipeRepository";
 
-export const ListRecipeEndpoint = defaultEndpointsFactory.build({
+export const ListRecipesEndpoint = defaultEndpointsFactory.build({
       method: "get",
-      input: recipeQueryDto,
-      output: z.object({
-            data: z.array(recipeDto),
-            meta: z.object({
-                  total: z.number(),
-                  limit: z.number(),
-                  offset: z.number(),
-            }),
-      }),
-      handler: async ({ input }) => {
-            const listRecipesResponse = await ListRecipesUseCase({
+      input: ListRecipesInputSchema,
+      output: ListRecipesOutputSchema,
+      handler: async ({ input: { limit, offset, filters }, logger }) => {
+		logger.info(`Fetching recipes with limit ${limit}, offset ${offset}, filters: ${JSON.stringify(filters)}`);
+
+            const response = await ListRecipesUseCase({
                   recipeRepository: RecipeRepository(),
-            }).execute({ query: input });
+            }).execute({ limit, offset, filters });
 
-            if (listRecipesResponse.isSuccess === false) {
-                  throw {
-                        status: listRecipesResponse.status,
-                        message: listRecipesResponse.message,
-                  };
-            }
+            if(!response.isSuccess) {
+			throw new Error(response.message);
+		}
 
-            const { data: recipes, total } = listRecipesResponse.data as { data: RecipeDto[], total: number };
-            const { limit, offset } = input;
+		logger.info(`Fetched ${response.data.recipes.length} recipes`);
 
-            return {
-                  data: recipes,
-                  meta: {
-                        total: total,
-                        limit: limit,
-                        offset: offset,
-                  }
-            };
+		return response.data;
       },
 });

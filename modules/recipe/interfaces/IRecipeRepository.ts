@@ -1,14 +1,14 @@
 import { CreateRecipeDto } from "../dto/createRecipeDto";
-import { RecipeQueryDto } from "../dto/recipeQueryDto";
 import { Recipe } from "../entities/Recipe";
 import { DeleteRecipeDto } from "$modules/recipe/dto/deleteRecipeDto.ts";
+import { IRecipeFilters, ListRecipesOutput } from "../dto/recipeDto";
 
 export type IRecipeRepositorySave = {
   save(recipeDto: CreateRecipeDto, apiKey: string): Promise<Recipe>;
 }
 
 export type IRecipeRepositoryList = {
-      list(queryDto: RecipeQueryDto): Promise<{ data: Recipe[]; total: number }>;
+      list(limit: number, offset: number, filters: IRecipeFilters): Promise<ListRecipesOutput>;
 }
 
 export type IRecipeRepositoryDelete = {

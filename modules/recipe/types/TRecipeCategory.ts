@@ -1,0 +1,1 @@
+export type TRecipeCategory = "APPETIZER" | "MAIN_COURSE" | "SIDE_DISH" | "DESSERT" | "SNACK" | "BEVERAGE" | "BREAKFAST" | "OTHER";

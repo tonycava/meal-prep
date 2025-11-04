@@ -8,7 +8,7 @@ type Input = InputFactory<
   { menuRepository: IMenuRepositoryList }
 >;
 type Output = OutputFactory<ListMenusOutput>;
-
+	
 export const ListMenusUseCase: UseCase<Input, Output> = (dependencies) => {
   const { menuRepository } = dependencies;
   return {
