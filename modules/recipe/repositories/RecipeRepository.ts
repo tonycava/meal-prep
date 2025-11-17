@@ -4,9 +4,27 @@ import { Recipe } from "../entities/Recipe";
 import { prisma } from "$lib/db";
 import { DeleteRecipeDto } from "$modules/recipe/dto/deleteRecipeDto.ts";
 import { AppError } from "$lib/errors/AppError.ts";
+import { UpdateRecipeDto } from "$modules/recipe/dto/updateRecipeDto.ts";
 
 export const RecipeRepository = (): IRecipeRepository => {
   return {
+    async update(recipeDto: UpdateRecipeDto): Promise<void> {
+      try {
+        await prisma.recipe.update({
+          data: {
+            title: recipeDto.title,
+          },
+          where: { id_recipe: recipeDto.id }
+        })
+      } catch (error) {
+        throw new AppError(
+          "Internal Server Error",
+          "An error occurred while updating recipe",
+          "Une erreur est survenue lors de la mise à jour d'une recette.",
+          "error"
+        )
+      }
+    },
     async delete(recipeDto: DeleteRecipeDto): Promise<void> {
       try {
         await prisma.recipe.delete({

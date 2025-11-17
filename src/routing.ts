@@ -3,6 +3,7 @@ import { DependsOnMethod, Routing, ServeStatic } from "express-zod-api";
 import { ListRecipeEndpoint } from "../modules/recipe/endpoints/ListRecipe.ts";
 import { CreateRecipeEndPoint } from "$modules/recipe/endpoints/CreateRecipe.ts";
 import { DeleteRecipeEndPoint } from "$modules/recipe/endpoints/DeleteRecipe.ts";
+import { UpdateRecipeEndpoint } from "$modules/recipe/endpoints/UpdateRecipe.ts";
 
 export const routing: Routing = {
   v1: {
@@ -10,6 +11,7 @@ export const routing: Routing = {
       get: ListRecipeEndpoint,
       post: CreateRecipeEndPoint,
       delete: DeleteRecipeEndPoint,
+      patch: UpdateRecipeEndpoint,
     }),
 
   },
