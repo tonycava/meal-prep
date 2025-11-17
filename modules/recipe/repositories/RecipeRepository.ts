@@ -6,13 +6,31 @@ import { DeleteRecipeDto } from "$modules/recipe/dto/deleteRecipeDto.ts";
 import { AppError } from "$lib/errors/AppError.ts";
 import { ListRecipesOutput, IRecipeFilters } from "../dto/recipeDto";
 import { DietType, RecipeCategory } from "@prisma/client";
+import { UpdateRecipeDto } from "$modules/recipe/dto/updateRecipeDto.ts";
 
 export const RecipeRepository = (): IRecipeRepository => {
 	return {
-		async delete(recipeDto: DeleteRecipeDto): Promise<void> {
+    async update(recipeDto: UpdateRecipeDto): Promise<void> {
+      try {
+        await prisma.recipe.update({
+          data: {
+            title: recipeDto.title,
+          },
+          where: { id: recipeDto.id }
+        })
+      } catch (error) {
+        throw new AppError(
+          "Internal Server Error",
+          "An error occurred while updating recipe",
+          "Une erreur est survenue lors de la mise à jour d'une recette.",
+          "error"
+        )
+      }
+    },
+    async delete(recipeDto: DeleteRecipeDto): Promise<void> {
 			try {
 				await prisma.recipe.delete({
-					where: { id_recipe: recipeDto.id },
+					where: { id: recipeDto.id },
 				})
 			} catch (error) {
 				throw new AppError(
@@ -29,12 +47,10 @@ export const RecipeRepository = (): IRecipeRepository => {
 					data: {
 						title: recipeDto.title,
 						description: recipeDto.description,
-						is_public: false,
+						isPublic: false,
 						prepTimeMin: recipeDto.prepTimeMin,
 						cookTimeMin: recipeDto.cookTimeMin,
-						image: recipeDto.image,
 						apiKey: { connect: { key: apiKey } },
-						ingredients: "",
 					}
 				});
 
@@ -42,14 +58,26 @@ export const RecipeRepository = (): IRecipeRepository => {
 					await prisma.recipeIngredient.create({
 						data: {
 							quantity: ingredient.quantity,
-							ingredient: { connect: { id_ingredient: ingredient.id } },
-							recipe: { connect: { id_recipe: createdRecipe.id_recipe } }
+							ingredient: { connect: { id: ingredient.id } },
+							recipe: { connect: { id: createdRecipe.id } }
 						}
 					})
 				}
 
-				return { id: createdRecipe.id_recipe }
+				return {
+          cookTimeMin: createdRecipe.cookTimeMin,
+          createdAt: createdRecipe.createdAt,
+          description: createdRecipe.description,
+          imageUrl: createdRecipe.imageUrl,
+          isPublic: createdRecipe.isPublic,
+          prepTimeMin: createdRecipe.prepTimeMin,
+          servings: createdRecipe.servings,
+          title: createdRecipe.title,
+          updatedAt: createdRecipe.updatedAt,
+          id: createdRecipe.id
+        }
 			} catch (error) {
+        console.log("Error saving recipe:", error);
 				throw new AppError(
 					"Internal Server Error",
 					"An error occurred while saving recipe",

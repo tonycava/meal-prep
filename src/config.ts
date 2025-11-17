@@ -13,7 +13,7 @@ export const config = createConfig({
     app.use(
       "/docs",
       ui.serve,
-      ui.setup(null, { swaggerUrl: "/assets/documentation.yaml" }),
+      ui.setup(null, { swaggerUrl: "/public/documentation.yaml" }),
     );
   },
 });
