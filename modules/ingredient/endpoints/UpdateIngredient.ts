@@ -4,13 +4,16 @@ import { UpdateIngredientUseCase } from "../usecases/UpdateIngredient";
 import { IngredientRepository } from "../repositories/IngredientRepository";
 import { ApiResponse } from "../../../lib/common/api/ApiResponse";
 import { UseCaseResponseSchema } from "../../../lib/common/usecase";
+import { authMiddleware } from "../../../lib/middlewares/authMiddleware";
 import { z } from "zod";
 
-export const UpdateIngredientEndpoint = defaultEndpointsFactory.build({
+export const UpdateIngredientEndpoint = defaultEndpointsFactory
+  .addMiddleware(authMiddleware)
+  .build({
   method: "put",
   input: z.object({
     id: z.string().uuid()
-  }).passthrough(),
+  }).merge(UpdateIngredientDto),
   output: UseCaseResponseSchema,
   handler: async ({ input, logger }) => {
     const { id, ...dto } = input;

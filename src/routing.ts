@@ -10,7 +10,6 @@ import { CreateIngredientEndpoint } from "$modules/ingredient/endpoints/CreateIn
 import { DeleteIngredientEndpoint } from "$modules/ingredient/endpoints/DeleteIngredient";
 import { UpdateIngredientEndpoint } from "$modules/ingredient/endpoints/UpdateIngredient";
 import { GetIngredientByIdEndpoint } from "$modules/ingredient/endpoints/GetIngredientByIdEndpoint";
-import { SearchIngredientEndpoint } from "$modules/ingredient/endpoints/SearchIngredient";
 
 export const routing: Routing = {
       v1: {
@@ -27,9 +26,6 @@ export const routing: Routing = {
                   "/": new DependsOnMethod({
                         get: ListIngredientEndpoint,
                         post: CreateIngredientEndpoint,
-                  }),
-                  "/search": new DependsOnMethod({
-                        get: SearchIngredientEndpoint,
                   }),
                   "/:id": new DependsOnMethod({
                         get: GetIngredientByIdEndpoint,

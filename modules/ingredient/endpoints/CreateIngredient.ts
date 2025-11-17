@@ -15,7 +15,7 @@ export const CreateIngredientEndpoint = defaultEndpointsFactory
     handler: async ({ input, options }) => {
       const createIngredientResponse = await CreateIngredientUseCase({
         ingredientRepository: IngredientRepository(),
-      }).execute({ dto: input });
+      }).execute({ dto: input, apikey: options.apikey });
 
       return ApiResponse.send(createIngredientResponse);
     },
