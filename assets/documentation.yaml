@@ -575,6 +575,112 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
 
+  /v1/menus/generate:
+    get:
+      tags:
+        - Menus
+      summary: Générer un menu personnalisé
+      description: Récupère un menu respectant une liste de demande de l'utilisateur
+      operationId: generateMenu
+      security:
+        - ApiKeyAuth: [ ]
+      parameters:
+        - name: duration
+          in: query
+          required: false
+          description: Période sur laquelle s'étale le menu
+          schema:
+            type: string
+            enum:
+              - daily
+              - weekly
+              - monthly
+            default: daily
+        - name: diet
+          in: query
+          required: false
+          description: Régime alimentaire
+          schema:
+            type: string
+            enum:
+              - vegetarian
+              - vegan
+              - gluten_free
+              - dairy_free
+              - keto
+              - paleo
+              - low_carb
+              - other
+            default: other
+        - name: servings
+          in: query
+          required: false
+          description: Nombre de personnes
+          schema:
+            type: integer
+            default: 2
+        - name: mealsPerDay
+          in: query
+          required: false
+          description: Nombre de repas par jour
+          schema:
+            type: integer
+            default: 3
+            minimum: 1
+            maximum: 6
+        - name: allergy
+          in: query
+          required: false
+          description: Allergie mentionnée
+          schema:
+            type: string
+            example: peanuts
+        - name: excludeIngredients
+          in: query
+          required: false
+          description: Ingrédients à exclure séparé d'une virgule
+          schema:
+            type: string
+            example: "mushroom,tomato"
+        - name: maxPrepTimePerMeal
+          in: query
+          required: false
+          description: Temps maximum de préparation par repas
+          schema:
+            oneOf: 
+              - type: number
+              - type: "null"
+            default: null
+        - name: caloriesTargetPerDay
+          in: query
+          required: false
+          description: Calories cible par jour
+          schema:
+            type: integer
+        - name: proteinTargetPerDay
+          in: query
+          required: false
+          description: Protéines cible par jour
+          schema:
+            type: integer
+      responses:
+          '200':
+            description: Détails du menu généré
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      const: success
+                    data:
+                      $ref: '#/components/schemas/MenuDetail'
+          '404':
+            $ref: '#/components/responses/NotFound'
+          '500':
+            $ref: '#/components/responses/InternalError'
+
   /v1/menus/{id}:
     get:
       tags:
@@ -714,207 +820,207 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
 
-  /v1/menus/weekly:
-    get:
-      tags:
-        - Menus
-      summary: Générer un menu pour la semaine
-      description: Génère automatiquement un menu hebdomadaire selon les critères
-      operationId: generateWeeklyMenu
-      security:
-        - ApiKeyAuth: [ ]
-      parameters:
-        - name: mealsPerDay
-          in: query
-          required: true
-          description: Nombre de repas par jour
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 6
-        - name: servings
-          in: query
-          required: true
-          description: Nombre de personnes
-          schema:
-            type: integer
-            minimum: 1
-        - name: maxBudget
-          in: query
-          required: false
-          description: Budget maximum
-          schema:
-            type: number
-            minimum: 0
-        - name: diet
-          in: query
-          required: false
-          description: Régime alimentaire
-          schema:
-            type: string
-            enum:
-              - VEGETARIAN
-              - VEGAN
-              - GLUTEN_FREE
-              - DAIRY_FREE
-              - KETO
-              - PALEO
-              - LOW_CARB
-      responses:
-        '200':
-          description: Menu hebdomadaire généré avec succès
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    const: success
-                  data:
-                    $ref: '#/components/schemas/MenuDetail'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '500':
-          $ref: '#/components/responses/InternalError'
+  # /v1/menus/weekly:
+  #   get:
+  #     tags:
+  #       - Menus
+  #     summary: Générer un menu pour la semaine
+  #     description: Génère automatiquement un menu hebdomadaire selon les critères
+  #     operationId: generateWeeklyMenu
+  #     security:
+  #       - ApiKeyAuth: [ ]
+  #     parameters:
+  #       - name: mealsPerDay
+  #         in: query
+  #         required: true
+  #         description: Nombre de repas par jour
+  #         schema:
+  #           type: integer
+  #           minimum: 1
+  #           maximum: 6
+  #       - name: servings
+  #         in: query
+  #         required: true
+  #         description: Nombre de personnes
+  #         schema:
+  #           type: integer
+  #           minimum: 1
+  #       - name: maxBudget
+  #         in: query
+  #         required: false
+  #         description: Budget maximum
+  #         schema:
+  #           type: number
+  #           minimum: 0
+  #       - name: diet
+  #         in: query
+  #         required: false
+  #         description: Régime alimentaire
+  #         schema:
+  #           type: string
+  #           enum:
+  #             - VEGETARIAN
+  #             - VEGAN
+  #             - GLUTEN_FREE
+  #             - DAIRY_FREE
+  #             - KETO
+  #             - PALEO
+  #             - LOW_CARB
+  #     responses:
+  #       '200':
+  #         description: Menu hebdomadaire généré avec succès
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: object
+  #               properties:
+  #                 status:
+  #                   type: string
+  #                   const: success
+  #                 data:
+  #                   $ref: '#/components/schemas/MenuDetail'
+  #       '400':
+  #         $ref: '#/components/responses/BadRequest'
+  #       '500':
+  #         $ref: '#/components/responses/InternalError'
 
-  /v1/menus/daily:
-    get:
-      tags:
-        - Menus
-      summary: Générer un menu pour la journée
-      description: Génère automatiquement un menu journalier selon les critères
-      operationId: generateDailyMenu
-      security:
-        - ApiKeyAuth: [ ]
-      parameters:
-        - name: numberOfMeals
-          in: query
-          required: true
-          description: Nombre de repas par jour
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 6
-        - name: servings
-          in: query
-          required: true
-          description: Nombre de personnes
-          schema:
-            type: integer
-            minimum: 1
-        - name: maxBudget
-          in: query
-          required: false
-          description: Budget maximum
-          schema:
-            type: number
-            minimum: 0
-        - name: diet
-          in: query
-          required: false
-          description: Régime alimentaire
-          schema:
-            type: string
-            enum:
-              - VEGETARIAN
-              - VEGAN
-              - GLUTEN_FREE
-              - DAIRY_FREE
-              - KETO
-              - PALEO
-              - LOW_CARB
-      responses:
-        '200':
-          description: Menu journalier généré avec succès
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    const: success
-                  data:
-                    $ref: '#/components/schemas/MenuDetail'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '500':
-          $ref: '#/components/responses/InternalError'
+  # /v1/menus/daily:
+  #   get:
+  #     tags:
+  #       - Menus
+  #     summary: Générer un menu pour la journée
+  #     description: Génère automatiquement un menu journalier selon les critères
+  #     operationId: generateDailyMenu
+  #     security:
+  #       - ApiKeyAuth: [ ]
+  #     parameters:
+  #       - name: numberOfMeals
+  #         in: query
+  #         required: true
+  #         description: Nombre de repas par jour
+  #         schema:
+  #           type: integer
+  #           minimum: 1
+  #           maximum: 6
+  #       - name: servings
+  #         in: query
+  #         required: true
+  #         description: Nombre de personnes
+  #         schema:
+  #           type: integer
+  #           minimum: 1
+  #       - name: maxBudget
+  #         in: query
+  #         required: false
+  #         description: Budget maximum
+  #         schema:
+  #           type: number
+  #           minimum: 0
+  #       - name: diet
+  #         in: query
+  #         required: false
+  #         description: Régime alimentaire
+  #         schema:
+  #           type: string
+  #           enum:
+  #             - VEGETARIAN
+  #             - VEGAN
+  #             - GLUTEN_FREE
+  #             - DAIRY_FREE
+  #             - KETO
+  #             - PALEO
+  #             - LOW_CARB
+  #     responses:
+  #       '200':
+  #         description: Menu journalier généré avec succès
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: object
+  #               properties:
+  #                 status:
+  #                   type: string
+  #                   const: success
+  #                 data:
+  #                   $ref: '#/components/schemas/MenuDetail'
+  #       '400':
+  #         $ref: '#/components/responses/BadRequest'
+  #       '500':
+  #         $ref: '#/components/responses/InternalError'
 
-  /v1/menus/diet:
-    get:
-      tags:
-        - Menus
-      summary: Générer un menu selon des critères spécifiques
-      description: Génère un menu personnalisé selon des critères de régime alimentaire
-      operationId: generateDietMenu
-      security:
-        - ApiKeyAuth: [ ]
-      parameters:
-        - name: diet
-          in: query
-          required: true
-          description: Type de régime alimentaire
-          schema:
-            type: string
-            enum:
-              - VEGETARIAN
-              - VEGAN
-              - GLUTEN_FREE
-              - DAIRY_FREE
-              - KETO
-              - PALEO
-              - LOW_CARB
-        - name: days
-          in: query
-          required: false
-          description: Nombre de jours
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 7
-            default: 7
-        - name: mealsPerDay
-          in: query
-          required: false
-          description: Nombre de repas par jour
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 6
-            default: 3
-        - name: servings
-          in: query
-          required: true
-          description: Nombre de personnes
-          schema:
-            type: integer
-            minimum: 1
-        - name: maxBudget
-          in: query
-          required: false
-          description: Budget maximum
-          schema:
-            type: number
-            minimum: 0
-      responses:
-        '200':
-          description: Menu généré avec succès
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    const: success
-                  data:
-                    $ref: '#/components/schemas/MenuDetail'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '500':
-          $ref: '#/components/responses/InternalError'
+  # /v1/menus/diet:
+  #   get:
+  #     tags:
+  #       - Menus
+  #     summary: Générer un menu selon des critères spécifiques
+  #     description: Génère un menu personnalisé selon des critères de régime alimentaire
+  #     operationId: generateDietMenu
+  #     security:
+  #       - ApiKeyAuth: [ ]
+  #     parameters:
+  #       - name: diet
+  #         in: query
+  #         required: true
+  #         description: Type de régime alimentaire
+  #         schema:
+  #           type: string
+  #           enum:
+  #             - VEGETARIAN
+  #             - VEGAN
+  #             - GLUTEN_FREE
+  #             - DAIRY_FREE
+  #             - KETO
+  #             - PALEO
+  #             - LOW_CARB
+  #       - name: days
+  #         in: query
+  #         required: false
+  #         description: Nombre de jours
+  #         schema:
+  #           type: integer
+  #           minimum: 1
+  #           maximum: 7
+  #           default: 7
+  #       - name: mealsPerDay
+  #         in: query
+  #         required: false
+  #         description: Nombre de repas par jour
+  #         schema:
+  #           type: integer
+  #           minimum: 1
+  #           maximum: 6
+  #           default: 3
+  #       - name: servings
+  #         in: query
+  #         required: true
+  #         description: Nombre de personnes
+  #         schema:
+  #           type: integer
+  #           minimum: 1
+  #       - name: maxBudget
+  #         in: query
+  #         required: false
+  #         description: Budget maximum
+  #         schema:
+  #           type: number
+  #           minimum: 0
+  #     responses:
+  #       '200':
+  #         description: Menu généré avec succès
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: object
+  #               properties:
+  #                 status:
+  #                   type: string
+  #                   const: success
+  #                 data:
+  #                   $ref: '#/components/schemas/MenuDetail'
+  #       '400':
+  #         $ref: '#/components/responses/BadRequest'
+  #       '500':
+  #         $ref: '#/components/responses/InternalError'
 
   # ============= INGREDIENTS =============
   /v1/ingredients:
@@ -1165,8 +1271,6 @@ paths:
           schema:
             type: string
             format: uuid
-      security:
-        - ApiKeyAuth: []
       requestBody:
         required: true
         content:
