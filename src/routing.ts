@@ -15,7 +15,7 @@ import { SearchIngredientEndpoint } from "$modules/ingredient/endpoints/SearchIn
 export const routing: Routing = {
   v1: {
     recipes: new DependsOnMethod({
-      get: ListRecipeEndpoint,
+      get: ListRecipesEndpoint,
       post: CreateRecipeEndPoint,
       delete: DeleteRecipeEndPoint,
     }),
