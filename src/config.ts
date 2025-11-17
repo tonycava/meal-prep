@@ -4,11 +4,12 @@ import express from "express";
 import path from "path";
 
 export const config = createConfig({
-  http: { listen: 8090 },
-  cors: false,
+  http: { listen: 8090 }, // port, UNIX socket or Net::ListenOptions
+  cors: false, // decide whether to enable CORS
+  inputSources: {
+    patch: ["body", "query", "params"],
+  },
   beforeRouting: ({ app }) => {
-    app.use("/assets", express.static(path.join(process.cwd(), "assets")));
-
     app.use(
       "/docs",
       ui.serve,
