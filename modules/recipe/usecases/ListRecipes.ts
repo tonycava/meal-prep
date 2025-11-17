@@ -4,7 +4,7 @@ import { IRecipeFilters, ListRecipesOutput } from "../dto/recipeDto";
 import { tryCatch } from "../../../lib/errors/tryCatch";
 
 type Input = InputFactory<
-	{ limit: number; offset: number; filters?: IRecipeFilters },
+	{ limit: number; offset: number; filters?: IRecipeFilters, apiKey: string },
 	{ recipeRepository: IRecipeRepositoryList }
 >;
 
@@ -14,7 +14,7 @@ export const ListRecipesUseCase: UseCase<Input, Output> = (dependencies) => {
 	const { recipeRepository } = dependencies;
 	return {
 		async execute(data): Promise<Output> {
-			const [error, result] = await tryCatch(recipeRepository.list(data.limit, data.offset, data.filters || {}));
+			const [error, result] = await tryCatch(recipeRepository.list(data.limit, data.offset, data.filters || {}, data.apiKey));
 
 			if (error) return UseCaseResponseBuilder.error(500, error.userFriendlyMessage);
 
