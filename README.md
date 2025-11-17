@@ -34,19 +34,11 @@ npm run dev
 
 Pour peupler la base de données avec les informations nutritionnelles des ingrédients, suivez ces étapes :
 
-1. Téléchargez le fichier Excel depuis le site Ciqual : [CALNUT2020_2020_07_07.xlsx](https://ciqual.anses.fr/cms/sites/default/files/inline-files/CALNUT2020_2020_07_07.xlsx)
-
-2. Ouvrez le fichier XLSX dans Excel ou LibreOffice et enregistrez-le au format CSV (séparateur : point-virgule `;`).
-
-3. Renommez le fichier en `CALNUT.csv` et placez-le à la racine du projet.
-
-4. Lancez l'import des données :
+Lancez l'import des données :
 
    ```bash
    npm run import:csv
    ```
-
-   Cette commande insère automatiquement plus de 2000 ingrédients avec leurs valeurs nutritionnelles (protéines, lipides, glucides, calories, minéraux et vitamines) dans la base de données.
 
 ## Endpoints (v0.1 - Sprint 1)
 

@@ -22,7 +22,6 @@ export const ListIngredientEndpoint = defaultEndpointsFactory.build({
     if (search) {
       where.name = {
         contains: search,
-        mode: 'insensitive',
       };
     }
 

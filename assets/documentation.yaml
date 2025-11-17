@@ -1002,7 +1002,7 @@ paths:
       description: Ajoute un nouvel ingrédient à la base de données
       operationId: createIngredient
       security:
-        - ApiKeyAuth: [ ]
+        - ApiKeyAuth: []
       requestBody:
         required: true
         content:
@@ -1165,6 +1165,8 @@ paths:
           schema:
             type: string
             format: uuid
+      security:
+        - ApiKeyAuth: []
       requestBody:
         required: true
         content:
@@ -1235,7 +1237,7 @@ paths:
       description: Supprime un ingrédient existant
       operationId: deleteIngredient
       security:
-        - ApiKeyAuth: [ ]
+        - ApiKeyAuth: []
       parameters:
         - name: id
           in: path
