@@ -7,14 +7,14 @@ export const ListRecipeByIdEndpoint = defaultEndpointsFactory.build({
 	method: "get",
 	input: GetRecipeByIdInputSchema,
 	output: GetRecipeByIdOutputSchema,
-	handler: async ({ input, logger }) => {
+	handler: async ({ input, logger, options }) => {
 		const { id } = input;
 
 		logger.info(`Fetching recipes with ID: ${id}`);
 
 		const response = await ListRecipeByIdUseCase({
 			recipeRepository: RecipeRepository(),
-		}).execute({ id });
+		}).execute({ id, apiKey: options.apiKey });
 
 		if (!response.isSuccess) {
 			throw new Error(response.message);

@@ -29,7 +29,8 @@ export const ListRecipesInputSchema = z.object({
 export const GetRecipeByIdInputSchema = z.object({
 	id: z.uuid({
 		message: "Invalid recipe ID format",
-	})
+	}),
+	apiKey: z.string(),
 })
 
 export const RecipeDTOSchema = z.object({

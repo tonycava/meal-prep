@@ -9,11 +9,11 @@ export type IRecipeRepositorySave = {
 }
 
 export type IRecipeRepositoryList = {
-	list(limit: number, offset: number, filters: IRecipeFilters): Promise<ListRecipesOutput>;
+	list(limit: number, offset: number, filters: IRecipeFilters,  apiKey: string): Promise<ListRecipesOutput>;
 }
 
 export type IRecipeRepositoryFindById = {
-	findById(id: string): Promise<GetRecipeByIdOutput>;
+	findById(id: string,  apiKey: string): Promise<GetRecipeByIdOutput>;
 };
 
 export type IRecipeRepositoryDelete = {
