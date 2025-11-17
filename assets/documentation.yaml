@@ -27,6 +27,8 @@ paths:
       summary: Liste des recettes
       description: Récupère la liste des recettes avec filtres optionnels
       operationId: listRecipes
+      security:
+        - ApiKeyAuth: [ ]
       parameters:
         - name: category
           in: query
@@ -123,6 +125,8 @@ paths:
       summary: Ajouter une recette
       description: Crée une nouvelle recette
       operationId: createRecipe
+      security:
+        - ApiKeyAuth: [ ]
       requestBody:
         required: true
         content:
@@ -158,11 +162,11 @@ paths:
                   items:
                     type: object
                     required:
-                      - ingredientId
+                      - id
                       - quantity
                       - unit
                     properties:
-                      ingredientId:
+                      id:
                         type: string
                         format: uuid
                       quantity:
@@ -249,6 +253,8 @@ paths:
       summary: Détails d'une recette
       description: Récupère les détails complets d'une recette
       operationId: getRecipe
+      security:
+        - ApiKeyAuth: [ ]
       parameters:
         - name: id
           in: path
@@ -275,12 +281,14 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
 
-    put:
+    patch:
       tags:
         - Recettes
       summary: Modifier une recette
       description: Modifie une recette existante
       operationId: updateRecipe
+      security:
+        - ApiKeyAuth: [ ]
       parameters:
         - name: id
           in: path
@@ -316,7 +324,7 @@ paths:
                   items:
                     type: object
                     properties:
-                      ingredientId:
+                      id:
                         type: string
                         format: uuid
                       quantity:
@@ -372,6 +380,8 @@ paths:
       summary: Supprimer une recette
       description: Supprime une recette existante
       operationId: deleteRecipe
+      security:
+        - ApiKeyAuth: [ ]
       parameters:
         - name: id
           in: path
@@ -409,6 +419,8 @@ paths:
       summary: Informations nutritionnelles
       description: Récupère les informations nutritionnelles d'une recette
       operationId: getRecipeNutrition
+      security:
+        - ApiKeyAuth: [ ]
       parameters:
         - name: id
           in: path
@@ -443,6 +455,8 @@ paths:
       summary: Récupérer tous les menus de l'utilisateur
       description: Liste tous les menus avec pagination
       operationId: listMenus
+      security:
+        - ApiKeyAuth: [ ]
       parameters:
         - name: limit
           in: query
@@ -568,6 +582,8 @@ paths:
       summary: Récupérer les détails d'un menu spécifique
       description: Récupère tous les détails d'un menu incluant les recettes
       operationId: getMenu
+      security:
+        - ApiKeyAuth: [ ]
       parameters:
         - name: id
           in: path
@@ -600,6 +616,8 @@ paths:
       summary: Modifier un menu spécifique
       description: Modifie un menu existant
       operationId: updateMenu
+      security:
+        - ApiKeyAuth: [ ]
       parameters:
         - name: id
           in: path
@@ -664,6 +682,8 @@ paths:
       summary: Supprimer un menu spécifique
       description: Supprime un menu existant
       operationId: deleteMenu
+      security:
+        - ApiKeyAuth: [ ]
       parameters:
         - name: id
           in: path
@@ -701,6 +721,8 @@ paths:
       summary: Générer un menu pour la semaine
       description: Génère automatiquement un menu hebdomadaire selon les critères
       operationId: generateWeeklyMenu
+      security:
+        - ApiKeyAuth: [ ]
       parameters:
         - name: mealsPerDay
           in: query
@@ -763,6 +785,8 @@ paths:
       summary: Générer un menu pour la journée
       description: Génère automatiquement un menu journalier selon les critères
       operationId: generateDailyMenu
+      security:
+        - ApiKeyAuth: [ ]
       parameters:
         - name: numberOfMeals
           in: query
@@ -825,6 +849,8 @@ paths:
       summary: Générer un menu selon des critères spécifiques
       description: Génère un menu personnalisé selon des critères de régime alimentaire
       operationId: generateDietMenu
+      security:
+        - ApiKeyAuth: [ ]
       parameters:
         - name: diet
           in: query
@@ -1129,6 +1155,8 @@ paths:
       summary: Modifier un ingrédient
       description: Modifie un ingrédient existant
       operationId: updateIngredient
+      security:
+        - ApiKeyAuth: [ ]
       parameters:
         - name: id
           in: path

@@ -1,10 +1,10 @@
 export type Recipe = {
 	id: string;
 	title: string;
-	description: string;
+	description: string | null;
 	imageUrl: string | null;
-	prepTimeMin: number;
-	cookTimeMin: number;
+	prepTimeMin: number | null;
+	cookTimeMin: number | null;
 	servings: number;
 	isPublic: boolean;
 	createdAt: Date;

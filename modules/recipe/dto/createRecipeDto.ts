@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { RecipeCategory, DietType } from "../../../src/generated/prisma";
+import { DietType, RecipeCategory } from "@prisma/client";
 
 const ingredient = z.object({
   id: z.string(),
