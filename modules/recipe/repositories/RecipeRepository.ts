@@ -66,6 +66,7 @@ export const RecipeRepository = (): IRecipeRepository => {
 
         return { id: createdRecipe.id_recipe }
       } catch (error) {
+        console.log("error occurred while saving recipe", error);
         throw new AppError(
           "Internal Server Error",
           "An error occurred while saving recipe",

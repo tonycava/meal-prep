@@ -158,11 +158,11 @@ paths:
                   items:
                     type: object
                     required:
-                      - ingredientId
+                      - id
                       - quantity
                       - unit
                     properties:
-                      ingredientId:
+                      id:
                         type: string
                         format: uuid
                       quantity:
@@ -316,7 +316,7 @@ paths:
                   items:
                     type: object
                     properties:
-                      ingredientId:
+                      id:
                         type: string
                         format: uuid
                       quantity:
