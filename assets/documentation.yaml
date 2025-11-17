@@ -162,11 +162,11 @@ paths:
                   items:
                     type: object
                     required:
-                      - ingredientId
+                      - id
                       - quantity
                       - unit
                     properties:
-                      ingredientId:
+                      id:
                         type: string
                         format: uuid
                       quantity:
@@ -281,7 +281,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
 
-    put:
+    patch:
       tags:
         - Recettes
       summary: Modifier une recette
@@ -324,7 +324,7 @@ paths:
                   items:
                     type: object
                     properties:
-                      ingredientId:
+                      id:
                         type: string
                         format: uuid
                       quantity:
@@ -1274,7 +1274,25 @@ paths:
       description: Recherche un ingrédient par son nom
       operationId: searchIngredientByName
       parameters:
-        - name: name
+        - name: category
+          in: query
+          required: true
+          description: HEAD /v1/recipes Parameter
+          schema:
+            type: string
+        - name: diet
+          in: query
+          required: true
+          description: HEAD /v1/recipes Parameter
+          schema:
+            type: string
+        - name: ingredients
+          in: query
+          required: true
+          description: HEAD /v1/recipes Parameter
+          schema:
+            type: string
+        - name: search
           in: query
           required: true
           description: Nom de l'ingrédient à rechercher

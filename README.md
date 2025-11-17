@@ -23,8 +23,8 @@ Bon appétit !
 - Github
 
 ## Installation
-
 ```bash
+
 npm install
 
 npm run dev
