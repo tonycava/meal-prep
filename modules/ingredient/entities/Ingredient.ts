@@ -12,3 +12,8 @@ export type Ingredient = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+export type IngredientWithQuantityAndUnit = Ingredient & {
+  quantity: number;
+  unit: string;
+};

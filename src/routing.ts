@@ -11,6 +11,9 @@ import { CreateIngredientEndpoint } from "$modules/ingredient/endpoints/CreateIn
 import { DeleteIngredientEndpoint } from "$modules/ingredient/endpoints/DeleteIngredient";
 import { UpdateIngredientEndpoint } from "$modules/ingredient/endpoints/UpdateIngredient";
 import { GetIngredientByIdEndpoint } from "$modules/ingredient/endpoints/GetIngredientByIdEndpoint";
+import { SearchIngredientEndpoint } from "$modules/ingredient/endpoints/SearchIngredient";
+import { ListRecipesEndpoint } from "$modules/recipe/endpoints/ListRecipe.ts";
+import { GetNutritionEndPoint } from "$modules/recipe/endpoints/GetNutrition.ts";
 
 export const routing: Routing = {
       v1: {
