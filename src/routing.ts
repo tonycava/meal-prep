@@ -19,10 +19,15 @@ export const routing: Routing = {
       post: CreateRecipeEndPoint,
       delete: DeleteRecipeEndPoint,
     }),
-    menus: new DependsOnMethod({
-      get: ListMenusEndpoint,
-      post: CreateMenuEndpoint,
-    }),
+    menus: {
+      "/": new DependsOnMethod({
+        get: ListMenusEndpoint,
+        post: CreateMenuEndpoint,
+      }),
+      "/daily": new DependsOnMethod({
+
+      })
+    },
     ingredients: {
       "/": new DependsOnMethod({
         get: ListIngredientEndpoint,
