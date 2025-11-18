@@ -452,7 +452,7 @@ paths:
     get:
       tags:
         - Menus
-      summary: Récupérer tous les menus de l'utilisateur
+      summary: Récupérer tous les menus générés
       description: Liste tous les menus avec pagination
       operationId: listMenus
       security:
@@ -580,7 +580,7 @@ paths:
       tags:
         - Menus
       summary: Générer un menu personnalisé
-      description: Récupère un menu respectant une liste de demande de l'utilisateur
+      description: Récupère le ou les menus générés
       operationId: generateMenu
       security:
         - ApiKeyAuth: [ ]
