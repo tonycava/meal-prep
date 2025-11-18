@@ -11,36 +11,42 @@ import { UpdateIngredientEndpoint } from "$modules/ingredient/endpoints/UpdateIn
 import { GetIngredientByIdEndpoint } from "$modules/ingredient/endpoints/GetIngredientByIdEndpoint";
 import { SearchIngredientEndpoint } from "$modules/ingredient/endpoints/SearchIngredient";
 import { ListRecipesEndpoint } from "$modules/recipe/endpoints/ListRecipe.ts";
+import { GetNutritionEndPoint } from "$modules/recipe/endpoints/GetNutrition.ts";
 
 export const routing: Routing = {
-      v1: {
-            recipes: new DependsOnMethod({
-                  get: ListRecipesEndpoint,
-                  post: CreateRecipeEndPoint,
-                  delete: DeleteRecipeEndPoint,
-            }),
-            menus: new DependsOnMethod({
-                  get: ListMenusEndpoint,
-                  post: CreateMenuEndpoint,
-            }),
-            ingredients: {
-                  "/": new DependsOnMethod({
-                        get: ListIngredientEndpoint,
-                        post: CreateIngredientEndpoint,
-                  }),
-                  "/search": new DependsOnMethod({
-                        get: SearchIngredientEndpoint,
-                  }),
-                  "/:id": new DependsOnMethod({
-                        get: GetIngredientByIdEndpoint,
-                        put: UpdateIngredientEndpoint,
-                        delete: DeleteIngredientEndpoint,
-                  })
-            },
-      },
-      public: new ServeStatic(path.join(__dirname, "../assets"), {
-            dotfiles: "deny",
-            index: false,
-            redirect: false,
+  v1: {
+    recipes: {
+      "/": new DependsOnMethod({
+        get: ListRecipesEndpoint,
+        post: CreateRecipeEndPoint,
+        delete: DeleteRecipeEndPoint,
       }),
+      "/:id/nutrition": new DependsOnMethod({
+        get: GetNutritionEndPoint,
+      }),
+    },
+    menus: new DependsOnMethod({
+      get: ListMenusEndpoint,
+      post: CreateMenuEndpoint,
+    }),
+    ingredients: {
+      "/": new DependsOnMethod({
+        get: ListIngredientEndpoint,
+        post: CreateIngredientEndpoint,
+      }),
+      "/search": new DependsOnMethod({
+        get: SearchIngredientEndpoint,
+      }),
+      "/:id": new DependsOnMethod({
+        get: GetIngredientByIdEndpoint,
+        put: UpdateIngredientEndpoint,
+        delete: DeleteIngredientEndpoint,
+      })
+    },
+  },
+  public: new ServeStatic(path.join(__dirname, "../assets"), {
+    dotfiles: "deny",
+    index: false,
+    redirect: false,
+  }),
 };

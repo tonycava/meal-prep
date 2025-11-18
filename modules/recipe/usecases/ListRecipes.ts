@@ -1,7 +1,7 @@
-import { UseCase, InputFactory, UseCaseResponseBuilder, OutputFactory } from "../../../lib/common/usecase";
+import { UseCase, InputFactory, UseCaseResponseBuilder, OutputFactory } from "$lib/common/usecase.ts";
 import { IRecipeRepositoryList } from "../interfaces/IRecipeRepository";
 import { IRecipeFilters, ListRecipesOutput } from "../dto/recipeDto";
-import { tryCatch } from "../../../lib/errors/tryCatch";
+import { tryCatch } from "$lib/errors/tryCatch.ts";
 
 type Input = InputFactory<
 	{ limit: number; offset: number; filters?: IRecipeFilters },
