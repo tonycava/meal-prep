@@ -5,20 +5,25 @@ import { prisma } from "$lib/db";
 
 export const MenuRepository = (): IMenuRepository => {
 	return {
-		async list(limit: number, offset: number): Promise<ListMenusOutput> {
+		async list(limit: number, offset: number, apiKey: string, role: string): Promise<ListMenusOutput> {
+			const where = role.toLowerCase() === "user" ? { apiKey: { key: apiKey } } : {};
 
 			const [menus, total] = await Promise.all([
 				prisma.menu.findMany({
+					where,
 					skip: offset,
 					take: limit,
 					orderBy: { createdAt: 'desc' },
 					include: {
-						_count: {
-							select: { meals: true }
+						menuMeals: {
+							select: {
+								mealId: true,
+								dayNumber: true
+							}
 						}
 					}
 				}),
-				prisma.menu.count()
+				prisma.menu.count({ where })
 			]);
 
 			return {
@@ -26,9 +31,10 @@ export const MenuRepository = (): IMenuRepository => {
 					id: menu.id,
 					name: menu.name,
 					description: menu.description,
+					duration: menu.duration,
 					createdAt: menu.createdAt.toISOString(),
 					updatedAt: menu.updatedAt,
-					itemCount: menu._count.meals
+					menuMeals: menu.menuMeals
 				})),
 				meta: {
 					total: total,

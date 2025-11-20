@@ -130,7 +130,41 @@ paths:
                         type: array
                         items:
                           $ref: "#/components/schemas/Menu"
-                      total: { type: integer }
+                      meta:
+                        type: object
+                        properties:
+                          total: { type: integer }
+                          offset: { type: integer }
+                          limit: { type: integer }
+        "401":
+          description: API key manquante ou invalide
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, const: error }
+                  message: { type: string, example: "Invalid API key" }
+        "403":
+          description: API key inactive
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, const: error }
+                  message: { type: string, example: "API key is inactive" }
+        "422":
+          description: Paramètres de requête invalides
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, const: error }
+                  message: { type: string, example: "Invalid limit parameter" }
+        "500":
+          $ref: "#/components/responses/InternalError"
 
     post:
       tags:
@@ -1121,9 +1155,17 @@ components:
         id: { type: string, format: uuid }
         name: { type: string }
         description: { type: string, nullable: true }
-        duration: { type: integer }
+        duration: { type: integer, nullable: true }
         createdAt: { type: string, format: date-time }
         updatedAt: { type: string, format: date-time }
+        menuMeals:
+          type: array
+          description: Liste simplifiée des repas dans ce menu
+          items:
+            type: object
+            properties:
+              mealId: { type: string, format: uuid }
+              dayNumber: { type: integer }
 
     MenuDetail:
       allOf:
