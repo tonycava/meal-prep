@@ -4,19 +4,24 @@ import { generateObject } from "ai";
 import { openrouter } from "$lib/openrouter.ts";
 import { nutritionalInfoSchema } from "$modules/recipe/dto/nutritionalInfoSchemaDto.ts";
 
-const generateNutritionFacts = async (ingredients: IngredientWithQuantityAndUnit[]): Promise<NutritionalInfo | null> => {
-  const lines = ingredients.map(ing =>
-    `${ing.name},${ing.category},${ing.proteins},${ing.fats},${ing.carbs},${ing.sugars},${ing.fiber},${ing.salt},${ing.calories}`)
+const generateNutritionFacts = async (
+  ingredients: IngredientWithQuantityAndUnit[],
+): Promise<NutritionalInfo | null> => {
+  const lines = ingredients
+    .map(
+      (ing) =>
+        `${ing.name},${ing.category},${ing.proteins},${ing.fats},${ing.carbs},${ing.sugars},${ing.fiber},${ing.salt},${ing.calories}`,
+    )
     .join("\n");
 
-  const ingredientList = ingredients.map(ing => ({
+  const ingredientList = ingredients.map((ing) => ({
     ingredient: ing.name,
     quantity: ing.quantity,
     unit: ing.unit,
   }));
 
   const response = await generateObject({
-    model: openrouter('google/gemini-2.0-flash-001'),
+    model: openrouter("google/gemini-2.0-flash-001"),
     prompt: `
     You are a nutrition extraction and matching expert.
 
@@ -93,6 +98,6 @@ You must process them and return ONLY the final JSON array.
   });
 
   return response.object;
-}
+};
 
 export default { generateNutritionFacts };
