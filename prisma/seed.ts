@@ -1,381 +1,236 @@
-import { PrismaClient } from '../src/generated/prisma';
+import { PrismaClient, IngredientCategory, RecipeCategory, DietType, MealType, UnitType, MineralType, VitaminType } from '../src/generated/prisma';
+import fs from 'node:fs';
+import path from 'node:path';
+import readline from 'node:readline';
 
 const prisma = new PrismaClient();
 
-async function main() {
-	console.log('🌱 Début du seeding...');
+function getCategory(foodLabel: string): IngredientCategory {
+	const label = foodLabel.toUpperCase();
 
-	// 1. Créer des API Keys
-	const apiKey1 = await prisma.apiKey.create({
+	if (label.includes("BOEUF") || label.includes("VEAU") || label.includes("PORC") || label.includes("POULET") || label.includes("DINDE") || label.includes("JAMBON") || label.includes("SAUCISSE") || label.includes("VIANDE")) return IngredientCategory.MEAT;
+	if (label.includes("SAUMON") || label.includes("THON") || label.includes("CABILLAUD") || label.includes("CREVETTE") || label.includes("POISSON") || label.includes("MOULE")) return IngredientCategory.FISH;
+	if (label.includes("POMME") || label.includes("BANANE") || label.includes("ORANGE") || label.includes("FRAISE") || label.includes("FRUIT") || label.includes("RAISIN")) return IngredientCategory.FRUIT;
+	if (label.includes("CAROTTE") || label.includes("TOMATE") || label.includes("SALADE") || label.includes("CHOU") || label.includes("HARICOT") || label.includes("EPINARD") || label.includes("LLEGUME")) return IngredientCategory.VEGETABLE;
+	if (label.includes("LAIT") || label.includes("YAOURT") || label.includes("FROMAGE") || label.includes("CREME")) return IngredientCategory.DAIRY;
+	if (label.includes("RIZ") || label.includes("PATES") || label.includes("PAIN") || label.includes("FARINE") || label.includes("BLE") || label.includes("QUINOA") || label.includes("CEREALE")) return IngredientCategory.GRAIN;
+	if (label.includes("NOIX") || label.includes("AMANDE") || label.includes("NOISETTE") || label.includes("ARACHIDE")) return IngredientCategory.NUT;
+	if (label.includes("HUILE") || label.includes("BEURRE") || label.includes("MARGARINE")) return IngredientCategory.OTHER;
+	if (label.includes("SEL") || label.includes("POIVRE") || label.includes("EPICE") || label.includes("SAUCE")) return IngredientCategory.SPICE;
+
+	return IngredientCategory.OTHER;
+}
+
+async function main() {
+	console.log('🌱 Début du seeding global...');
+
+	await prisma.menuMeal.deleteMany();
+	await prisma.recipeMeal.deleteMany();
+	await prisma.menu.deleteMany();
+	await prisma.meal.deleteMany();
+	await prisma.recipeIngredient.deleteMany();
+	await prisma.recipe.deleteMany();
+	await prisma.ingredientMineral.deleteMany();
+	await prisma.ingredientVitamin.deleteMany();
+	await prisma.ingredient.deleteMany();
+	await prisma.apiKey.deleteMany();
+
+	console.log('🧹 Base de données nettoyée.');
+
+	const adminKey = await prisma.apiKey.create({
 		data: {
-			key: 'test-api-key-123',
-			name: 'API Key de test',
+			key: '550e8400-e29b-41d4-a716-446655440000',
+			name: 'Administrateur',
+			role: 'admin',
 			isActive: true
 		}
 	});
 
-	console.log('✅ API Key créée');
-
-	// 2. Créer des ingrédients
-	const flour = await prisma.ingredient.create({
+	const userKey = await prisma.apiKey.create({
 		data: {
-			name: 'Farine de blé',
-			category: 'GRAIN',
-			proteins: 10.3,
-			fats: 1.2,
-			carbs: 72.5,
-			sugars: 0.3,
-			fiber: 2.7,
-			salt: 0.01,
-			calories: 364
+			key: 'd07c22dd-1b98-4741-96f3-23621895672e',
+			name: 'Utilisateur Demo',
+			role: 'user',
+			isActive: true
 		}
 	});
 
-	const sugar = await prisma.ingredient.create({
-		data: {
-			name: 'Sucre blanc',
-			category: 'OTHER',
-			proteins: 0,
-			fats: 0,
-			carbs: 99.8,
-			sugars: 99.8,
-			fiber: 0,
-			salt: 0,
-			calories: 387
-		}
-	});
+	console.log('🔑 API Keys créées :');
+	console.log('   👉 Admin Key : 550e8400-e29b-41d4-a716-446655440000');
+	console.log('   👉 User Key  : d07c22dd-1b98-4741-96f3-23621895672e');
 
-	const butter = await prisma.ingredient.create({
-		data: {
-			name: 'Beurre doux',
-			category: 'DAIRY',
-			proteins: 0.9,
-			fats: 82,
-			carbs: 0.1,
-			sugars: 0.1,
-			fiber: 0,
-			salt: 0.01,
-			calories: 717
-		}
-	});
+	console.log('📥 Importation des ingrédients depuis CALNUT.csv...');
 
-	const eggs = await prisma.ingredient.create({
-		data: {
-			name: 'Œufs',
-			category: 'DAIRY',
-			proteins: 12.6,
-			fats: 10.6,
-			carbs: 0.7,
-			sugars: 0.4,
-			fiber: 0,
-			salt: 0.14,
-			calories: 143
-		}
-	});
+	const csvFilePath = path.join(__dirname, '../CALNUT.csv');
 
-	const apple = await prisma.ingredient.create({
-		data: {
-			name: 'Pommes',
-			category: 'FRUIT',
-			proteins: 0.3,
-			fats: 0.2,
-			carbs: 14,
-			sugars: 10.4,
-			fiber: 2.4,
-			salt: 0.001,
-			calories: 52
-		}
-	});
+	if (!fs.existsSync(csvFilePath)) {
+		console.error("❌ ERREUR: Le fichier CALNUT.csv est introuvable dans le dossier racine !");
+		process.exit(1);
+	}
 
-	const chicken = await prisma.ingredient.create({
-		data: {
-			name: 'Blanc de poulet',
-			category: 'MEAT',
-			proteins: 31,
-			fats: 3.6,
-			carbs: 0,
-			sugars: 0,
-			fiber: 0,
-			salt: 0.07,
-			calories: 165
-		}
-	});
+	const fileStream = fs.createReadStream(csvFilePath);
+	const rl = readline.createInterface({ input: fileStream, crlfDelay: Infinity });
 
-	const tomato = await prisma.ingredient.create({
-		data: {
-			name: 'Tomates',
-			category: 'VEGETABLE',
-			proteins: 0.9,
-			fats: 0.2,
-			carbs: 3.9,
-			sugars: 2.6,
-			fiber: 1.2,
-			salt: 0.005,
-			calories: 18
-		}
-	});
+	let isFirstLine = true;
+	let count = 0;
 
-	const rice = await prisma.ingredient.create({
-		data: {
-			name: 'Riz basmati',
-			category: 'GRAIN',
-			proteins: 7.1,
-			fats: 0.7,
-			carbs: 78,
-			sugars: 0.1,
-			fiber: 1.3,
-			salt: 0.01,
-			calories: 349
-		}
-	});
+	for await (const line of rl) {
+		if (isFirstLine) { isFirstLine = false; continue; }
 
-	console.log('✅ 8 ingrédients créés');
+		const row = line.split(';');
+		if (row.length < 10) continue;
 
-	// 3. Ajouter des minéraux et vitamines aux ingrédients
-	await prisma.ingredientMineral.createMany({
-		data: [
-			{ ingredientId: flour.id, mineralType: 'CALCIUM', value: 15 },
-			{ ingredientId: flour.id, mineralType: 'IRON', value: 1.2 },
-			{ ingredientId: eggs.id, mineralType: 'CALCIUM', value: 56 },
-			{ ingredientId: eggs.id, mineralType: 'IRON', value: 1.75 },
-			{ ingredientId: apple.id, mineralType: 'POTASSIUM', value: 107 }
-		]
-	});
+		const foodLabel = row[1];
+		const parseVal = (val: string) => parseFloat(val?.replace(',', '.') || '0');
 
-	await prisma.ingredientVitamin.createMany({
-		data: [
-			{ ingredientId: eggs.id, vitaminType: 'VITAMIN_A', value: 160 },
-			{ ingredientId: eggs.id, vitaminType: 'VITAMIN_D', value: 2 },
-			{ ingredientId: apple.id, vitaminType: 'VITAMIN_C', value: 4.6 },
-			{ ingredientId: tomato.id, vitaminType: 'VITAMIN_C', value: 13.7 },
-			{ ingredientId: tomato.id, vitaminType: 'VITAMIN_A', value: 42 }
-		]
-	});
+		const ingredientData = {
+			name: foodLabel.substring(0, 100),
+			category: getCategory(foodLabel),
+			calories: parseVal(row[3]),
+			proteins: parseVal(row[17]),
+			carbs: parseVal(row[18]),
+			sugars: parseVal(row[19]),
+			fiber: parseVal(row[28]),
+			fats: parseVal(row[29]),
+			salt: parseVal(row[5]),
+		};
 
-	console.log('✅ Minéraux et vitamines ajoutés');
-
-	// 4. Créer des recettes
-	const tartePommes = await prisma.recipe.create({
-		data: {
-			title: 'Tarte aux pommes classique',
-			description: 'Une délicieuse tarte aux pommes maison avec une pâte brisée croustillante',
-			category: 'DESSERT',
-			diet: 'VEGETARIAN',
-			prepTimeMin: 30,
-			cookTimeMin: 45,
-			servings: 8,
-			isPublic: true,
-			imageUrl: 'https://images.unsplash.com/photo-1535920527002-b35e96722eb9',
-			apiKeyId: apiKey1.id,
-			steps: {
-				create: [
-					{
-						order: 1,
-						instruction: 'Préparer la pâte brisée en mélangeant la farine, le beurre et un peu d\'eau froide',
-						durationMin: 10
+		try {
+			await prisma.ingredient.create({
+				data: {
+					...ingredientData,
+					minerals: {
+						create: [
+							{ mineralType: MineralType.CALCIUM, value: parseVal(row[10]) },
+							{ mineralType: MineralType.MAGNESIUM, value: parseVal(row[8]) },
+							{ mineralType: MineralType.IRON, value: parseVal(row[12]) },
+							{ mineralType: MineralType.POTASSIUM, value: parseVal(row[9]) },
+							{ mineralType: MineralType.SODIUM, value: parseVal(row[6]) },
+							{ mineralType: MineralType.ZINC, value: parseVal(row[14]) },
+						].filter(m => m.value > 0)
 					},
-					{
-						order: 2,
-						instruction: 'Laisser reposer la pâte au frais pendant 30 minutes',
-						durationMin: 30
-					},
-					{
-						order: 3,
-						instruction: 'Éplucher et couper les pommes en lamelles',
-						durationMin: 10
-					},
-					{
-						order: 4,
-						instruction: 'Étaler la pâte dans un moule et disposer les pommes',
-						durationMin: 5
-					},
-					{
-						order: 5,
-						instruction: 'Saupoudrer de sucre et enfourner à 180°C pendant 45 minutes',
-						durationMin: 45
+					vitamins: {
+						create: [
+							{ vitaminType: VitaminType.VITAMIN_C, value: parseVal(row[52]) },
+							{ vitaminType: VitaminType.VITAMIN_D, value: parseVal(row[49]) },
+							{ vitaminType: VitaminType.VITAMIN_E, value: parseVal(row[50]) },
+							{ vitaminType: VitaminType.VITAMIN_K, value: parseVal(row[51]) },
+							{ vitaminType: VitaminType.VITAMIN_B1, value: parseVal(row[53]) },
+							{ vitaminType: VitaminType.VITAMIN_B12, value: parseVal(row[58]) },
+						].filter(v => v.value > 0)
 					}
-				]
-			},
-			ingredients: {
-				create: [
-					{
-						ingredientId: flour.id,
-						quantity: 250,
-						unit: 'GRAM',
-						notes: 'Farine type 45 ou 55'
-					},
-					{
-						ingredientId: butter.id,
-						quantity: 125,
-						unit: 'GRAM',
-						notes: 'Beurre froid coupé en dés'
-					},
-					{
-						ingredientId: sugar.id,
-						quantity: 100,
-						unit: 'GRAM'
-					},
-					{
-						ingredientId: apple.id,
-						quantity: 800,
-						unit: 'GRAM',
-						notes: 'Environ 5-6 pommes'
-					},
-					{
-						ingredientId: eggs.id,
-						quantity: 1,
-						unit: 'PIECE',
-						notes: 'Pour dorer la pâte'
-					}
-				]
+				}
+			});
+			count++;
+			if (count % 500 === 0) process.stdout.write('.');
+		} catch (e) { }
+	}
+	console.log(`\n✅ ${count} Ingrédients importés.`);
+
+	const findIng = async (term: string) => prisma.ingredient.findFirst({ where: { name: { contains: term } } });
+
+	const poulet = await findIng("Poulet") || await findIng("Dinde");
+	const riz = await findIng("Riz") || await findIng("Pâtes");
+	const tomate = await findIng("Tomate");
+	const salade = await findIng("Laitue") || await findIng("Epinard");
+	const huile = await findIng("Huile") || await findIng("Beurre");
+
+	let recipePouletId = "";
+
+	if (poulet && riz) {
+
+		const ingredientsList = [
+			{ ingredientId: poulet.id, quantity: 200, unit: UnitType.GRAM },
+			{ ingredientId: riz.id, quantity: 150, unit: UnitType.GRAM }
+		];
+
+		if (huile) {
+			ingredientsList.push({ ingredientId: huile.id, quantity: 1, unit: UnitType.GRAM });
+		}
+
+		const recipe = await prisma.recipe.create({
+			data: {
+				title: "Poulet Riz Simple",
+				description: "Un classique pour les sportifs.",
+				instructions: "Cuire le riz dans l'eau bouillante.Poêler le poulet.",
+				imageUrl: "https://placehold.co/600x400?text=Poulet+Riz",
+				prepTimeMin: 10,
+				cookTimeMin: 20,
+				servings: 2,
+				isPublic: true,
+				category: RecipeCategory.MAIN_COURSE,
+				diet: DietType.GLUTEN_FREE,
+				apiKeyId: adminKey.id,
+				ingredients: {
+					create: ingredientsList
+				}
 			}
-		}
-	});
+		});
+		recipePouletId = recipe.id;
+		console.log("👨‍🍳 Recette créée : Poulet Riz");
+	}
 
-	const pouletRiz = await prisma.recipe.create({
-		data: {
-			title: 'Poulet grillé avec riz basmati',
-			description: 'Blanc de poulet mariné et grillé, servi avec du riz parfumé',
-			category: 'MAIN_COURSE',
-			diet: 'GLUTEN_FREE',
-			prepTimeMin: 15,
-			cookTimeMin: 25,
-			servings: 4,
-			isPublic: true,
-			imageUrl: 'https://images.unsplash.com/photo-1598103442097-8b74394b95c6',
-			apiKeyId: apiKey1.id,
-			steps: {
-				create: [
-					{
-						order: 1,
-						instruction: 'Faire mariner le poulet avec des épices pendant 30 minutes',
-						durationMin: 30
-					},
-					{
-						order: 2,
-						instruction: 'Cuire le riz basmati selon les instructions du paquet',
-						durationMin: 15
-					},
-					{
-						order: 3,
-						instruction: 'Griller le poulet à feu moyen pendant 6-7 minutes de chaque côté',
-						durationMin: 15
-					},
-					{
-						order: 4,
-						instruction: 'Servir le poulet avec le riz et des légumes',
-						durationMin: 2
-					}
-				]
-			},
-			ingredients: {
-				create: [
-					{
-						ingredientId: chicken.id,
-						quantity: 600,
-						unit: 'GRAM',
-						notes: '4 blancs de poulet'
-					},
-					{
-						ingredientId: rice.id,
-						quantity: 300,
-						unit: 'GRAM',
-						notes: 'Riz basmati sec'
-					}
-				]
+	let recipeSaladeId = "";
+	if (salade && tomate) {
+		const recipe = await prisma.recipe.create({
+			data: {
+				title: "Salade Légère",
+				description: "Entrée fraîche.",
+				instructions: "Tout mélanger.",
+				prepTimeMin: 5,
+				cookTimeMin: 0,
+				servings: 1,
+				isPublic: true,
+				category: RecipeCategory.STARTER,
+				diet: DietType.VEGETARIAN,
+				apiKeyId: userKey.id,
+				ingredients: {
+					create: [
+						{ ingredientId: salade.id, quantity: 100, unit: UnitType.GRAM },
+						{ ingredientId: tomate.id, quantity: 1, unit: UnitType.PIECE }
+					]
+				},
 			}
-		}
-	});
+		});
+		recipeSaladeId = recipe.id;
+		console.log("👨‍🍳 Recette créée : Salade");
+	}
 
-	const saladeCesar = await prisma.recipe.create({
-		data: {
-			title: 'Salade César au poulet',
-			description: 'La célèbre salade César avec poulet grillé, croûtons et parmesan',
-			category: 'APPETIZER',
-			prepTimeMin: 20,
-			cookTimeMin: 10,
-			servings: 4,
-			isPublic: true,
-			imageUrl: 'https://images.unsplash.com/photo-1546793665-c74683f339c1',
-			apiKeyId: apiKey1.id,
-			steps: {
-				create: [
-					{
-						order: 1,
-						instruction: 'Griller les blancs de poulet et les couper en lamelles',
-						durationMin: 10
-					},
-					{
-						order: 2,
-						instruction: 'Préparer la sauce césar',
-						durationMin: 5
-					},
-					{
-						order: 3,
-						instruction: 'Mélanger la salade avec la sauce, ajouter le poulet et les croûtons',
-						durationMin: 5
-					}
-				]
-			},
-			ingredients: {
-				create: [
-					{
-						ingredientId: chicken.id,
-						quantity: 400,
-						unit: 'GRAM'
-					}
-				]
+	if (recipePouletId) {
+		const meal = await prisma.meal.create({
+			data: {
+				mealType: MealType.LUNCH,
+				apiKeyId: userKey.id,
+				recipeMeals: {
+					create: [
+						{ recipeId: recipePouletId, type: "Plat Principal" }
+					]
+				}
 			}
-		}
-	});
+		});
+		console.log("🍽️  Repas créé (Déjeuner)");
 
-	console.log('✅ 3 recettes créées avec leurs étapes et ingrédients');
-
-	// 5. Créer des menus
-	const menuSemaine = await prisma.menu.create({
-		data: {
-			name: 'Menu de la semaine',
-			description: 'Menu équilibré pour 7 jours',
-			apiKeyId: apiKey1.id,
-			meals: {
-				create: [
-					{
-						recipeId: saladeCesar.id,
-						mealType: 'LUNCH',
-						dayNumber: 1,
-						order: 1
-					},
-					{
-						recipeId: pouletRiz.id,
-						mealType: 'DINNER',
-						dayNumber: 1,
-						order: 1
-					},
-					{
-						recipeId: tartePommes.id,
-						mealType: 'SNACK',
-						dayNumber: 2,
-						order: 1
-					},
-					{
-						recipeId: pouletRiz.id,
-						mealType: 'LUNCH',
-						dayNumber: 3,
-						order: 1
-					}
-				]
+		await prisma.menu.create({
+			data: {
+				name: "Menu Semaine 1",
+				description: "Objectif Prise de masse",
+				duration: 7,
+				apiKeyId: userKey.id,
+				menuMeals: {
+					create: [
+						{ mealId: meal.id, dayNumber: 1 }
+					]
+				}
 			}
-		}
-	});
-
-	console.log('✅ Menu créé avec 4 repas');
-
-	console.log('\n🎉 Seeding terminé avec succès !');
+		});
+		console.log("📅 Menu créé");
+	}
+	console.log('✅ Seeding terminé avec succès !');
 }
 
 main()
 	.catch((e) => {
-		console.error('❌ Erreur lors du seeding :', e);
+		console.error(e);
 		process.exit(1);
 	})
 	.finally(async () => {
