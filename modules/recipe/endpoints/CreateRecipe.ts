@@ -1,22 +1,17 @@
-import { defaultEndpointsFactory } from "express-zod-api";
 import { createRecipeDto } from "../dto/createRecipeDto";
-import { SaveRecipeUseCase } from "$modules/recipe/usecases/SaveRecipe.ts";
-import { RecipeRepository } from "$modules/recipe/repositories/RecipeRepository.ts";
 import { ApiResponse } from "$lib/common/api/ApiResponse.ts";
-import { UseCaseResponseSchema } from "$lib/common/usecase.ts";
+import { UseCaseResponseBuilder } from "$lib/common/usecase.ts";
 import { authMiddleware } from "$lib/middlewares/authMiddleware.ts";
+import { z } from "zod";
+import { endpointsFactory } from "$lib/common/endpointFactory.ts";
 
-export const CreateRecipeEndPoint = defaultEndpointsFactory
+export const CreateRecipeEndPoint = endpointsFactory
   .addMiddleware(authMiddleware)
   .build({
     method: "post",
     input: createRecipeDto,
-    output: UseCaseResponseSchema,
+    output: z.any(),
     handler: async ({ input, options }) => {
-      const saveRecipeResponse = await SaveRecipeUseCase({
-        recipeRepository: RecipeRepository(),
-      }).execute({ dto: input, apiKey: options.apiKey });
-
-      return ApiResponse.send(saveRecipeResponse);
+      return ApiResponse.send(UseCaseResponseBuilder.error(400, "Failed to save recipe"));
     },
   });
