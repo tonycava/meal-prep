@@ -19,8 +19,86 @@ tags:
     description: Gestion des recettes
   - name: Ingrédients
     description: Gestion des ingrédients
+  - name: API Keys
+    description: Gestion des clés API
 
 paths:
+  /v1/api-keys/register:
+    post:
+      tags:
+        - API Keys
+      summary: Générer une nouvelle clé API
+      description: Endpoint public pour obtenir une clé API. Aucune authentification requise - c'est le point d'entrée pour les développeurs.
+      operationId: registerApiKey
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                  maxLength: 100
+                  description: Nom descriptif pour identifier cette clé (ex "Mon App Mobile")
+                  example: "Mon App Mobile"
+                email:
+                  type: string
+                  format: email
+                  description: Email de contact (optionnel)
+                  example: "dev@example.com"
+      responses:
+        "201":
+          description: Clé API créée avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    example: 201
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: Identifiant unique de la clé
+                      key:
+                        type: string
+                        description: "La clé API (format: sk_test_xxx ou sk_live_xxx). IMPORTANT: Stockez-la en sécurité, elle ne sera plus visible après cette réponse."
+                        example: "sk_test_8f7e6d5c4b3a2910a1b2c3d4e5f67890abcdef123456789012345678"
+                      name:
+                        type: string
+                        example: "Mon App Mobile"
+                      role:
+                        type: string
+                        example: "user"
+                      isActive:
+                        type: boolean
+                        example: true
+                      createdAt:
+                        type: string
+                        format: date-time
+        "422":
+          description: Validation échouée
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: error
+                  message:
+                    type: string
+                    example: "Name is required"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
   /v1/menus:
     get:
       tags:
