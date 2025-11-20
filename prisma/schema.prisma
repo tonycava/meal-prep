@@ -12,27 +12,21 @@ datasource db {
 }
 
 enum IngredientCategory {
-  VEGETABLE
-  FRUIT
   MEAT
   FISH
-  DAIRY
+  FRUIT
+  VEGETABLE
   GRAIN
-  LEGUME
   NUT
+  DAIRY
   SPICE
-  OIL
   OTHER
 }
 
 enum RecipeCategory {
-  APPETIZER
+  STARTER
   MAIN_COURSE
-  SIDE_DISH
   DESSERT
-  SNACK
-  BEVERAGE
-  BREAKFAST
   OTHER
 }
 
@@ -52,6 +46,7 @@ enum MealType {
   LUNCH
   DINNER
   SNACK
+  OTHER
 }
 
 enum MineralType {
@@ -97,24 +92,62 @@ model ApiKey {
   id        String    @id @default(uuid())
   key       String    @unique
   name      String?
+  role      String    @default("user")
   isActive  Boolean   @default(true)
   createdAt DateTime  @default(now())
   expiresAt DateTime?
 
   menus   Menu[]
   recipes Recipe[]
+  meals   Meal[]
 }
 
 model Menu {
   id          String   @id @default(uuid())
   name        String
   description String?
-  apiKeyId    String?
+  duration    Int?
+  apiKeyId    String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  apiKey ApiKey? @relation(fields: [apiKeyId], references: [id], onDelete: SetNull)
-  meals  Meal[]
+  apiKey ApiKey @relation(fields: [apiKeyId], references: [id], onDelete: Cascade)
+
+  menuMeals MenuMeal[]
+}
+
+model MenuMeal {
+  id        String @id @default(uuid())
+  menuId    String
+  mealId    String
+  dayNumber Int
+
+  menu Menu @relation(fields: [menuId], references: [id], onDelete: Cascade)
+  meal Meal @relation(fields: [mealId], references: [id], onDelete: Cascade)
+
+  @@unique([menuId, mealId, dayNumber])
+}
+
+model Meal {
+  id       String   @id @default(uuid())
+  mealType MealType
+  apiKeyId String
+  apiKey   ApiKey   @relation(fields: [apiKeyId], references: [id], onDelete: Cascade)
+
+  menuMeals   MenuMeal[]
+  recipeMeals RecipeMeal[]
+}
+
+model RecipeMeal {
+  id       String @id @default(uuid())
+  recipeId String
+  mealId   String
+  type     String
+
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  meal   Meal   @relation(fields: [mealId], references: [id], onDelete: Cascade)
+
+  @@unique([recipeId, mealId])
 }
 
 model Recipe {
@@ -128,14 +161,15 @@ model Recipe {
   isPublic    Boolean         @default(false)
   category    RecipeCategory?
   diet        DietType?
-  apiKeyId    String?
+  apiKeyId    String
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
 
-  apiKey      ApiKey?            @relation(fields: [apiKeyId], references: [id], onDelete: SetNull)
+  apiKey ApiKey @relation(fields: [apiKeyId], references: [id], onDelete: Cascade)
+
   steps       RecipeStep[]
   ingredients RecipeIngredient[]
-  meals       Meal[]
+  recipeMeals RecipeMeal[]
 }
 
 model Ingredient {
@@ -143,14 +177,13 @@ model Ingredient {
   name     String              @unique
   category IngredientCategory?
 
-  proteins Float @default(0)
-  fats     Float @default(0)
-  carbs    Float @default(0)
-  sugars   Float @default(0)
-  fiber    Float @default(0)
-  salt     Float @default(0)
-  calories Float @default(0)
-
+  proteins  Float    @default(0)
+  fats      Float    @default(0)
+  carbs     Float    @default(0)
+  sugars    Float    @default(0)
+  fiber     Float    @default(0)
+  salt      Float    @default(0)
+  calories  Float    @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -179,20 +212,6 @@ model IngredientVitamin {
   ingredient Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
 
   @@unique([ingredientId, vitaminType])
-}
-
-model Meal {
-  id        String   @id @default(uuid())
-  menuId    String
-  recipeId  String
-  mealType  MealType
-  order     Int
-  dayNumber Int      @default(1)
-
-  menu   Menu   @relation(fields: [menuId], references: [id], onDelete: Cascade)
-  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
-
-  @@unique([menuId, mealType, dayNumber, order])
 }
 
 model RecipeStep {
