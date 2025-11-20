@@ -1,8 +1,14 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const ListMenusInputSchema = z.object({
-  limit: z.string().optional().transform((val) => val ? parseInt(val, 10) : 10),
-  offset: z.string().optional().transform((val) => val ? parseInt(val, 10) : 0),
+  limit: z
+    .string()
+    .optional()
+    .transform((val) => (val ? parseInt(val, 10) : 10)),
+  offset: z
+    .string()
+    .optional()
+    .transform((val) => (val ? parseInt(val, 10) : 0)),
 });
 
 export const MenuDTOSchema = z.object({

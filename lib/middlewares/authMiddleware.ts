@@ -11,7 +11,7 @@ export const authMiddleware = new Middleware({
 
     // Vérifier que l'API key existe et est active
     const existingKey = await prisma.apiKey.findUnique({
-      where: { key: apiKey }
+      where: { key: apiKey },
     });
 
     if (!existingKey) {
@@ -25,3 +25,5 @@ export const authMiddleware = new Middleware({
     return { apiKey, role: existingKey.role };
   },
 });
+
+export type Options = Awaited<ReturnType<(typeof authMiddleware)["execute"]>>;

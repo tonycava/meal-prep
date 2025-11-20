@@ -1,7 +1,5 @@
 import { createConfig } from "express-zod-api";
 import ui from "swagger-ui-express";
-import express from "express";
-import path from "path";
 
 export const config = createConfig({
   http: { listen: 8090 }, // port, UNIX socket or Net::ListenOptions

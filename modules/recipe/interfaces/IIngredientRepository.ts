@@ -4,5 +4,4 @@ export interface IIngredientRepositoryGetAllOfRecipe {
   getAllOfRecipe(recipeId: string): Promise<IngredientWithQuantityAndUnit[]>;
 }
 
-export type IIngredientRepository =
-  IIngredientRepositoryGetAllOfRecipe;
+export type IIngredientRepository = IIngredientRepositoryGetAllOfRecipe;

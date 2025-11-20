@@ -106,7 +106,7 @@ paths:
       summary: Récupérer les menus
       operationId: listMenus
       security:
-        - ApiKeyAuth: [ ]
+        - ApiKeyAuth: []
       parameters:
         - name: limit
           in: query
@@ -172,7 +172,7 @@ paths:
       summary: Sauvegarder/Créer un menu
       operationId: createMenu
       security:
-        - ApiKeyAuth: [ ]
+        - ApiKeyAuth: []
       requestBody:
         required: true
         content:
@@ -208,7 +208,7 @@ paths:
       description: Génère un menu (plusieurs repas sur plusieurs jours) avec critères nutritionnels Min/Max
       operationId: generateMenu
       security:
-        - ApiKeyAuth: [ ]
+        - ApiKeyAuth: []
       parameters:
         - name: duration
           description: Nombre de jours sur lesquels s'étale le menu
@@ -276,7 +276,7 @@ paths:
       summary: Détails d'un menu
       operationId: getMenu
       security:
-        - ApiKeyAuth: [ ]
+        - ApiKeyAuth: []
       parameters:
         - name: id
           in: path
@@ -295,7 +295,7 @@ paths:
       summary: Modifier un menu
       operationId: updateMenu
       security:
-        - ApiKeyAuth: [ ]
+        - ApiKeyAuth: []
       parameters:
         - name: id
           in: path
@@ -325,7 +325,7 @@ paths:
       summary: Supprimer un menu
       operationId: deleteMenu
       security:
-        - ApiKeyAuth: [ ]
+        - ApiKeyAuth: []
       parameters:
         - name: id
           in: path
@@ -444,7 +444,7 @@ paths:
       description: Modifie une recette via son identifiant
       operationId: updateRecipe
       security:
-        - ApiKeyAuth: [ ]
+        - ApiKeyAuth: []
       parameters:
         - name: id
           in: path
@@ -466,7 +466,7 @@ paths:
       description: Supprimer une recette via son identifiant
       operationId: deleteRecipe
       security:
-        - ApiKeyAuth: [ ]
+        - ApiKeyAuth: []
       parameters:
         - name: id
           in: path
@@ -636,7 +636,7 @@ paths:
       description: Récupère un repas donné via son identifiant
       operationId: getMeal
       security:
-        - ApiKeyAuth: [ ]
+        - ApiKeyAuth: []
       parameters:
         - name: id
           in: path
@@ -656,7 +656,7 @@ paths:
       description: Modifie un repas via son identifiant
       operationId: updateMeal
       security:
-        - ApiKeyAuth: [ ]
+        - ApiKeyAuth: []
       parameters:
         - name: id
           in: path
@@ -684,7 +684,7 @@ paths:
       description: Supprimer un repas via son identifiant
       operationId: deleteMeal
       security:
-        - ApiKeyAuth: [ ]
+        - ApiKeyAuth: []
       parameters:
         - name: id
           in: path
@@ -1189,7 +1189,7 @@ components:
       properties:
         status: { type: string, const: success }
         data: { $ref: "#/components/schemas/MenuDetail" }
-        
+
     Ingredient:
       type: object
       properties:
@@ -1243,7 +1243,7 @@ components:
 
     IngredientDetail:
       allOf:
-        - $ref: '#/components/schemas/Ingredient'
+        - $ref: "#/components/schemas/Ingredient"
         - type: object
           properties:
             minerals:
@@ -1327,7 +1327,7 @@ components:
               vitaminType:
                 type: string
               value:
-                type: number 
+                type: number
 
   responses:
     BadRequest:

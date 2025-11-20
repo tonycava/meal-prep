@@ -9,7 +9,7 @@
     "strict": true,
     "skipLibCheck": true,
     "outDir": "dist",
-    "baseUrl": ".",  // Add this!
+    "baseUrl": ".", // Add this!
     "paths": {
       "$lib/*": ["./lib/*"],
       "$lib": ["./lib"],

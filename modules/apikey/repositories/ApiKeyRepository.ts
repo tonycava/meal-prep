@@ -21,11 +21,12 @@ export const ApiKeyRepository = (): IApiKeyRepository => {
           },
         });
       } catch (error) {
+        console.error("An error occurred while creating API key", error);
         throw new AppError(
           "Internal Server Error",
           "An error occurred while creating API key",
           "Une erreur est survenue lors de la création de la clé API.",
-          "error"
+          "error",
         );
       }
     },

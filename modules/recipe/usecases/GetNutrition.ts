@@ -1,4 +1,9 @@
-import { InputFactory, OutputFactory, UseCase, UseCaseResponseBuilder } from "$lib/common/usecase.ts";
+import {
+  InputFactory,
+  OutputFactory,
+  UseCase,
+  UseCaseResponseBuilder,
+} from "$lib/common/usecase.ts";
 import { GetNutritionDto } from "../dto/getNutritionDto";
 import { INutritionRepositoryCalculateNutrition } from "$modules/recipe/interfaces/INutritionRepository.ts";
 import { NutritionalInfo } from "$modules/recipe/entities/Nutrition.ts";
@@ -8,8 +13,8 @@ import { tryCatch } from "$lib/errors/tryCatch.ts";
 type Input = InputFactory<
   { dto: GetNutritionDto },
   {
-    nutritionRepository: INutritionRepositoryCalculateNutrition,
-    ingredientRepository: IIngredientRepositoryGetAllOfRecipe,
+    nutritionRepository: INutritionRepositoryCalculateNutrition;
+    ingredientRepository: IIngredientRepositoryGetAllOfRecipe;
   }
 >;
 type Output = OutputFactory<NutritionalInfo | null>;
@@ -18,14 +23,20 @@ export const GetNutrutionUseCase: UseCase<Input, Output> = (dependencies) => {
   const { nutritionRepository, ingredientRepository } = dependencies;
   return {
     async execute(data) {
+      const ingredients = await ingredientRepository.getAllOfRecipe(
+        data.dto.id,
+      );
 
-      const ingredients = await ingredientRepository.getAllOfRecipe(data.dto.id)
-
-      const [nutritionalInfoError, nutritionalInfo] = await tryCatch(nutritionRepository.calculateNutrition(ingredients));
+      const [nutritionalInfoError, nutritionalInfo] = await tryCatch(
+        nutritionRepository.calculateNutrition(ingredients),
+      );
       if (nutritionalInfoError)
-        return UseCaseResponseBuilder.error(500, nutritionalInfoError.userFriendlyMessage);
+        return UseCaseResponseBuilder.error(
+          500,
+          nutritionalInfoError.userFriendlyMessage,
+        );
 
       return UseCaseResponseBuilder.success(200, nutritionalInfo);
-    }
-  }
-}
+    },
+  };
+};

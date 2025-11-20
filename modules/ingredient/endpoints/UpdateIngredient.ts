@@ -10,18 +10,20 @@ import { z } from "zod";
 export const UpdateIngredientEndpoint = defaultEndpointsFactory
   .addMiddleware(authMiddleware)
   .build({
-  method: "put",
-  input: z.object({
-    id: z.string().uuid()
-  }).merge(UpdateIngredientDto),
-  output: UseCaseResponseSchema,
-  handler: async ({ input, logger }) => {
-    const { id, ...dto } = input;
-    logger.info("Detected PUT request for ingredient update");
-    const updateIngredientResponse = await UpdateIngredientUseCase({
-      ingredientRepository: IngredientRepository(),
-    }).execute({ id, dto });
+    method: "put",
+    input: z
+      .object({
+        id: z.string().uuid(),
+      })
+      .merge(UpdateIngredientDto),
+    output: UseCaseResponseSchema,
+    handler: async ({ input, logger }) => {
+      const { id, ...dto } = input;
+      logger.info("Detected PUT request for ingredient update");
+      const updateIngredientResponse = await UpdateIngredientUseCase({
+        ingredientRepository: IngredientRepository(),
+      }).execute({ id, dto });
 
-    return ApiResponse.send(updateIngredientResponse);
-  },
-});
+      return ApiResponse.send(updateIngredientResponse);
+    },
+  });
