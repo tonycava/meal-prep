@@ -27,6 +27,8 @@ paths:
         - Menus
       summary: Récupérer les menus
       operationId: listMenus
+      security:
+        - ApiKeyAuth: [ ]
       parameters:
         - name: limit
           in: query
@@ -57,6 +59,8 @@ paths:
         - Menus
       summary: Sauvegarder/Créer un menu
       operationId: createMenu
+      security:
+        - ApiKeyAuth: [ ]
       requestBody:
         required: true
         content:
@@ -91,6 +95,8 @@ paths:
       summary: Générer un menu complet
       description: Génère un menu (plusieurs repas sur plusieurs jours) avec critères nutritionnels Min/Max
       operationId: generateMenu
+      security:
+        - ApiKeyAuth: [ ]
       parameters:
         - name: duration
           description: Nombre de jours sur lesquels s'étale le menu
@@ -157,6 +163,8 @@ paths:
         - Menus
       summary: Détails d'un menu
       operationId: getMenu
+      security:
+        - ApiKeyAuth: [ ]
       parameters:
         - name: id
           in: path
@@ -174,6 +182,8 @@ paths:
         - Menus
       summary: Modifier un menu
       operationId: updateMenu
+      security:
+        - ApiKeyAuth: [ ]
       parameters:
         - name: id
           in: path
@@ -202,6 +212,8 @@ paths:
         - Menus
       summary: Supprimer un menu
       operationId: deleteMenu
+      security:
+        - ApiKeyAuth: [ ]
       parameters:
         - name: id
           in: path
@@ -218,8 +230,6 @@ paths:
       summary: Lister les recettes
       description: Récupère la liste des recettes
       operationId: listRecipes
-      security:
-        - ApiKeyAuth: []
       parameters:
         - name: category
           in: query
@@ -321,6 +331,8 @@ paths:
       summary: Modifier une recette
       description: Modifie une recette via son identifiant
       operationId: updateRecipe
+      security:
+        - ApiKeyAuth: [ ]
       parameters:
         - name: id
           in: path
@@ -341,6 +353,8 @@ paths:
       summary: Supprimer une recette
       description: Supprimer une recette via son identifiant
       operationId: deleteRecipe
+      security:
+        - ApiKeyAuth: [ ]
       parameters:
         - name: id
           in: path
@@ -509,6 +523,8 @@ paths:
       summary: Détails d'un repas
       description: Récupère un repas donné via son identifiant
       operationId: getMeal
+      security:
+        - ApiKeyAuth: [ ]
       parameters:
         - name: id
           in: path
@@ -527,6 +543,8 @@ paths:
       summary: Modifier un repas
       description: Modifie un repas via son identifiant
       operationId: updateMeal
+      security:
+        - ApiKeyAuth: [ ]
       parameters:
         - name: id
           in: path
@@ -553,6 +571,8 @@ paths:
       summary: Supprimer un repas
       description: Supprimer un repas via son identifiant
       operationId: deleteMeal
+      security:
+        - ApiKeyAuth: [ ]
       parameters:
         - name: id
           in: path
@@ -910,61 +930,6 @@ paths:
                         example: Ingredient deleted successfully
         "404":
           $ref: "#/components/responses/NotFound"
-        "500":
-          $ref: "#/components/responses/InternalError"
-
-  /v1/ingredients/search:
-    get:
-      tags:
-        - Ingrédients
-      summary: Récupérer un ingrédient par nom
-      description: Recherche un ingrédient par son nom
-      operationId: searchIngredientByName
-      parameters:
-        - name: category
-          in: query
-          required: true
-          description: HEAD /v1/recipes Parameter
-          schema:
-            type: string
-        - name: diet
-          in: query
-          required: true
-          description: HEAD /v1/recipes Parameter
-          schema:
-            type: string
-        - name: ingredients
-          in: query
-          required: true
-          description: HEAD /v1/recipes Parameter
-          schema:
-            type: string
-        - name: search
-          in: query
-          required: true
-          description: Nom de l'ingrédient à rechercher
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Résultats de la recherche
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    const: success
-                  data:
-                    type: object
-                    properties:
-                      ingredients:
-                        type: array
-                        items:
-                          $ref: "#/components/schemas/Ingredient"
-        "400":
-          $ref: "#/components/responses/BadRequest"
         "500":
           $ref: "#/components/responses/InternalError"
 
