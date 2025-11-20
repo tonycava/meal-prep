@@ -5,11 +5,11 @@ import { UpdateRecipeDto } from "$modules/recipe/dto/updateRecipeDto.ts";
 import { GetRecipeByIdOutput, IRecipeFilters, ListRecipesOutput } from "../dto/recipeDto";
 
 export type IRecipeRepositorySave = {
-	save(recipeDto: CreateRecipeDto, apiKey: string): Promise<Recipe>;
+	save(recipeDto: CreateRecipeDto): Promise<Recipe>;
 }
 
 export type IRecipeRepositoryList = {
-	list(limit: number, offset: number, filters: IRecipeFilters,  apiKey: string): Promise<ListRecipesOutput>;
+	list(limit: number, offset: number, filters: IRecipeFilters): Promise<ListRecipesOutput>;
 }
 
 export type IRecipeRepositoryFindById = {
@@ -24,9 +24,14 @@ export type IRecipeRepositoryUpdate = {
   update(recipeDto: UpdateRecipeDto): Promise<void>;
 }
 
+export type IRecipeRepositoryIsUseInOneMenu = {
+  isUseInOneMenu(recipeId: string): Promise<boolean>;
+}
+
 export type IRecipeRepository =
   IRecipeRepositorySave &
   IRecipeRepositoryDelete &
   IRecipeRepositoryList &
   IRecipeRepositoryUpdate &
-	IRecipeRepositoryFindById;
+	IRecipeRepositoryFindById &
+  IRecipeRepositoryIsUseInOneMenu;

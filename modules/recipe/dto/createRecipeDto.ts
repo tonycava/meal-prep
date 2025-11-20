@@ -16,6 +16,7 @@ export const createRecipeDto = z.object({
   title: z.string().nonempty("Un titre est requis."),
   description: z.string().nonempty("Une description est requise."),
   isPublic: z.boolean().optional(),
+  instructions: z.string().nonempty("Des instructions sont requises."),
 
   diet: recipeDietSchema.optional(),
   ingredients: z.array(ingredient).nonempty("Au moins un ingrédients est requis."),

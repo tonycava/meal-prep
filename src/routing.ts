@@ -11,6 +11,7 @@ import { CreateIngredientEndpoint } from "$modules/ingredient/endpoints/CreateIn
 import { DeleteIngredientEndpoint } from "$modules/ingredient/endpoints/DeleteIngredient";
 import { UpdateIngredientEndpoint } from "$modules/ingredient/endpoints/UpdateIngredient";
 import { GetIngredientByIdEndpoint } from "$modules/ingredient/endpoints/GetIngredientByIdEndpoint";
+import { RegisterApiKeyEndpoint } from "$modules/apikey/endpoints/RegisterApiKey";
 
 export const routing: Routing = {
       v1: {
@@ -37,6 +38,11 @@ export const routing: Routing = {
                         get: GetIngredientByIdEndpoint,
                         put: UpdateIngredientEndpoint,
                         delete: DeleteIngredientEndpoint,
+                  })
+            },
+            "api-keys": {
+                  register: new DependsOnMethod({
+                        post: RegisterApiKeyEndpoint,
                   })
             },
       },
