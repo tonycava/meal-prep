@@ -1,7 +1,11 @@
 import { defaultEndpointsFactory } from "express-zod-api";
 import { z } from "zod";
-import { prisma } from "../../../lib/db";
-import { IngredientListQueryDto, IngredientResponseDto } from "../dto/ingredient.dto";
+import { prisma } from "$lib/db.ts";
+import { Prisma } from "../../../src/generated/prisma";
+import {
+  IngredientListQueryDto,
+  IngredientResponseDto,
+} from "../dto/ingredient.dto";
 
 export const ListIngredientEndpoint = defaultEndpointsFactory.build({
   method: "get",
@@ -12,8 +16,11 @@ export const ListIngredientEndpoint = defaultEndpointsFactory.build({
     limit: z.number(),
     offset: z.number(),
   }),
-  handler: async ({ input: { category, search, limit = 20, offset = 0 }, logger }) => {
-    const where: any = {};
+  handler: async ({
+    input: { category, search, limit = 20, offset = 0 },
+    logger,
+  }) => {
+    const where: Prisma.IngredientWhereInput = {};
 
     if (category) {
       where.category = category;
@@ -31,7 +38,7 @@ export const ListIngredientEndpoint = defaultEndpointsFactory.build({
         take: limit,
         skip: offset,
         orderBy: {
-          name: 'asc',
+          name: "asc",
         },
         include: {
           minerals: true,

@@ -19,5 +19,5 @@ export const GetNutritionEndPoint = defaultEndpointsFactory
         ingredientRepository: IngredientRepository(),
       }).execute({ dto: input });
       return ApiResponse.send(getNutritionResponse);
-    }
+    },
   });

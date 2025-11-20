@@ -12,7 +12,7 @@ export const ApiResponse = {
 
     return {
       status: useCaseResponse.status,
-      message: useCaseResponse.message
-    }
-  }
-}
+      message: useCaseResponse.message,
+    };
+  },
+};

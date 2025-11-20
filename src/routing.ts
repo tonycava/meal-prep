@@ -13,36 +13,36 @@ import { UpdateIngredientEndpoint } from "$modules/ingredient/endpoints/UpdateIn
 import { GetIngredientByIdEndpoint } from "$modules/ingredient/endpoints/GetIngredientByIdEndpoint";
 
 export const routing: Routing = {
-      v1: {
-            recipes: {
-			"/": new DependsOnMethod({
-				get: ListRecipesEndpoint,
-				post: CreateRecipeEndPoint,
-				delete: DeleteRecipeEndPoint,
-			}),
-			"/:id": new DependsOnMethod({
-                        get: ListRecipeByIdEndpoint,
-                  })
-            },
-            menus: new DependsOnMethod({
-                  get: ListMenusEndpoint,
-                  post: CreateMenuEndpoint,
-            }),
-            ingredients: {
-                  "/": new DependsOnMethod({
-                        get: ListIngredientEndpoint,
-                        post: CreateIngredientEndpoint,
-                  }),
-                  "/:id": new DependsOnMethod({
-                        get: GetIngredientByIdEndpoint,
-                        put: UpdateIngredientEndpoint,
-                        delete: DeleteIngredientEndpoint,
-                  })
-            },
-      },
-      public: new ServeStatic(path.join(__dirname, "../assets"), {
-            dotfiles: "deny",
-            index: false,
-            redirect: false,
+  v1: {
+    recipes: {
+      "/": new DependsOnMethod({
+        get: ListRecipesEndpoint,
+        post: CreateRecipeEndPoint,
+        delete: DeleteRecipeEndPoint,
       }),
+      "/:id": new DependsOnMethod({
+        get: ListRecipeByIdEndpoint,
+      }),
+    },
+    menus: new DependsOnMethod({
+      get: ListMenusEndpoint,
+      post: CreateMenuEndpoint,
+    }),
+    ingredients: {
+      "/": new DependsOnMethod({
+        get: ListIngredientEndpoint,
+        post: CreateIngredientEndpoint,
+      }),
+      "/:id": new DependsOnMethod({
+        get: GetIngredientByIdEndpoint,
+        put: UpdateIngredientEndpoint,
+        delete: DeleteIngredientEndpoint,
+      }),
+    },
+  },
+  public: new ServeStatic(path.join(__dirname, "../assets"), {
+    dotfiles: "deny",
+    index: false,
+    redirect: false,
+  }),
 };

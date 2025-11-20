@@ -1,8 +1,6 @@
 import { defaultEndpointsFactory } from "express-zod-api";
-import { GetIngredientByIdDto, UpdateIngredientDto } from "../dto/ingredient.dto";
 import { GetIngredientByIdUseCase } from "../usecases/GetIngredientById";
 import { UpdateIngredientUseCase } from "../usecases/UpdateIngredient";
-import { DeleteIngredientUseCase } from "../usecases/DeleteIngredient";
 import { IngredientRepository } from "../repositories/IngredientRepository";
 import { ApiResponse } from "../../../lib/common/api/ApiResponse";
 import { UseCaseResponseSchema } from "../../../lib/common/usecase";
@@ -11,11 +9,11 @@ import { z } from "zod";
 export const IngredientByIdEndpoint = defaultEndpointsFactory.build({
   method: ["get", "put"],
   input: z.object({
-    id: z.string().uuid()
-  }).passthrough(),
+    id: z.uuid(),
+  }),
   output: UseCaseResponseSchema,
-  handler: async ({ input, logger }: any) => {
-    const { id, ...data } = input as any;
+  handler: async ({ input, logger }) => {
+    const { id, ...data } = input;
 
     if (Object.keys(data).length > 0) {
       logger.info("Detected PUT request for ingredient update");
