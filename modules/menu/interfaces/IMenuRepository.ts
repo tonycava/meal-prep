@@ -1,5 +1,6 @@
 import { Menu } from "../entities/Menu";
 import { ListMenusOutput } from "../dto/menu.dto";
+import { DeleteMenuDto } from "$modules/menu/dto/deleteMenu.dto"
 
 export type MenuWithMeals = Menu & {
   meals: {
@@ -56,7 +57,7 @@ export type IMenuRepositoryUpdate = {
 };
 
 export type IMenuRepositoryDelete = {
-  delete(id: string): Promise<void>;
+  delete(menuDto: DeleteMenuDto): Promise<void>;
 };
 
 export type IMenuRepository = IMenuRepositoryList &

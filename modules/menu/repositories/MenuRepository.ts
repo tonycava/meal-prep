@@ -1,7 +1,9 @@
 import { IMenuRepository, CreateMenuDto, UpdateMenuDto, MenuWithMeals } from "../interfaces/IMenuRepository";
 import { Menu } from "../entities/Menu";
-import { ListMenusOutput } from "../dto/menu.dto";
+import { ListMenusOutput } from "$modules/menu/dto/menu.dto";
+import { DeleteMenuDto } from "$modules/menu/dto/deleteMenu.dto"
 import { prisma } from "$lib/db";
+import { AppError } from "$lib/errors/AppError";
 
 export const MenuRepository = (): IMenuRepository => {
 	return {
@@ -176,10 +178,21 @@ export const MenuRepository = (): IMenuRepository => {
 			};
 		},
 
-		async delete(id: string): Promise<void> {
-			await prisma.menu.delete({
-				where: { id }
+		async delete(menuDto: DeleteMenuDto, userr): Promise<void> {
+			const menu = await prisma.menu.findUnique({
+				where: { id: menuDto.id }
 			});
+
+			if(!menu) {
+				throw new AppError(
+					"Not Found",
+					`Menu with id ${menuDto.id} not found`,
+					"Ce menu n'existe pas ou a déjà été supprimé.",
+					"warn"
+				);
+			}
+
+			if(userRole)
 		}
 	};
 };

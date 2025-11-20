@@ -10,24 +10,24 @@ import { UpdateRecipeDto } from "$modules/recipe/dto/updateRecipeDto.ts";
 
 export const RecipeRepository = (): IRecipeRepository => {
 	return {
-    async update(recipeDto: UpdateRecipeDto): Promise<void> {
-      try {
-        await prisma.recipe.update({
-          data: {
-            title: recipeDto.title,
-          },
-          where: { id: recipeDto.id }
-        })
-      } catch (error) {
-        throw new AppError(
-          "Internal Server Error",
-          "An error occurred while updating recipe",
-          "Une erreur est survenue lors de la mise à jour d'une recette.",
-          "error"
-        )
-      }
-    },
-    async delete(recipeDto: DeleteRecipeDto): Promise<void> {
+		async update(recipeDto: UpdateRecipeDto): Promise<void> {
+			try {
+				await prisma.recipe.update({
+					data: {
+						title: recipeDto.title,
+					},
+					where: { id: recipeDto.id }
+				})
+			} catch (error) {
+				throw new AppError(
+					"Internal Server Error",
+					"An error occurred while updating recipe",
+					"Une erreur est survenue lors de la mise à jour d'une recette.",
+					"error"
+				)
+			}
+		},
+		async delete(recipeDto: DeleteRecipeDto): Promise<void> {
 			try {
 				await prisma.recipe.delete({
 					where: { id: recipeDto.id },
@@ -65,19 +65,19 @@ export const RecipeRepository = (): IRecipeRepository => {
 				}
 
 				return {
-          cookTimeMin: createdRecipe.cookTimeMin,
-          createdAt: createdRecipe.createdAt,
-          description: createdRecipe.description,
-          imageUrl: createdRecipe.imageUrl,
-          isPublic: createdRecipe.isPublic,
-          prepTimeMin: createdRecipe.prepTimeMin,
-          servings: createdRecipe.servings,
-          title: createdRecipe.title,
-          updatedAt: createdRecipe.updatedAt,
-          id: createdRecipe.id
-        }
+					cookTimeMin: createdRecipe.cookTimeMin,
+					createdAt: createdRecipe.createdAt,
+					description: createdRecipe.description,
+					imageUrl: createdRecipe.imageUrl,
+					isPublic: createdRecipe.isPublic,
+					prepTimeMin: createdRecipe.prepTimeMin,
+					servings: createdRecipe.servings,
+					title: createdRecipe.title,
+					updatedAt: createdRecipe.updatedAt,
+					id: createdRecipe.id
+				}
 			} catch (error) {
-        console.log("Error saving recipe:", error);
+				console.log("Error saving recipe:", error);
 				throw new AppError(
 					"Internal Server Error",
 					"An error occurred while saving recipe",
@@ -179,7 +179,7 @@ export const RecipeRepository = (): IRecipeRepository => {
 				}
 			});
 
-			if(!recipe) {
+			if (!recipe) {
 				throw new AppError(
 					"Not Found",
 					"Recipe not found",
@@ -188,43 +188,43 @@ export const RecipeRepository = (): IRecipeRepository => {
 				)
 			}
 
-		const recipeDetailDto = {
-			id: recipe.id,
-			title: recipe.title,
-			description: recipe.description || "",
-			imageUrl: recipe.imageUrl,
-			prepTimeMin: recipe.prepTimeMin || 0,
-			cookTimeMin: recipe.cookTimeMin || 0,
-			servings: recipe.servings,
-			isPublic: recipe.isPublic,
-			category: recipe.category || 'OTHER',
-			diet: recipe.diet || 'OTHER',
-			ingredients: recipe.ingredients.map(recipeIngredient => ({
-				id: recipeIngredient.ingredient.id,
-				name: recipeIngredient.ingredient.name,
-				quantity: recipeIngredient.quantity,
-				unit: recipeIngredient.unit,
-				notes: recipeIngredient.notes || "",
-				category: recipeIngredient.ingredient.category || "",
-				calories: recipeIngredient.ingredient.calories || 0,
-				proteins: recipeIngredient.ingredient.proteins || 0,
-				fats: recipeIngredient.ingredient.fats || 0,
-				carbs: recipeIngredient.ingredient.carbs || 0,
-			})),
-			mealCount: recipe._count.recipeMeals,
-			createdAt: recipe.createdAt,
-			updatedAt: recipe.updatedAt,
-			steps: recipe.steps.map(step => ({
-				id: step.id,
-				order: step.order,
-				instruction: step.instruction,
-				durationMin: step.durationMin,
-			}))
-		};
+			const recipeDetailDto = {
+				id: recipe.id,
+				title: recipe.title,
+				description: recipe.description || "",
+				imageUrl: recipe.imageUrl,
+				prepTimeMin: recipe.prepTimeMin || 0,
+				cookTimeMin: recipe.cookTimeMin || 0,
+				servings: recipe.servings,
+				isPublic: recipe.isPublic,
+				category: recipe.category || 'OTHER',
+				diet: recipe.diet || 'OTHER',
+				ingredients: recipe.ingredients.map(recipeIngredient => ({
+					id: recipeIngredient.ingredient.id,
+					name: recipeIngredient.ingredient.name,
+					quantity: recipeIngredient.quantity,
+					unit: recipeIngredient.unit,
+					notes: recipeIngredient.notes || "",
+					category: recipeIngredient.ingredient.category || "",
+					calories: recipeIngredient.ingredient.calories || 0,
+					proteins: recipeIngredient.ingredient.proteins || 0,
+					fats: recipeIngredient.ingredient.fats || 0,
+					carbs: recipeIngredient.ingredient.carbs || 0,
+				})),
+				mealCount: recipe._count.recipeMeals,
+				createdAt: recipe.createdAt,
+				updatedAt: recipe.updatedAt,
+				steps: recipe.steps.map(step => ({
+					id: step.id,
+					order: step.order,
+					instruction: step.instruction,
+					durationMin: step.durationMin,
+				}))
+			};
 
-		return {
-			recipe: recipeDetailDto,
-		};
+			return {
+				recipe: recipeDetailDto,
+			};
+		}
 	}
-}
 }
