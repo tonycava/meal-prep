@@ -2,7 +2,7 @@ import { Middleware } from "express-zod-api";
 import { prisma } from "$lib/db";
 
 export const authMiddleware = new Middleware({
-  handler: async ({ request, logger }) => {
+  handler: async ({ request }) => {
     const apiKey = request.headers["x-api-key"];
 
     if (!apiKey || typeof apiKey !== "string") {
@@ -22,6 +22,6 @@ export const authMiddleware = new Middleware({
       throw new Error("API key is inactive");
     }
 
-    return { apiKey };
+    return { apiKey, role: existingKey.role };
   },
 });
