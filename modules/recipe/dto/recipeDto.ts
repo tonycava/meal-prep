@@ -73,12 +73,7 @@ export const RecipeDetailDTOSchema = z.object({
 		fats: z.number(),
 		carbs: z.number(),
 	})),
-	steps: z.array(z.object({
-		id: z.uuid(),
-		order: z.number().int(),
-		instruction: z.string(),
-		durationMin: z.number().int().nullable(),
-	})),
+  instructions: z.string(),
 	mealCount: z.number().int(),
 })
 
