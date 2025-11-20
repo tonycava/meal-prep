@@ -1,5 +1,5 @@
 import { Middleware } from "express-zod-api";
-import { prisma } from "$lib/db";
+import { prisma } from "../../lib/db";
 
 export const authMiddleware = new Middleware({
   handler: async ({ request }) => {
