@@ -154,6 +154,7 @@ model Recipe {
   id          String          @id @default(uuid())
   title       String
   description String?
+  instructions String
   imageUrl    String?
   prepTimeMin Int?
   cookTimeMin Int?
@@ -167,7 +168,6 @@ model Recipe {
 
   apiKey ApiKey @relation(fields: [apiKeyId], references: [id], onDelete: Cascade)
 
-  steps       RecipeStep[]
   ingredients RecipeIngredient[]
   recipeMeals RecipeMeal[]
 }
@@ -212,18 +212,6 @@ model IngredientVitamin {
   ingredient Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
 
   @@unique([ingredientId, vitaminType])
-}
-
-model RecipeStep {
-  id          String @id @default(uuid())
-  recipeId    String
-  order       Int
-  instruction String
-  durationMin Int?
-
-  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
-
-  @@unique([recipeId, order])
 }
 
 model RecipeIngredient {

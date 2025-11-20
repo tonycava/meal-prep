@@ -29,7 +29,6 @@ async function main() {
 	await prisma.menu.deleteMany();
 	await prisma.meal.deleteMany();
 	await prisma.recipeIngredient.deleteMany();
-	await prisma.recipeStep.deleteMany();
 	await prisma.recipe.deleteMany();
 	await prisma.ingredientMineral.deleteMany();
 	await prisma.ingredientVitamin.deleteMany();
@@ -153,6 +152,7 @@ async function main() {
 			data: {
 				title: "Poulet Riz Simple",
 				description: "Un classique pour les sportifs.",
+				instructions: "Cuire le riz dans l'eau bouillante.Poêler le poulet.",
 				imageUrl: "https://placehold.co/600x400?text=Poulet+Riz",
 				prepTimeMin: 10,
 				cookTimeMin: 20,
@@ -161,12 +161,6 @@ async function main() {
 				category: RecipeCategory.MAIN_COURSE,
 				diet: DietType.GLUTEN_FREE,
 				apiKeyId: adminKey.id,
-				steps: {
-					create: [
-						{ order: 1, instruction: "Cuire le riz dans l'eau bouillante.", durationMin: 15 },
-						{ order: 2, instruction: "Poêler le poulet.", durationMin: 10 }
-					]
-				},
 				ingredients: {
 					create: ingredientsList
 				}
@@ -182,6 +176,7 @@ async function main() {
 			data: {
 				title: "Salade Légère",
 				description: "Entrée fraîche.",
+				instructions: "Tout mélanger.",
 				prepTimeMin: 5,
 				cookTimeMin: 0,
 				servings: 1,
@@ -195,9 +190,6 @@ async function main() {
 						{ ingredientId: tomate.id, quantity: 1, unit: UnitType.PIECE }
 					]
 				},
-				steps: {
-					create: [{ order: 1, instruction: "Tout mélanger.", durationMin: 2 }]
-				}
 			}
 		});
 		recipeSaladeId = recipe.id;
