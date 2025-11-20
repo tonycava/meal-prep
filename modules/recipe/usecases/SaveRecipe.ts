@@ -17,7 +17,7 @@ export const SaveRecipeUseCase: UseCase<Input, Output> = (dependencies) => {
       const [error, recipe] = await tryCatch(recipeRepository.save(data.dto, data.apiKey));
       if (error) return UseCaseResponseBuilder.error(500, error.userFriendlyMessage)
 
-      return UseCaseResponseBuilder.success(200, recipe);
+      return UseCaseResponseBuilder.success(201, recipe);
     }
   }
 };
