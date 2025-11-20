@@ -5,7 +5,7 @@ import { prisma } from "$lib/db";
 import { DeleteRecipeDto } from "$modules/recipe/dto/deleteRecipeDto.ts";
 import { AppError } from "$lib/errors/AppError.ts";
 import { ListRecipesOutput, IRecipeFilters, GetRecipeByIdOutput } from "../dto/recipeDto";
-import { DietType, RecipeCategory } from "@prisma/client";
+import { RecipeCategory, DietType } from "../../../src/generated/prisma";
 import { UpdateRecipeDto } from "$modules/recipe/dto/updateRecipeDto.ts";
 
 export const RecipeRepository = (): IRecipeRepository => {
@@ -47,7 +47,7 @@ export const RecipeRepository = (): IRecipeRepository => {
 					data: {
 						title: recipeDto.title,
 						description: recipeDto.description,
-						isPublic: false,
+						isPublic: recipeDto.isPublic,
 						prepTimeMin: recipeDto.prepTimeMin,
 						cookTimeMin: recipeDto.cookTimeMin,
 						apiKey: { connect: { key: apiKey } },
@@ -122,7 +122,7 @@ export const RecipeRepository = (): IRecipeRepository => {
 							}
 						},
 						_count: {
-							select: { meals: true }
+							select: { recipeMeals: true }
 						}
 					}
 				}),
@@ -146,7 +146,7 @@ export const RecipeRepository = (): IRecipeRepository => {
 					quantity: recipeIngredient.quantity,
 					unit: recipeIngredient.unit
 				})),
-				mealCount: recipe._count.meals,
+				mealCount: recipe._count.recipeMeals,
 				createdAt: recipe.createdAt,
 				updatedAt: recipe.updatedAt,
 			}));
@@ -174,7 +174,7 @@ export const RecipeRepository = (): IRecipeRepository => {
 						orderBy: { order: 'asc' }
 					},
 					_count: {
-						select: { meals: true }
+						select: { recipeMeals: true }
 					}
 				}
 			});
@@ -186,7 +186,7 @@ export const RecipeRepository = (): IRecipeRepository => {
 					"Recette non trouvée.",
 					"warn"
 				)
-			};
+			}
 
 		const recipeDetailDto = {
 			id: recipe.id,
@@ -211,7 +211,7 @@ export const RecipeRepository = (): IRecipeRepository => {
 				fats: recipeIngredient.ingredient.fats || 0,
 				carbs: recipeIngredient.ingredient.carbs || 0,
 			})),
-			mealCount: recipe._count.meals,
+			mealCount: recipe._count.recipeMeals,
 			createdAt: recipe.createdAt,
 			updatedAt: recipe.updatedAt,
 			steps: recipe.steps.map(step => ({

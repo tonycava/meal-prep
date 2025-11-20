@@ -1,5 +1,5 @@
 import z from "zod";
-import { DietType, RecipeCategory } from "@prisma/client";
+import { RecipeCategory, DietType } from "../../../src/generated/prisma";
 
 const recipeCategoryValues = Object.values(RecipeCategory) as [string, ...string[]];
 const recipeDietValues = Object.values(DietType) as [string, ...string[]];
