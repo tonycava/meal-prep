@@ -9,7 +9,7 @@ import {
   IMealFilters,
   GetMealByIdOutput,
 } from "../dto/mealDto";
-import { MealType } from "@prisma/client";
+import { MealType } from "../../../src/generated/prisma";
 import { UpdateMealDto } from "$modules/meal/dto/updateMealDto.ts";
 
 export const MealRepository = (): IMealRepository => {
@@ -67,14 +67,15 @@ export const MealRepository = (): IMealRepository => {
               })),
             },
           },
+          include: {
+            recipeMeals: true,
+          },
         });
 
         return {
           id: createdMeal.id,
           mealType: createdMeal.mealType,
-          apiKeyId: createdMeal.apiKeyId,
-          createdAt: createdMeal.createdAt,
-          updatedAt: createdMeal.updatedAt,
+          recipeMeals: createdMeal.recipeMeals,
         };
       } catch (error) {
         console.log("Error saving meal:", error);
@@ -106,7 +107,7 @@ export const MealRepository = (): IMealRepository => {
           where,
           skip: offset,
           take: limit,
-          orderBy: { createdAt: "desc" },
+          orderBy: { id: "desc" },
           include: {
             recipeMeals: {
               include: {
@@ -121,9 +122,11 @@ export const MealRepository = (): IMealRepository => {
       const data = meals.map((meal) => ({
         id: meal.id,
         mealType: meal.mealType,
-        apiKeyId: meal.apiKeyId,
-        createdAt: meal.createdAt,
-        updatedAt: meal.updatedAt,
+
+        recipeMeals: meal.recipeMeals.map((rm) => ({
+          recipeId: rm.recipeId,
+          type: rm.type,
+        })),
       }));
 
       return {
@@ -167,9 +170,10 @@ export const MealRepository = (): IMealRepository => {
       const mealDetailDto = {
         id: meal.id,
         mealType: meal.mealType,
-        apiKeyId: meal.apiKeyId,
-        createdAt: meal.createdAt,
-        updatedAt: meal.updatedAt,
+        recipeMeals: meal.recipeMeals.map((rm) => ({
+          recipeId: rm.recipeId,
+          type: rm.type,
+        })),
       };
 
       return {

@@ -1,7 +1,7 @@
+import { MealType, RecipeMeal } from "../../../src/generated/prisma";
+
 export type Meal = {
   id: string;
-  mealType: string;
-  apiKeyId: string;
-  createdAt: Date;
-  updatedAt: Date;
+  mealType: MealType;
+  recipeMeals: RecipeMeal[];
 };
