@@ -41,7 +41,7 @@ async function main() {
 		data: {
 			key: '550e8400-e29b-41d4-a716-446655440000',
 			name: 'Administrateur',
-			role: 'admin',
+			role: 'ADMIN',
 			isActive: true
 		}
 	});
@@ -50,21 +50,21 @@ async function main() {
 		data: {
 			key: 'd07c22dd-1b98-4741-96f3-23621895672e',
 			name: 'Utilisateur Demo',
-			role: 'user',
+			role: 'USER',
 			isActive: true
 		}
 	});
 
 	console.log('🔑 API Keys créées :');
-	console.log('   👉 Admin Key : 550e8400-e29b-41d4-a716-446655440000');
-	console.log('   👉 User Key  : d07c22dd-1b98-4741-96f3-23621895672e');
+	console.log('   👉 Admin : 550e8400-e29b-41d4-a716-446655440000');
+	console.log('   👉 User  : d07c22dd-1b98-4741-96f3-23621895672e');
 
 	console.log('📥 Importation des ingrédients depuis CALNUT.csv...');
 
 	const csvFilePath = path.join(__dirname, '../CALNUT.csv');
 
 	if (!fs.existsSync(csvFilePath)) {
-		console.error("❌ ERREUR: Le fichier CALNUT.csv est introuvable dans le dossier racine !");
+		console.error("❌ ERREUR: Le fichier CALNUT.csv est introuvable !");
 		process.exit(1);
 	}
 
@@ -76,7 +76,6 @@ async function main() {
 
 	for await (const line of rl) {
 		if (isFirstLine) { isFirstLine = false; continue; }
-
 		const row = line.split(';');
 		if (row.length < 10) continue;
 
@@ -131,58 +130,50 @@ async function main() {
 
 	const poulet = await findIng("Poulet") || await findIng("Dinde");
 	const riz = await findIng("Riz") || await findIng("Pâtes");
+	const huile = await findIng("Huile") || await findIng("Beurre");
 	const tomate = await findIng("Tomate");
 	const salade = await findIng("Laitue") || await findIng("Epinard");
-	const huile = await findIng("Huile") || await findIng("Beurre");
+	const saumon = await findIng("Saumon") || await findIng("Cabillaud");
+	const haricot = await findIng("Haricot") || await findIng("Petit pois");
+	const yaourt = await findIng("Yaourt") || await findIng("Fromage blanc");
+	const banane = await findIng("Banane") || await findIng("Pomme");
 
 	let recipePouletId = "";
+	let recipeSaladeId = "";
+	let recipeSaumonId = "";
+	let recipeDessertId = "";
 
 	if (poulet && riz) {
-
 		const ingredientsList = [
 			{ ingredientId: poulet.id, quantity: 200, unit: UnitType.GRAM },
 			{ ingredientId: riz.id, quantity: 150, unit: UnitType.GRAM }
 		];
+		if (huile) ingredientsList.push({ ingredientId: huile.id, quantity: 1, unit: UnitType.GRAM });
 
-		if (huile) {
-			ingredientsList.push({ ingredientId: huile.id, quantity: 1, unit: UnitType.GRAM });
-		}
-
-		const recipe = await prisma.recipe.create({
+		const r = await prisma.recipe.create({
 			data: {
 				title: "Poulet Riz Simple",
-				description: "Un classique pour les sportifs.",
-				instructions: "Cuire le riz dans l'eau bouillante.Poêler le poulet.",
+				description: "Le classique du sportif.",
+				instructions: "Cuire le riz et le poulet.",
 				imageUrl: "https://placehold.co/600x400?text=Poulet+Riz",
-				prepTimeMin: 10,
-				cookTimeMin: 20,
-				servings: 2,
-				isPublic: true,
-				category: RecipeCategory.MAIN_COURSE,
-				diet: DietType.GLUTEN_FREE,
+				prepTimeMin: 10, cookTimeMin: 20, servings: 2, isPublic: true,
+				category: RecipeCategory.MAIN_COURSE, diet: DietType.GLUTEN_FREE,
 				apiKeyId: adminKey.id,
-				ingredients: {
-					create: ingredientsList
-				}
+				ingredients: { create: ingredientsList },
 			}
 		});
-		recipePouletId = recipe.id;
-		console.log("👨‍🍳 Recette créée : Poulet Riz");
+		recipePouletId = r.id;
+		console.log("👨‍🍳 Recette 1 créée (Admin)");
 	}
 
-	let recipeSaladeId = "";
 	if (salade && tomate) {
-		const recipe = await prisma.recipe.create({
+		const r = await prisma.recipe.create({
 			data: {
-				title: "Salade Légère",
-				description: "Entrée fraîche.",
-				instructions: "Tout mélanger.",
-				prepTimeMin: 5,
-				cookTimeMin: 0,
-				servings: 1,
-				isPublic: true,
-				category: RecipeCategory.STARTER,
-				diet: DietType.VEGETARIAN,
+				title: "Salade Fraîcheur",
+				description: "Légère et rapide.",
+				instructions: "Mélanger les ingrédients.",
+				prepTimeMin: 5, cookTimeMin: 0, servings: 1, isPublic: true,
+				category: RecipeCategory.STARTER, diet: DietType.VEGETARIAN,
 				apiKeyId: userKey.id,
 				ingredients: {
 					create: [
@@ -192,39 +183,147 @@ async function main() {
 				},
 			}
 		});
-		recipeSaladeId = recipe.id;
-		console.log("👨‍🍳 Recette créée : Salade");
+		recipeSaladeId = r.id;
+		console.log("👨‍🍳 Recette 2 créée (User)");
 	}
 
-	if (recipePouletId) {
-		const meal = await prisma.meal.create({
+	if (saumon && haricot) {
+		const r = await prisma.recipe.create({
+			data: {
+				title: "Pavé de Saumon",
+				description: "Riche en oméga 3.",
+				instructions: "Cuire à la vapeur.",
+				prepTimeMin: 5, cookTimeMin: 15, servings: 1, isPublic: false, // Privé
+				category: RecipeCategory.MAIN_COURSE, diet: DietType.LOW_CARB,
+				apiKeyId: userKey.id,
+				ingredients: {
+					create: [
+						{ ingredientId: saumon.id, quantity: 150, unit: UnitType.GRAM },
+						{ ingredientId: haricot.id, quantity: 200, unit: UnitType.GRAM }
+					]
+				},
+			}
+		});
+		recipeSaumonId = r.id;
+		console.log("👨‍🍳 Recette 3 créée (User)");
+	}
+
+	if (yaourt && banane) {
+		const r = await prisma.recipe.create({
+			data: {
+				title: "Bowl Yaourt Banane",
+				description: "Dessert simple.",
+				instructions: "Couper la banane.",
+				prepTimeMin: 2, cookTimeMin: 0, servings: 1, isPublic: true,
+				category: RecipeCategory.DESSERT, diet: DietType.VEGETARIAN,
+				apiKeyId: adminKey.id,
+				ingredients: {
+					create: [
+						{ ingredientId: yaourt.id, quantity: 1, unit: UnitType.CUP },
+						{ ingredientId: banane.id, quantity: 1, unit: UnitType.PIECE }
+					]
+				},
+			}
+		});
+		recipeDessertId = r.id;
+		console.log("👨‍🍳 Recette 4 créée (Admin)");
+	}
+
+	let mealAdminId = "";
+	if (recipeSaladeId && recipePouletId) {
+		const m = await prisma.meal.create({
 			data: {
 				mealType: MealType.LUNCH,
-				apiKeyId: userKey.id,
+				apiKeyId: adminKey.id,
 				recipeMeals: {
 					create: [
-						{ recipeId: recipePouletId, type: "Plat Principal" }
+						{ recipeId: recipeSaladeId, type: "Entrée" },
+						{ recipeId: recipePouletId, type: "Plat" }
 					]
 				}
 			}
 		});
-		console.log("🍽️  Repas créé (Déjeuner)");
+		mealAdminId = m.id;
+		console.log("🍽️  Repas 1 (Admin) créé");
+	}
 
+	let mealUserDinnerId = "";
+	if (recipeSaumonId) {
+		const m = await prisma.meal.create({
+			data: {
+				mealType: MealType.DINNER,
+				apiKeyId: userKey.id,
+				recipeMeals: { create: [{ recipeId: recipeSaumonId, type: "Plat" }] }
+			}
+		});
+		mealUserDinnerId = m.id;
+		console.log("🍽️  Repas 2 (User) créé");
+	}
+
+	let mealUserBreakfastId = "";
+	if (recipeDessertId) {
+		const m = await prisma.meal.create({
+			data: {
+				mealType: MealType.BREAKFAST,
+				apiKeyId: userKey.id,
+				recipeMeals: { create: [{ recipeId: recipeDessertId, type: "Dessert" }] }
+			}
+		});
+		mealUserBreakfastId = m.id;
+		console.log("🍽️  Repas 3 (User) créé");
+	}
+
+	if (mealAdminId) {
 		await prisma.menu.create({
 			data: {
-				name: "Menu Semaine 1",
-				description: "Objectif Prise de masse",
-				duration: 7,
+				name: "Menu Découverte",
+				description: "Un repas complet midi",
+				duration: 1,
+				apiKeyId: adminKey.id,
+				menuMeals: {
+					create: [{ mealId: mealAdminId, dayNumber: 1 }]
+				}
+			}
+		});
+		console.log("📅 Menu 1 (Admin) créé");
+	}
+
+	if (mealUserBreakfastId && mealUserDinnerId) {
+		await prisma.menu.create({
+			data: {
+				name: "Ma Journée Type",
+				description: "Matin et Soir",
+				duration: 1,
 				apiKeyId: userKey.id,
 				menuMeals: {
 					create: [
-						{ mealId: meal.id, dayNumber: 1 }
+						{ mealId: mealUserBreakfastId, dayNumber: 1 },
+						{ mealId: mealUserDinnerId, dayNumber: 1 }
 					]
 				}
 			}
 		});
-		console.log("📅 Menu créé");
+		console.log("📅 Menu 2 (User) créé");
 	}
+
+	if (mealUserDinnerId) {
+		await prisma.menu.create({
+			data: {
+				name: "Week-end Saumon",
+				description: "Du poisson tout le weekend",
+				duration: 2,
+				apiKeyId: userKey.id,
+				menuMeals: {
+					create: [
+						{ mealId: mealUserDinnerId, dayNumber: 1 },
+						{ mealId: mealUserDinnerId, dayNumber: 2 }
+					]
+				}
+			}
+		});
+		console.log("📅 Menu 3 (User) créé");
+	}
+
 	console.log('✅ Seeding terminé avec succès !');
 }
 
