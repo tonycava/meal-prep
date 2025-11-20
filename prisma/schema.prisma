@@ -92,6 +92,7 @@ model ApiKey {
   id        String    @id @default(uuid())
   key       String    @unique
   name      String?
+  role      String    @default("user")
   isActive  Boolean   @default(true)
   createdAt DateTime  @default(now())
   expiresAt DateTime?
