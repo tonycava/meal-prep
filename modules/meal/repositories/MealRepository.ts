@@ -14,24 +14,51 @@ import { UpdateMealDto } from "$modules/meal/dto/updateMealDto.ts";
 
 export const MealRepository = (): IMealRepository => {
   return {
-    async update(mealDto: UpdateMealDto): Promise<void> {
+    async update(mealDto: UpdateMealDto, apiKey: string): Promise<Meal> {
       try {
-        await prisma.meal.update({
+        // Check if all recipeIds exist and belong to the same apiKey
+        if (mealDto.recipeIds) {
+          const existingRecipes = await prisma.recipe.findMany({
+            where: { id: { in: mealDto.recipeIds }, apiKey: { key: apiKey } },
+            select: { id: true },
+          });
+          if (existingRecipes.length !== mealDto.recipeIds.length) {
+            throw new AppError(
+              "Bad Request",
+              "One or more recipe IDs do not exist or do not belong to your account",
+              "Un ou plusieurs identifiants de recette n'existent pas ou n'appartiennent pas à votre compte.",
+              "error"
+            );
+          }
+        }
+
+        const updatedMeal = await prisma.meal.update({
+          where: { id: mealDto.id, apiKey: { key: apiKey } },
           data: {
             ...(mealDto.mealType && { mealType: mealDto.mealType as MealType }),
-            ...(mealDto.recipeMeals && {
+            ...(mealDto.recipeIds && {
               recipeMeals: {
                 deleteMany: {},
-                create: mealDto.recipeMeals.map((rm) => ({
-                  recipeId: rm.recipeId,
-                  type: rm.type,
+                create: mealDto.recipeIds.map((recipeId) => ({
+                  recipeId,
+                  type: "Plat", // Default type
                 })),
               },
             }),
           },
-          where: { id: mealDto.id },
+          include: {
+            recipeMeals: true,
+          },
         });
+
+        return {
+          id: updatedMeal.id,
+          mealType: updatedMeal.mealType,
+          recipeMeals: updatedMeal.recipeMeals,
+        };
       } catch (error) {
+        console.log("Error updating meal:", error);
+        if (error instanceof AppError) throw error;
         throw new AppError(
           "Internal Server Error",
           "An error occurred while updating meal",
@@ -56,14 +83,28 @@ export const MealRepository = (): IMealRepository => {
     },
     async save(mealDto: CreateMealDto, apiKey: string): Promise<Meal> {
       try {
+        // Check if all recipeIds exist and belong to the same apiKey
+        const existingRecipes = await prisma.recipe.findMany({
+          where: { id: { in: mealDto.recipeIds }, apiKey: { key: apiKey } },
+          select: { id: true },
+        });
+        if (existingRecipes.length !== mealDto.recipeIds.length) {
+          throw new AppError(
+            "Bad Request",
+            "One or more recipe IDs do not exist or do not belong to your account",
+            "Un ou plusieurs identifiants de recette n'existent pas ou n'appartiennent pas à votre compte.",
+            "error"
+          );
+        }
+
         const createdMeal = await prisma.meal.create({
           data: {
             mealType: mealDto.mealType as MealType,
             apiKey: { connect: { key: apiKey } },
             recipeMeals: {
-              create: mealDto.recipeMeals.map((rm) => ({
-                recipeId: rm.recipeId,
-                type: rm.type,
+              create: mealDto.recipeIds.map((recipeId) => ({
+                recipeId,
+                type: "Plat", // Default type
               })),
             },
           },
@@ -79,6 +120,7 @@ export const MealRepository = (): IMealRepository => {
         };
       } catch (error) {
         console.log("Error saving meal:", error);
+        if (error instanceof AppError) throw error;
         throw new AppError(
           "Internal Server Error",
           "An error occurred while saving meal",

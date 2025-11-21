@@ -9,8 +9,8 @@ const RecipeMeal = z.object({
 });
 
 export const createMealDto = z.object({
-  mealType: z.enum(Object.values(MealType) as [string, ...string[]]),
-  recipeMeals: z.array(RecipeMeal),
+  mealType: z.string().transform((val) => val.toUpperCase()).pipe(z.enum(Object.values(MealType) as [string, ...string[]])),
+  recipeIds: z.array(z.string()),
 });
 
 export type CreateMealDto = z.infer<typeof createMealDto>;

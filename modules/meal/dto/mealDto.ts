@@ -27,18 +27,15 @@ export const GetMealByIdInputSchema = z.object({
   id: z.uuid({
     message: "Invalid meal ID format",
   }),
-  apiKey: z.string(),
 });
 
 export const MealDTOSchema = z.object({
   id: z.uuid(),
   mealType: z.string(),
-  createdAt: z.string().datetime(),
-  updatedAt: z.string().datetime(),
   recipeMeals: z.array(
     z.object({
       recipeId: z.string(),
-      type: z.number(),
+      type: z.string(),
     })
   ),
 });

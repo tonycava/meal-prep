@@ -17,7 +17,7 @@ export const UpdateMealEndpoint = defaultEndpointsFactory
     handler: async ({ input, options }) => {
       const updateMealResponse = await UpdateMealUseCase({
         mealRepository: MealRepository(),
-      }).execute({ dto: input });
+      }).execute({ dto: input, apiKey: options.apiKey });
 
       return ApiResponse.send(updateMealResponse);
     },

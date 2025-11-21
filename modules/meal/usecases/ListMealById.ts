@@ -28,7 +28,7 @@ export const GetMealByIdUseCase: UseCase<Input, Output> = (dependencies) => {
       if (!result) {
         return UseCaseResponseBuilder.error(404, "Meal not found");
       }
-      return UseCaseResponseBuilder.success(200, { menus: [result], meta: { total: 1, offset: 0, limit: 1 } });
+      return UseCaseResponseBuilder.success(200, { menus: [result.meal], meta: { total: 1, offset: 0, limit: 1 } });
     },
   };
 };

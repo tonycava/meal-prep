@@ -17,7 +17,16 @@ export const SaveMealUseCase: UseCase<Input, Output> = (dependencies) => {
       const [error, meal] = await tryCatch(mealRepository.save(data.dto, data.apiKey));
       if (error) return UseCaseResponseBuilder.error(500, error.userFriendlyMessage)
 
-      return UseCaseResponseBuilder.success(201, { menus: [meal], meta: { total: 1, offset: 0, limit: 1 } });
+      const mappedMeal = {
+        id: meal.id,
+        mealType: meal.mealType,
+        recipeMeals: meal.recipeMeals.map((rm) => ({
+          recipeId: rm.recipeId,
+          type: rm.type,
+        })),
+      };
+
+      return UseCaseResponseBuilder.success(201, mappedMeal);
     }
   }
 };

@@ -21,7 +21,7 @@ export type IMealRepositoryDelete = {
 }
 
 export type IMealRepositoryUpdate = {
-  update(mealDto: UpdateMealDto): Promise<void>;
+  update(mealDto: UpdateMealDto, apiKey: string): Promise<Meal>;
 }
 
 export type IMealRepository =
