@@ -10,7 +10,9 @@ export const CreateIngredientEndpoint = defaultEndpointsFactory
   .addMiddleware(authMiddleware)
   .build({
     method: "post",
-    input: CreateIngredientDto.describe("Créer un nouvel ingrédient. Champs obligatoires : name (chaîne non vide). Les autres champs sont optionnels avec des valeurs par défaut."),
+    input: CreateIngredientDto.describe(
+      "Créer un nouvel ingrédient. Champs obligatoires : name (chaîne non vide). Les autres champs sont optionnels avec des valeurs par défaut.",
+    ),
     output: UseCaseResponseSchema,
     handler: async ({ input, options }) => {
       const createIngredientResponse = await CreateIngredientUseCase({

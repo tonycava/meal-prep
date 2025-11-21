@@ -15,7 +15,7 @@ export const DeleteRecipeEndPoint = defaultEndpointsFactory
     output: UseCaseResponseSchema,
     handler: async ({ input, options }) => {
       const deleteRecipeResponse = await DeleteRecipeUseCase({
-        recipeRepository: RecipeRepository(createUserFromOptions(options))
+        recipeRepository: RecipeRepository(createUserFromOptions(options)),
       }).execute({ dto: input });
       return ApiResponse.send(deleteRecipeResponse);
     },

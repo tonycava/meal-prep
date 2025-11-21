@@ -14,9 +14,9 @@ export const NutritionRepository = (): INutritionRepository => {
           "Internal Server Error",
           "An error occurred while calculating nutritional information.",
           "Une erreur est survenue lors du calcul des informations nutritionnelles.",
-          "error"
+          "error",
         );
       }
-    }
-  }
-}
+    },
+  };
+};

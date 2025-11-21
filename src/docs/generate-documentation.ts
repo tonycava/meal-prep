@@ -17,5 +17,7 @@ import path from "node:path";
     }).getSpecAsYaml(),
     "utf-8",
   );
-  console.log("Documentation generated successfully at assets/documentation.yaml");
+  console.log(
+    "Documentation generated successfully at assets/documentation.yaml",
+  );
 })();

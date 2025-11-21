@@ -19,53 +19,52 @@ import { UpdateMealEndpoint } from "$modules/meal/endpoints/UpdateMeal";
 import { DeleteMealEndpoint } from "$modules/meal/endpoints/DeleteMeal";
 
 export const routing: Routing = {
-      v1: {
-            /*
-            recipes: {
-			"/": new DependsOnMethod({
-				get: ListRecipesEndpoint,
-				post: CreateRecipeEndPoint,
-				delete: DeleteRecipeEndPoint,
-			}),
-			"/:id": new DependsOnMethod({
-                        get: ListRecipeByIdEndpoint,
-                  })
-            },*/
-            meals: {
-                  "/": new DependsOnMethod({
-                        get: ListMealsEndpoint,
-                        post: CreateMealEndpoint,
-                  }),
-                  "/:id": new DependsOnMethod({
-                        get: GetMealByIdEndpoint,
-                        put: UpdateMealEndpoint,
-                        delete: DeleteMealEndpoint,
-                  })
-            },
-            menus: new DependsOnMethod({
-                  get: ListMenusEndpoint,
-                  post: CreateMenuEndpoint,
-            }),
-            ingredients: {
-                  "/": new DependsOnMethod({
-                        get: ListIngredientEndpoint,
-                        post: CreateIngredientEndpoint,
-                  }),
-                  "/:id": new DependsOnMethod({
-                        get: GetIngredientByIdEndpoint,
-                        put: UpdateIngredientEndpoint,
-                        delete: DeleteIngredientEndpoint,
-                  })
-            },
-            "api-keys": {
-                  register: new DependsOnMethod({
-                        post: RegisterApiKeyEndpoint,
-                  })
-            },
-      },
-      public: new ServeStatic(path.join(__dirname, "../assets"), {
-            dotfiles: "deny",
-            index: false,
-            redirect: false,
+  v1: {
+    recipes: {
+      "/": new DependsOnMethod({
+        get: ListRecipesEndpoint,
+        post: CreateRecipeEndPoint,
+        delete: DeleteRecipeEndPoint,
       }),
+      "/:id": new DependsOnMethod({
+        get: ListRecipeByIdEndpoint,
+      }),
+    },
+    menus: new DependsOnMethod({
+      get: ListMenusEndpoint,
+      post: CreateMenuEndpoint,
+    }),
+    ingredients: {
+      "/": new DependsOnMethod({
+        get: ListIngredientEndpoint,
+        post: CreateIngredientEndpoint,
+      }),
+      "/:id": new DependsOnMethod({
+        get: GetIngredientByIdEndpoint,
+        put: UpdateIngredientEndpoint,
+        delete: DeleteIngredientEndpoint,
+      }),
+    },
+    meals: {
+      "/": new DependsOnMethod({
+      get: ListMealsEndpoint,
+      post: CreateMealEndpoint,
+      }),
+      "/:id": new DependsOnMethod({
+      get: GetMealByIdEndpoint,
+      put: UpdateMealEndpoint,
+      delete: DeleteMealEndpoint,
+      })
+      },
+    "api-keys": {
+      register: new DependsOnMethod({
+        post: RegisterApiKeyEndpoint,
+      }),
+    },
+  },
+  public: new ServeStatic(path.join(__dirname, "../assets"), {
+    dotfiles: "deny",
+    index: false,
+    redirect: false,
+  }),
 };

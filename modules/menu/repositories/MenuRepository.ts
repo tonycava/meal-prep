@@ -1,24 +1,30 @@
-import { IMenuRepository, CreateMenuDto, UpdateMenuDto, MenuWithMeals } from "../interfaces/IMenuRepository";
+import { IMenuRepository, CreateMenuDto} from "../interfaces/IMenuRepository";
 import { Menu } from "../entities/Menu";
 import { ListMenusOutput } from "../dto/menu.dto";
 import { prisma } from "$lib/db";
+import {AppError} from "$lib/errors/AppError.ts";
 
 export const MenuRepository = (): IMenuRepository => {
 	return {
-		async list(limit: number, offset: number): Promise<ListMenusOutput> {
+		async list(limit: number, offset: number, apiKey: string, role: string): Promise<ListMenusOutput> {
+			const where = role.toLowerCase() === "user" ? { apiKey: { key: apiKey } } : {};
 
 			const [menus, total] = await Promise.all([
 				prisma.menu.findMany({
+					where,
 					skip: offset,
 					take: limit,
 					orderBy: { createdAt: 'desc' },
 					include: {
-						_count: {
-							select: { meals: true }
+						menuMeals: {
+							select: {
+								mealId: true,
+								dayNumber: true
+							}
 						}
 					}
 				}),
-				prisma.menu.count()
+				prisma.menu.count({ where })
 			]);
 
 			return {
@@ -26,9 +32,10 @@ export const MenuRepository = (): IMenuRepository => {
 					id: menu.id,
 					name: menu.name,
 					description: menu.description,
+					duration: menu.duration,
 					createdAt: menu.createdAt.toISOString(),
 					updatedAt: menu.updatedAt,
-					itemCount: menu._count.meals
+					menuMeals: menu.menuMeals
 				})),
 				meta: {
 					total: total,
@@ -38,148 +45,46 @@ export const MenuRepository = (): IMenuRepository => {
 			};
 		},
 
-		async save(menuDto: CreateMenuDto, apiKey: string): Promise<MenuWithMeals> {
-			const createdMenu = await prisma.menu.create({
-				data: {
-					name: menuDto.name,
-					description: menuDto.description,
-					apiKey: { connect: { key: apiKey } },
-					meals: {
-						create: menuDto.meals.map(meal => ({
-							recipeId: meal.recipeId,
-							mealType: meal.mealType,
-							dayNumber: meal.dayNumber,
-							order: meal.order
-						}))
-					}
-				},
-				include: {
-					meals: {
-						include: {
-							recipe: {
-								select: {
-									id: true,
-									title: true,
-									description: true,
-									imageUrl: true
-								}
-							}
-						},
-						orderBy: [
-							{ dayNumber: 'asc' },
-							{ order: 'asc' }
-						]
-					}
-				}
-			});
-
-			return {
-				id: createdMenu.id,
-				name: createdMenu.name,
-				description: createdMenu.description,
-				createdAt: createdMenu.createdAt.toISOString(),
-				updatedAt: createdMenu.updatedAt,
-				meals: createdMenu.meals.map(meal => ({
-					id: meal.id,
-					recipeId: meal.recipeId,
-					mealType: meal.mealType,
-					order: meal.order,
-					dayNumber: meal.dayNumber,
-					recipe: {
-						id: meal.recipe.id,
-						title: meal.recipe.title,
-						description: meal.recipe.description,
-						imageUrl: meal.recipe.imageUrl
-					}
-				}))
-			};
-		},
-
-		async findById(id: string): Promise<MenuWithMeals | null> {
-			const menu = await prisma.menu.findUnique({
-				where: { id },
-				include: {
-					meals: {
-						include: {
-							recipe: {
-								select: {
-									id: true,
-									title: true,
-									description: true,
-									imageUrl: true
-								}
-							}
-						},
-						orderBy: [
-							{ dayNumber: 'asc' },
-							{ order: 'asc' }
-						]
-					}
-				}
-			});
-
-			if (!menu) return null;
-
-			return {
-				id: menu.id,
-				name: menu.name,
-				description: menu.description,
-				createdAt: menu.createdAt.toISOString(),
-				updatedAt: menu.updatedAt,
-				meals: menu.meals.map(meal => ({
-					id: meal.id,
-					recipeId: meal.recipeId,
-					mealType: meal.mealType,
-					order: meal.order,
-					dayNumber: meal.dayNumber,
-					recipe: {
-						id: meal.recipe.id,
-						title: meal.recipe.title,
-						description: meal.recipe.description,
-						imageUrl: meal.recipe.imageUrl
-					}
-				}))
-			};
-		},
-
-		async update(id: string, menuDto: UpdateMenuDto): Promise<Menu> {
-			if (menuDto.meals) {
-				await prisma.meal.deleteMany({
-					where: { menuId: id }
-				});
-			}
-
-			const updatedMenu = await prisma.menu.update({
-				where: { id },
-				data: {
-					...(menuDto.name && { name: menuDto.name }),
-					...(menuDto.description !== undefined && { description: menuDto.description }),
-					...(menuDto.meals && {
-						meals: {
-							create: menuDto.meals.map(meal => ({
-								recipeId: meal.recipeId,
-								mealType: meal.mealType,
-								dayNumber: meal.dayNumber,
-								order: meal.order
+		async save(menuDto: CreateMenuDto, apiKey: string): Promise<Menu> {
+			try {
+				const createdMenu = await prisma.menu.create({
+					data: {
+						name: menuDto.name,
+						description: menuDto.description,
+						duration: menuDto.duration,
+						apiKey: { connect: { key: apiKey } },
+						menuMeals: {
+							create: menuDto.mealIds.map(item => ({
+								meal: { connect: { id: item.mealId } },
+								dayNumber: item.dayNumber
 							}))
 						}
-					})
-				}
-			});
+					},
+					include: {
+						menuMeals: {
+							select: {
+								mealId: true,
+								dayNumber: true
+							}
+						}
+					}
+				});
 
-			return {
-				id: updatedMenu.id,
-				name: updatedMenu.name,
-				description: updatedMenu.description,
-				createdAt: updatedMenu.createdAt.toISOString(),
-				updatedAt: updatedMenu.updatedAt
-			};
+				return {
+					id: createdMenu.id,
+					name: createdMenu.name,
+					description: createdMenu.description,
+					duration: createdMenu.duration,
+					createdAt: createdMenu.createdAt.toISOString(),
+					updatedAt: createdMenu.updatedAt,
+					menuMeals: createdMenu.menuMeals
+				};
+			} catch (error) {
+				console.log(error);
+				throw new AppError("Internal Server Error",
+					"An error occurred while saving the menu.",
+					"La création du menu a échoué.", "error");
+			}
 		},
-
-		async delete(id: string): Promise<void> {
-			await prisma.menu.delete({
-				where: { id }
-			});
-		}
 	};
 };

@@ -1,11 +1,20 @@
-import { CreateIngredientDtoType, UpdateIngredientDtoType, IngredientResponseDtoType } from "../dto/ingredient.dto";
+import {
+  CreateIngredientDtoType,
+  UpdateIngredientDtoType,
+  IngredientResponseDtoType,
+} from "../dto/ingredient.dto";
 
 export type IIngredientRepositoryCreate = {
-  create(ingredientDto: CreateIngredientDtoType): Promise<IngredientResponseDtoType>;
+  create(
+    ingredientDto: CreateIngredientDtoType,
+  ): Promise<IngredientResponseDtoType>;
 };
 
 export type IIngredientRepositoryUpdate = {
-  update(id: string, ingredientDto: UpdateIngredientDtoType): Promise<IngredientResponseDtoType | null>;
+  update(
+    id: string,
+    ingredientDto: UpdateIngredientDtoType,
+  ): Promise<IngredientResponseDtoType | null>;
 };
 
 export type IIngredientRepositoryDelete = {
