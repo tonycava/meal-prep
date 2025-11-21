@@ -1,4 +1,3 @@
-import { defaultEndpointsFactory } from "express-zod-api";
 import {
   ListRecipesInputSchema,
   ListRecipesOutputSchema,
@@ -6,8 +5,10 @@ import {
 import { ListRecipesUseCase } from "../usecases/ListRecipes";
 import { RecipeRepository } from "../repositories/RecipeRepository";
 import { authMiddleware } from "$lib/middlewares/authMiddleware";
+import { endpointsFactory } from "$lib/common/endpointFactory.ts";
+import { createUserFromOptions } from "$lib/common/User.ts";
 
-export const ListRecipesEndpoint = defaultEndpointsFactory
+export const ListRecipesEndpoint = endpointsFactory
   .addMiddleware(authMiddleware)
   .build({
     method: "get",
@@ -28,7 +29,7 @@ export const ListRecipesEndpoint = defaultEndpointsFactory
       );
 
       const response = await ListRecipesUseCase({
-        recipeRepository: RecipeRepository(),
+        recipeRepository: RecipeRepository(createUserFromOptions(options)),
       }).execute({
         limit,
         offset,

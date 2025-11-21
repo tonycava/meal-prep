@@ -12,9 +12,11 @@ import { DeleteIngredientEndpoint } from "$modules/ingredient/endpoints/DeleteIn
 import { UpdateIngredientEndpoint } from "$modules/ingredient/endpoints/UpdateIngredient";
 import { GetIngredientByIdEndpoint } from "$modules/ingredient/endpoints/GetIngredientByIdEndpoint";
 import { RegisterApiKeyEndpoint } from "$modules/apikey/endpoints/RegisterApiKey";
+import { HomeEndpoint } from "$lib/common/endpoints/HomeEndpoint.ts";
 
 export const routing: Routing = {
   v1: {
+    "/": HomeEndpoint,
     recipes: {
       "/": new DependsOnMethod({
         get: ListRecipesEndpoint,
