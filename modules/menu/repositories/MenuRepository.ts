@@ -3,9 +3,72 @@ import { Menu } from "../entities/Menu";
 import { ListMenusOutput } from "../dto/menu.dto";
 import { prisma } from "$lib/db";
 import { AppError } from "$lib/errors/AppError.ts";
+import { CreateMenuPartialDtoWithId } from "$modules/menu/dto/createMenu.dto.ts";
 
 export const MenuRepository = (): IMenuRepository => {
+
   return {
+    async update(menuDto: CreateMenuPartialDtoWithId): Promise<void> {
+      const menu = await this.getOne(menuDto.id)
+      if (!menu) return;
+      const mealsToDelete = menu.menuMeals.filter(child => !menuDto.mealIds?.some(c => c.mealId === child.mealId));
+      for (const mealsToDeleteElement of mealsToDelete) {
+        await prisma.menuMeal.delete({ where: { menuId_mealId_dayNumber: { menuId: menuDto.id, mealId: mealsToDeleteElement.mealId, dayNumber: mealsToDeleteElement.dayNumber } } });
+      }
+
+      const mealsToAdd = menuDto.mealIds?.filter(
+        newMeal => !menu.menuMeals.some(existing => existing.mealId === newMeal.mealId)
+      ) || [];
+
+
+      for (const mealToAdd of mealsToAdd) {
+        await prisma.menuMeal.create({
+          data: {
+            menuId: menu.id,
+            mealId: mealToAdd.mealId,
+            dayNumber: mealToAdd.dayNumber
+          }
+        })
+      }
+
+      await prisma.menu.update({
+        data: {
+          name: menuDto.name,
+          description: menuDto.description,
+          duration: menuDto.duration,
+        },
+        where: { id: menuDto.id },
+      })
+
+
+      return;
+    },
+    async getOne(menuId: string): Promise<Menu | null> {
+      const menu = await prisma.menu.findFirst({
+        where: { id: menuId },
+        orderBy: { createdAt: "desc" },
+        include: {
+          menuMeals: {
+            select: {
+              mealId: true,
+              dayNumber: true,
+            },
+          },
+        },
+      });
+
+      if (!menu) return null;
+
+      return {
+        id: menu.id,
+        name: menu.name,
+        description: menu.description,
+        duration: menu.duration,
+        createdAt: menu.createdAt.toISOString(),
+        updatedAt: menu.updatedAt,
+        menuMeals: menu.menuMeals,
+      };
+    },
     async list(
       limit: number,
       offset: number,
@@ -94,6 +157,6 @@ export const MenuRepository = (): IMenuRepository => {
           "error",
         );
       }
-    },
+    }
   };
 };
