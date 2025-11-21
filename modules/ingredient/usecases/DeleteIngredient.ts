@@ -24,9 +24,15 @@ export const DeleteIngredientUseCase: UseCase<Input, Output> = (
         ingredientRepository.delete(data.id),
       );
       if (error)
-        return UseCaseResponseBuilder.error(HttpCode.INTERNAL_SERVER_ERROR, error.userFriendlyMessage);
+        return UseCaseResponseBuilder.error(
+          HttpCode.INTERNAL_SERVER_ERROR,
+          error.userFriendlyMessage,
+        );
       if (!deleted)
-        return UseCaseResponseBuilder.error(HttpCode.NOT_FOUND, "Ingrédient non trouvé");
+        return UseCaseResponseBuilder.error(
+          HttpCode.NOT_FOUND,
+          "Ingrédient non trouvé",
+        );
 
       return UseCaseResponseBuilder.success(HttpCode.NO_CONTENT, undefined);
     },

@@ -40,7 +40,10 @@ export const DeleteRecipeUseCase: UseCase<Input, Output> = (dependencies) => {
 
       const [error] = await tryCatch(recipeRepository.delete(data.dto));
       if (error)
-        return UseCaseResponseBuilder.error(HttpCode.INTERNAL_SERVER_ERROR, error.userFriendlyMessage);
+        return UseCaseResponseBuilder.error(
+          HttpCode.INTERNAL_SERVER_ERROR,
+          error.userFriendlyMessage,
+        );
 
       return UseCaseResponseBuilder.success(HttpCode.OK, true);
     },

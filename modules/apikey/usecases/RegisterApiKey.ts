@@ -26,10 +26,16 @@ export const RegisterApiKeyUseCase: UseCase<Input, Output> = (dependencies) => {
       );
 
       if (error) {
-        return UseCaseResponseBuilder.error(HttpCode.INTERNAL_SERVER_ERROR, error.userFriendlyMessage);
+        return UseCaseResponseBuilder.error(
+          HttpCode.INTERNAL_SERVER_ERROR,
+          error.userFriendlyMessage,
+        );
       }
 
-      return UseCaseResponseBuilder.success(HttpCode.INTERNAL_SERVER_ERROR, apiKey);
+      return UseCaseResponseBuilder.success(
+        HttpCode.INTERNAL_SERVER_ERROR,
+        apiKey,
+      );
     },
   };
 };

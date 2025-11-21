@@ -3,13 +3,13 @@ import {
   OutputFactory,
   UseCase,
   UseCaseResponseBuilder,
-} from "../../../lib/common/usecase";
+} from "$lib/common/usecase.ts";
 import {
   IngredientResponseDtoType,
   CreateIngredientDtoType,
 } from "../dto/ingredient.dto";
 import { IIngredientRepositoryCreate } from "../interfaces/IIngredientRepository";
-import { tryCatch } from "../../../lib/errors/tryCatch";
+import { tryCatch } from "$lib/errors/tryCatch.ts";
 import { HttpCode } from "$lib/common/api/HttpCode.ts";
 
 type Input = InputFactory<

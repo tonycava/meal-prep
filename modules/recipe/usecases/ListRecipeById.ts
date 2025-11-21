@@ -24,7 +24,10 @@ export const ListRecipeByIdUseCase: UseCase<Input, Output> = (dependencies) => {
       );
 
       if (error)
-        return UseCaseResponseBuilder.error(HttpCode.INTERNAL_SERVER_ERROR, error.userFriendlyMessage);
+        return UseCaseResponseBuilder.error(
+          HttpCode.INTERNAL_SERVER_ERROR,
+          error.userFriendlyMessage,
+        );
 
       if (!result) {
         return UseCaseResponseBuilder.error(

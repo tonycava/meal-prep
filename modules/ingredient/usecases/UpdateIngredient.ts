@@ -45,7 +45,10 @@ export const UpdateIngredientUseCase: UseCase<Input, Output> = (
         );
       }
       if (!ingredient)
-        return UseCaseResponseBuilder.error(HttpCode.NOT_FOUND, "Ingrédient non trouvé");
+        return UseCaseResponseBuilder.error(
+          HttpCode.NOT_FOUND,
+          "Ingrédient non trouvé",
+        );
 
       return UseCaseResponseBuilder.success(HttpCode.OK, ingredient);
     },

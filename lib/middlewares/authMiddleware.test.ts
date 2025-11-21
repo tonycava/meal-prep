@@ -24,7 +24,10 @@ describe("AuthMiddleware", () => {
 
     const data = responseMock._getJSONData();
     expect(data.status).toBe("error");
-    expect(data.error.message).toBe("API key is required in 'x-api-key' header");  });
+    expect(data.error.message).toBe(
+      "API key is required in 'x-api-key' header",
+    );
+  });
 
   it("should fail when API key does not exist", async () => {
     const { responseMock } = await testMiddleware({

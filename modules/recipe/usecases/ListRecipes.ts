@@ -21,15 +21,14 @@ export const ListRecipesUseCase: UseCase<Input, Output> = (dependencies) => {
   return {
     async execute(data): Promise<Output> {
       const [error, result] = await tryCatch(
-        recipeRepository.list(
-          data.limit,
-          data.offset,
-          data.filters || {},
-        ),
+        recipeRepository.list(data.limit, data.offset, data.filters || {}),
       );
 
       if (error)
-        return UseCaseResponseBuilder.error(HttpCode.INTERNAL_SERVER_ERROR, error.userFriendlyMessage);
+        return UseCaseResponseBuilder.error(
+          HttpCode.INTERNAL_SERVER_ERROR,
+          error.userFriendlyMessage,
+        );
 
       return UseCaseResponseBuilder.success(HttpCode.OK, result);
     },

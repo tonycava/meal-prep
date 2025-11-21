@@ -23,7 +23,10 @@ export const ListMenusUseCase: UseCase<Input, Output> = (dependencies) => {
         menuRepository.list(data.limit, data.offset, data.apiKey, data.role),
       );
       if (error)
-        return UseCaseResponseBuilder.error(HttpCode.INTERNAL_SERVER_ERROR, error.userFriendlyMessage);
+        return UseCaseResponseBuilder.error(
+          HttpCode.INTERNAL_SERVER_ERROR,
+          error.userFriendlyMessage,
+        );
 
       return UseCaseResponseBuilder.success(HttpCode.OK, result);
     },

@@ -21,7 +21,10 @@ export const UpdateRecipeUseCase: UseCase<Input, Output> = (dependencies) => {
     async execute(data): Promise<Output> {
       const [error] = await tryCatch(recipeRepository.update(data.dto));
       if (error)
-        return UseCaseResponseBuilder.error(HttpCode.INTERNAL_SERVER_ERROR, error.userFriendlyMessage);
+        return UseCaseResponseBuilder.error(
+          HttpCode.INTERNAL_SERVER_ERROR,
+          error.userFriendlyMessage,
+        );
 
       return UseCaseResponseBuilder.success(HttpCode.OK, true);
     },
