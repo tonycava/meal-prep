@@ -28,7 +28,9 @@
     "ai": "^5.0.93",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
+    "express-rate-limit": "^8.2.1",
     "express-zod-api": "^25.5.3",
+    "helmet": "^8.1.0",
     "http-errors": "^2.0.0",
     "swagger-ui-express": "^5.0.1",
     "zod": "^4.1.12"

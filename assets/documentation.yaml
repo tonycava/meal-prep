@@ -167,8 +167,8 @@ paths:
               required: [name, mealIds]
               properties:
                 name: { type: string, example: "Menu de la semaine" }
-                description: { type: string, example: "Menu équilibré pour 7 jours" }
-                duration: { type: integer, example: 7, description: "Durée du menu en jours" }
+                description: { type: string, example: "Menu équilibré du dîner" }
+                duration: { type: integer, example: 1, description: "Durée du menu en jours" }
                 mealIds:
                   type: array
                   description: Liste des IDs de repas à inclure dans le menu
@@ -223,7 +223,7 @@ paths:
       description: Génère un menu (plusieurs repas sur plusieurs jours) avec critères nutritionnels Min/Max
       operationId: generateMenu
       security:
-        - ApiKeyAuth: []
+        - ApiKeyAuth: [ ]
       parameters:
         - name: duration
           description: Nombre de jours sur lesquels s'étale le menu
@@ -233,7 +233,7 @@ paths:
           in: query
           schema:
             type: string
-            enum: [vegetarian, vegan, keto, paleo, other]
+            enum: [ vegetarian, vegan, keto, paleo, other ]
         - name: caloriesMin
           in: query
           schema: { type: integer }
@@ -282,7 +282,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MenuDetailResponse"
+                $ref: "#/components/schemas/MenuGenerationResponse"
+          links:
+            RegenerateMenu:
+              operationId: generateMenu
+              description: "L'utilisateur n'est pas satisfait : Relancer la génération avec les mêmes critères."
+              parameters:
+                duration: "$request.query.duration"
+                diet: "$request.query.diet"
+                caloriesMin: "$request.query.caloriesMin"
+                caloriesMax: "$request.query.caloriesMax"
+            SaveMenu:
+              operationId: createMenu
+              description: "L'utilisateur est satisfait : Sauvegarder ce menu en base de données."
         "400":
           description: Paramètres invalides
           content:
@@ -329,7 +341,7 @@ paths:
       summary: Détails d'un menu
       operationId: getMenu
       security:
-        - ApiKeyAuth: []
+        - ApiKeyAuth: [ ]
       parameters:
         - name: id
           in: path
@@ -377,7 +389,7 @@ paths:
       summary: Modifier un menu
       operationId: updateMenu
       security:
-        - ApiKeyAuth: []
+        - ApiKeyAuth: [ ]
       parameters:
         - name: id
           in: path
@@ -391,6 +403,7 @@ paths:
               properties:
                 name: { type: string }
                 description: { type: string }
+                duration: { type: integer }
                 meals:
                   type: array
                   items:
@@ -449,7 +462,7 @@ paths:
       summary: Supprimer un menu
       operationId: deleteMenu
       security:
-        - ApiKeyAuth: []
+        - ApiKeyAuth: [ ]
       parameters:
         - name: id
           in: path
@@ -517,14 +530,14 @@ paths:
             type: string
             enum:
               [
-                vegetarian,
-                vegan,
-                gluten_free,
-                dairy_free,
-                keto,
-                paleo,
-                low_carb,
-                other,
+                VEGETARIAN,
+                VEGAN,
+                GLUTEN_FREE,
+                DAIRY_FREE,
+                KETO,
+                PALEO,
+                LOW_CARB,
+                OTHER
               ]
         - name: search
           in: query
@@ -1755,7 +1768,7 @@ components:
         id: { type: string, format: uuid }
         name: { type: string }
         description: { type: string, nullable: true }
-        duration: { type: integer, nullable: true }
+        duration: { type: integer, nullable: true, default: 1 }
         createdAt: { type: string, format: date-time }
         updatedAt: { type: string, format: date-time }
         menuMeals:
@@ -1765,24 +1778,11 @@ components:
             type: object
             properties:
               mealId: { type: string, format: uuid }
-              dayNumber: { type: integer }
+              dayNumber: { type: integer, default: 1 }
 
     MenuDetail:
       allOf:
         - $ref: "#/components/schemas/Menu"
-        - type: object
-          properties:
-            meals:
-              type: array
-              description: Liste des repas assignés à ce menu avec leur jour (via DB MenuMeal)
-              items:
-                type: object
-                properties:
-                  dayNumber:
-                    type: integer
-                    description: Jour de la semaine (1-7)
-                  meal:
-                    $ref: "#/components/schemas/Meal"
 
     MenuDetailResponse:
       type: object

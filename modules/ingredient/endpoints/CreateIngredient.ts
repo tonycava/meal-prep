@@ -1,12 +1,12 @@
-import { defaultEndpointsFactory } from "express-zod-api";
 import { CreateIngredientDto } from "../dto/ingredient.dto";
 import { CreateIngredientUseCase } from "../usecases/CreateIngredient";
 import { IngredientRepository } from "../repositories/IngredientRepository";
-import { ApiResponse } from "../../../lib/common/api/ApiResponse";
-import { UseCaseResponseSchema } from "../../../lib/common/usecase";
-import { authMiddleware } from "../../../lib/middlewares/authMiddleware";
+import { ApiResponse } from "$lib/common/api/ApiResponse.ts";
+import { UseCaseResponseSchema } from "$lib/common/usecase.ts";
+import { authMiddleware } from "$lib/middlewares/authMiddleware.ts";
+import { endpointsFactory } from "$lib/common/endpointFactory.ts";
 
-export const CreateIngredientEndpoint = defaultEndpointsFactory
+export const CreateIngredientEndpoint = endpointsFactory
   .addMiddleware(authMiddleware)
   .build({
     method: "post",
@@ -14,10 +14,10 @@ export const CreateIngredientEndpoint = defaultEndpointsFactory
       "Créer un nouvel ingrédient. Champs obligatoires : name (chaîne non vide). Les autres champs sont optionnels avec des valeurs par défaut.",
     ),
     output: UseCaseResponseSchema,
-    handler: async ({ input, options }) => {
+    handler: async ({ input }) => {
       const createIngredientResponse = await CreateIngredientUseCase({
         ingredientRepository: IngredientRepository(),
-      }).execute({ dto: input, apikey: options.apikey });
+      }).execute({ dto: input });
 
       return ApiResponse.send(createIngredientResponse);
     },

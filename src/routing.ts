@@ -17,9 +17,11 @@ import { CreateMealEndpoint } from "$modules/meal/endpoints/CreateMeal";
 import { GetMealByIdEndpoint } from "$modules/meal/endpoints/GetMealById";
 import { UpdateMealEndpoint } from "$modules/meal/endpoints/UpdateMeal";
 import { DeleteMealEndpoint } from "$modules/meal/endpoints/DeleteMeal";
+import { HomeEndpoint } from "$lib/common/endpoints/HomeEndpoint.ts";
 
 export const routing: Routing = {
   v1: {
+    "/": HomeEndpoint,
     recipes: {
       "/": new DependsOnMethod({
         get: ListRecipesEndpoint,

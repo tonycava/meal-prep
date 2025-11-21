@@ -9,6 +9,7 @@ import { INutritionRepositoryCalculateNutrition } from "$modules/recipe/interfac
 import { NutritionalInfo } from "$modules/recipe/entities/Nutrition.ts";
 import { IIngredientRepositoryGetAllOfRecipe } from "$modules/recipe/interfaces/IIngredientRepository.ts";
 import { tryCatch } from "$lib/errors/tryCatch.ts";
+import { HttpCode } from "../../../lib/common/api/HttpCode";
 
 type Input = InputFactory<
   { dto: GetNutritionDto },
@@ -32,11 +33,11 @@ export const GetNutrutionUseCase: UseCase<Input, Output> = (dependencies) => {
       );
       if (nutritionalInfoError)
         return UseCaseResponseBuilder.error(
-          500,
+          HttpCode.INTERNAL_SERVER_ERROR,
           nutritionalInfoError.userFriendlyMessage,
         );
 
-      return UseCaseResponseBuilder.success(200, nutritionalInfo);
+      return UseCaseResponseBuilder.success(HttpCode.OK, nutritionalInfo);
     },
   };
 };

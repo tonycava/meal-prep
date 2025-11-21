@@ -1,9 +1,9 @@
 import { Middleware } from "express-zod-api";
-import { prisma } from "$lib/db";
+import { prisma } from "../db";
 import createHttpError from "http-errors";
 
 export const authMiddleware = new Middleware({
-  handler: async ({ request, response }) => {
+  handler: async ({ request }) => {
     const apiKey = request.headers["x-api-key"];
 
     if (!apiKey || typeof apiKey !== "string") {

@@ -16,8 +16,8 @@ export const mealPrepResultHandler = new ResultHandler({
       const { statusCode, message } = ensureHttpError(error);
 
       if (statusCode === 400 || statusCode === 422) {
-        const cleanMessage = message.includes(': ')
-          ? message.split(': ').slice(1).join(': ')
+        const cleanMessage = message.includes(": ")
+          ? message.split(": ").slice(1).join(": ")
           : message;
 
         return void response.status(statusCode).json({
@@ -32,7 +32,7 @@ export const mealPrepResultHandler = new ResultHandler({
         error: { message: appError.userFriendlyMessage },
       });
     }
-    console.log(output);
+    console.dir(output, { depth: null });
     response.status(output.status as number).json({ data: output });
   },
 });

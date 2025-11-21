@@ -7,6 +7,7 @@ import {
 import { IRecipeRepositoryFindById } from "../interfaces/IRecipeRepository";
 import { GetRecipeByIdInput, GetRecipeByIdOutput } from "../dto/recipeDto";
 import { tryCatch } from "../../../lib/errors/tryCatch";
+import { HttpCode } from "$lib/common/api/HttpCode.ts";
 
 type Input = InputFactory<
   GetRecipeByIdInput,
@@ -23,15 +24,18 @@ export const ListRecipeByIdUseCase: UseCase<Input, Output> = (dependencies) => {
       );
 
       if (error)
-        return UseCaseResponseBuilder.error(500, error.userFriendlyMessage);
+        return UseCaseResponseBuilder.error(
+          HttpCode.INTERNAL_SERVER_ERROR,
+          error.userFriendlyMessage,
+        );
 
       if (!result) {
         return UseCaseResponseBuilder.error(
-          500,
+          HttpCode.INTERNAL_SERVER_ERROR,
           "An unexpected error occured: no data returned.",
         );
       }
-      return UseCaseResponseBuilder.success(200, result);
+      return UseCaseResponseBuilder.success(HttpCode.OK, result);
     },
   };
 };

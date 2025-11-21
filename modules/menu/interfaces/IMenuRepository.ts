@@ -12,12 +12,16 @@ export type CreateMenuDto = {
 };
 
 export type IMenuRepositoryList = {
-  list(limit: number, offset: number, apiKey: string, role: string): Promise<ListMenusOutput>;
+  list(
+    limit: number,
+    offset: number,
+    apiKey: string,
+    role: string,
+  ): Promise<ListMenusOutput>;
 };
 
 export type IMenuRepositorySave = {
   save(menuDto: CreateMenuDto, apiKey: string): Promise<Menu>;
 };
 
-export type IMenuRepository = IMenuRepositoryList &
-  IMenuRepositorySave;
+export type IMenuRepository = IMenuRepositoryList & IMenuRepositorySave;

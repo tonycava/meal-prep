@@ -7,6 +7,7 @@ import {
 import { IRecipeRepositoryList } from "../interfaces/IRecipeRepository";
 import { IRecipeFilters, ListRecipesOutput } from "../dto/recipeDto";
 import { tryCatch } from "$lib/errors/tryCatch.ts";
+import { HttpCode } from "$lib/common/api/HttpCode.ts";
 
 type Input = InputFactory<
   { limit: number; offset: number; filters?: IRecipeFilters; apiKey: string },
@@ -20,18 +21,16 @@ export const ListRecipesUseCase: UseCase<Input, Output> = (dependencies) => {
   return {
     async execute(data): Promise<Output> {
       const [error, result] = await tryCatch(
-        recipeRepository.list(
-          data.limit,
-          data.offset,
-          data.filters || {},
-          data.apiKey,
-        ),
+        recipeRepository.list(data.limit, data.offset, data.filters || {}),
       );
 
       if (error)
-        return UseCaseResponseBuilder.error(500, error.userFriendlyMessage);
+        return UseCaseResponseBuilder.error(
+          HttpCode.INTERNAL_SERVER_ERROR,
+          error.userFriendlyMessage,
+        );
 
-      return UseCaseResponseBuilder.success(200, result);
+      return UseCaseResponseBuilder.success(HttpCode.OK, result);
     },
   };
 };

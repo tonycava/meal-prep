@@ -12,14 +12,14 @@ export const ListMenusInputSchema = z.object({
 });
 
 export const MenuDTOSchema = z.object({
-  id: z.string(),
+  id: z.uuid(),
   name: z.string(),
   description: z.string().nullable(),
   duration: z.number().nullable(),
   createdAt: z.string(),
   updatedAt: z.coerce.date(),
   menuMeals: z.array(z.object({
-    mealId: z.string(),
+    mealId: z.uuid(),
     dayNumber: z.number(),
   })),
 });
@@ -34,13 +34,13 @@ export const ListMenusOutputSchema = z.object({
 });
 
 export const MealSchema = z.object({
-  id: z.string(),
+  id: z.uuid(),
   recipeId: z.string(),
   mealType: z.string(),
   order: z.number(),
   dayNumber: z.number(),
   recipe: z.object({
-    id: z.string(),
+    id: z.uuid(),
     title: z.string(),
     description: z.string().nullable(),
     imageUrl: z.string().nullable(),
@@ -48,7 +48,7 @@ export const MealSchema = z.object({
 });
 
 export const MenuWithMealsSchema = z.object({
-  id: z.string(),
+  id: z.uuid(),
   name: z.string(),
   description: z.string().nullable(),
   createdAt: z.string(),

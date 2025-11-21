@@ -1,5 +1,7 @@
 import { createConfig } from "express-zod-api";
 import ui from "swagger-ui-express";
+import helmet from "helmet";
+import RateLimit from "$lib/common/api/RateLimit.ts";
 
 export const config = createConfig({
   http: { listen: 8090 }, // port, UNIX socket or Net::ListenOptions
@@ -8,6 +10,9 @@ export const config = createConfig({
     patch: ["body", "query", "params"],
   },
   beforeRouting: ({ app }) => {
+    app.use(helmet());
+
+    app.use(RateLimit.defaultRateLimit);
     app.use(
       "/docs",
       ui.serve,

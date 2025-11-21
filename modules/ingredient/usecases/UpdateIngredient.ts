@@ -3,13 +3,14 @@ import {
   OutputFactory,
   UseCase,
   UseCaseResponseBuilder,
-} from "../../../lib/common/usecase";
+} from "$lib/common/usecase.ts";
 import {
   IngredientResponseDtoType,
   UpdateIngredientDtoType,
 } from "../dto/ingredient.dto";
 import { IIngredientRepositoryUpdate } from "../interfaces/IIngredientRepository";
-import { tryCatch } from "../../../lib/errors/tryCatch";
+import { tryCatch } from "$lib/errors/tryCatch.ts";
+import { HttpCode } from "$lib/common/api/HttpCode.ts";
 
 type Input = InputFactory<
   { id: string; dto: UpdateIngredientDtoType },
@@ -34,19 +35,22 @@ export const UpdateIngredientUseCase: UseCase<Input, Output> = (
           )
         ) {
           return UseCaseResponseBuilder.error(
-            409,
+            HttpCode.CONFLICT,
             "Un ingrédient avec ce nom existe déjà",
           );
         }
         return UseCaseResponseBuilder.error(
-          500,
+          HttpCode.INTERNAL_SERVER_ERROR,
           error.userFriendlyMessage || error.message,
         );
       }
       if (!ingredient)
-        return UseCaseResponseBuilder.error(404, "Ingrédient non trouvé");
+        return UseCaseResponseBuilder.error(
+          HttpCode.NOT_FOUND,
+          "Ingrédient non trouvé",
+        );
 
-      return UseCaseResponseBuilder.success(200, ingredient);
+      return UseCaseResponseBuilder.success(HttpCode.OK, ingredient);
     },
   };
 };

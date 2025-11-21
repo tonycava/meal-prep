@@ -113,8 +113,7 @@ export const RecipeRepository = (user: User): IRecipeRepository => {
       offset: number,
       filters: IRecipeFilters,
     ): Promise<ListRecipesOutput> {
-      const where = {
-        ...(user.role === "user" ? { apiKey: user.apiKey } : ({} as object)),
+      const where: Prisma.RecipeWhereInput = {
         ...(filters.category && {
           category: filters.category as RecipeCategory,
         }),
@@ -128,13 +127,19 @@ export const RecipeRepository = (user: User): IRecipeRepository => {
             },
           },
         }),
-        ...(filters.search && {
-          OR: [
-            { title: { contains: filters.search, mode: "insensitive" } },
-            { description: { contains: filters.search, mode: "insensitive" } },
-          ],
-        }),
+        OR: [
+          user.role === "user" ? { apiKeyId: user.apiKey } : ({} as object),
+          { isPublic: true },
+          ...(filters.search
+            ? [
+              { title: { contains: filters.search, mode: "insensitive" } },
+              { description: { contains: filters.search, mode: "insensitive" } },
+            ]
+            : []),
+        ],
       };
+
+      console.dir(where, {depth: null})
 
       const [recipes, total] = await Promise.all([
         prisma.recipe.findMany({
