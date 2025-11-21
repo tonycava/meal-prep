@@ -10,7 +10,7 @@ import {
 } from "../dto/ingredient.dto";
 import { IIngredientRepositoryUpdate } from "../interfaces/IIngredientRepository";
 import { tryCatch } from "$lib/errors/tryCatch.ts";
-import { HTTP_CODE } from "$lib/common/api/HttpCode.ts";
+import { HttpCode } from "$lib/common/api/HttpCode.ts";
 
 type Input = InputFactory<
   { id: string; dto: UpdateIngredientDtoType },
@@ -35,19 +35,19 @@ export const UpdateIngredientUseCase: UseCase<Input, Output> = (
           )
         ) {
           return UseCaseResponseBuilder.error(
-            HTTP_CODE.CONFLICT,
+            HttpCode.CONFLICT,
             "Un ingrédient avec ce nom existe déjà",
           );
         }
         return UseCaseResponseBuilder.error(
-          HTTP_CODE.INTERNAL_SERVER_ERROR,
+          HttpCode.INTERNAL_SERVER_ERROR,
           error.userFriendlyMessage || error.message,
         );
       }
       if (!ingredient)
-        return UseCaseResponseBuilder.error(HTTP_CODE.NOT_FOUND, "Ingrédient non trouvé");
+        return UseCaseResponseBuilder.error(HttpCode.NOT_FOUND, "Ingrédient non trouvé");
 
-      return UseCaseResponseBuilder.success(HTTP_CODE.OK, ingredient);
+      return UseCaseResponseBuilder.success(HttpCode.OK, ingredient);
     },
   };
 };

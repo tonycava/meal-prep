@@ -6,7 +6,7 @@ import {
 } from "$lib/common/usecase.ts";
 import { IIngredientRepositoryDelete } from "../interfaces/IIngredientRepository";
 import { tryCatch } from "$lib/errors/tryCatch.ts";
-import { HTTP_CODE } from "$lib/common/api/HttpCode.ts";
+import { HttpCode } from "$lib/common/api/HttpCode.ts";
 
 type Input = InputFactory<
   { id: string },
@@ -24,11 +24,11 @@ export const DeleteIngredientUseCase: UseCase<Input, Output> = (
         ingredientRepository.delete(data.id),
       );
       if (error)
-        return UseCaseResponseBuilder.error(HTTP_CODE.INTERNAL_SERVER_ERROR, error.userFriendlyMessage);
+        return UseCaseResponseBuilder.error(HttpCode.INTERNAL_SERVER_ERROR, error.userFriendlyMessage);
       if (!deleted)
-        return UseCaseResponseBuilder.error(HTTP_CODE.NOT_FOUND, "Ingrédient non trouvé");
+        return UseCaseResponseBuilder.error(HttpCode.NOT_FOUND, "Ingrédient non trouvé");
 
-      return UseCaseResponseBuilder.success(HTTP_CODE.NO_CONTENT, undefined);
+      return UseCaseResponseBuilder.success(HttpCode.NO_CONTENT, undefined);
     },
   };
 };

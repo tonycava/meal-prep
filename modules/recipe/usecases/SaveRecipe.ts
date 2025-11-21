@@ -8,7 +8,7 @@ import { CreateRecipeDto } from "../dto/createRecipeDto";
 import { Recipe } from "../entities/Recipe";
 import { IRecipeRepositorySave } from "../interfaces/IRecipeRepository";
 import { tryCatch } from "../../../lib/errors/tryCatch";
-import { HTTP_CODE } from "$lib/common/api/HttpCode.ts";
+import { HttpCode } from "$lib/common/api/HttpCode.ts";
 
 type Input = InputFactory<
   { dto: CreateRecipeDto },
@@ -22,9 +22,9 @@ export const SaveRecipeUseCase: UseCase<Input, Output> = (dependencies) => {
     async execute(data): Promise<Output> {
       const [error, recipe] = await tryCatch(recipeRepository.save(data.dto));
       if (error)
-        return UseCaseResponseBuilder.error(HTTP_CODE.INTERNAL_SERVER_ERROR, error.userFriendlyMessage);
+        return UseCaseResponseBuilder.error(HttpCode.INTERNAL_SERVER_ERROR, error.userFriendlyMessage);
 
-      return UseCaseResponseBuilder.success(HTTP_CODE.CREATED, recipe);
+      return UseCaseResponseBuilder.success(HttpCode.CREATED, recipe);
     },
   };
 };

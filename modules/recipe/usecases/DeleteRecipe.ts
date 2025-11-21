@@ -10,7 +10,7 @@ import {
 } from "../interfaces/IRecipeRepository";
 import { tryCatch } from "$lib/errors/tryCatch.ts";
 import { DeleteRecipeDto } from "../dto/deleteRecipeDto";
-import { HTTP_CODE } from "$lib/common/api/HttpCode.ts";
+import { HttpCode } from "$lib/common/api/HttpCode.ts";
 
 type Input = InputFactory<
   { dto: DeleteRecipeDto },
@@ -29,20 +29,20 @@ export const DeleteRecipeUseCase: UseCase<Input, Output> = (dependencies) => {
       );
       if (isUsedError)
         return UseCaseResponseBuilder.error(
-          HTTP_CODE.INTERNAL_SERVER_ERROR,
+          HttpCode.INTERNAL_SERVER_ERROR,
           isUsedError.userFriendlyMessage,
         );
       if (isUsed)
         return UseCaseResponseBuilder.error(
-          HTTP_CODE.BAD_REQUEST,
+          HttpCode.BAD_REQUEST,
           "Recipe is used in one or more menus and cannot be deleted.",
         );
 
       const [error] = await tryCatch(recipeRepository.delete(data.dto));
       if (error)
-        return UseCaseResponseBuilder.error(HTTP_CODE.INTERNAL_SERVER_ERROR, error.userFriendlyMessage);
+        return UseCaseResponseBuilder.error(HttpCode.INTERNAL_SERVER_ERROR, error.userFriendlyMessage);
 
-      return UseCaseResponseBuilder.success(HTTP_CODE.OK, true);
+      return UseCaseResponseBuilder.success(HttpCode.OK, true);
     },
   };
 };

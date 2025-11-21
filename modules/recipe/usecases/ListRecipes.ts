@@ -7,7 +7,7 @@ import {
 import { IRecipeRepositoryList } from "../interfaces/IRecipeRepository";
 import { IRecipeFilters, ListRecipesOutput } from "../dto/recipeDto";
 import { tryCatch } from "$lib/errors/tryCatch.ts";
-import { HTTP_CODE } from "$lib/common/api/HttpCode.ts";
+import { HttpCode } from "$lib/common/api/HttpCode.ts";
 
 type Input = InputFactory<
   { limit: number; offset: number; filters?: IRecipeFilters; apiKey: string },
@@ -29,9 +29,9 @@ export const ListRecipesUseCase: UseCase<Input, Output> = (dependencies) => {
       );
 
       if (error)
-        return UseCaseResponseBuilder.error(HTTP_CODE.INTERNAL_SERVER_ERROR, error.userFriendlyMessage);
+        return UseCaseResponseBuilder.error(HttpCode.INTERNAL_SERVER_ERROR, error.userFriendlyMessage);
 
-      return UseCaseResponseBuilder.success(HTTP_CODE.OK, result);
+      return UseCaseResponseBuilder.success(HttpCode.OK, result);
     },
   };
 };

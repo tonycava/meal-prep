@@ -8,7 +8,7 @@ import { CreateMenuDto } from "../dto/createMenu.dto";
 import { IMenuRepositorySave } from "../interfaces/IMenuRepository";
 import { tryCatch } from "$lib/errors/tryCatch";
 import { Menu } from "$modules/menu/entities/Menu.ts";
-import { HTTP_CODE } from "$lib/common/api/HttpCode.ts";
+import { HttpCode } from "$lib/common/api/HttpCode.ts";
 
 type Input = InputFactory<
   { dto: CreateMenuDto; apiKey: string },
@@ -25,11 +25,11 @@ export const SaveMenuUseCase: UseCase<Input, Output> = (dependencies) => {
       );
       if (error)
         return UseCaseResponseBuilder.error(
-          HTTP_CODE.BAD_REQUEST,
+          HttpCode.BAD_REQUEST,
           "The meal provided for this menu does not exist",
         );
 
-      return UseCaseResponseBuilder.success(HTTP_CODE.CREATED, menu);
+      return UseCaseResponseBuilder.success(HttpCode.CREATED, menu);
     },
   };
 };
