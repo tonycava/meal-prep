@@ -5,11 +5,9 @@ import {
   UseCaseResponseBuilder,
 } from "$lib/common/usecase";
 import { CreateMenuDto } from "../dto/createMenu.dto";
-import {
-  IMenuRepositorySave,
-} from "../interfaces/IMenuRepository";
+import { IMenuRepositorySave } from "../interfaces/IMenuRepository";
 import { tryCatch } from "$lib/errors/tryCatch";
-import {Menu} from "$modules/menu/entities/Menu.ts";
+import { Menu } from "$modules/menu/entities/Menu.ts";
 
 type Input = InputFactory<
   { dto: CreateMenuDto; apiKey: string },
@@ -25,7 +23,10 @@ export const SaveMenuUseCase: UseCase<Input, Output> = (dependencies) => {
         menuRepository.save(data.dto, data.apiKey),
       );
       if (error)
-        return UseCaseResponseBuilder.error(400, "The meal provided for this menu does not exist");
+        return UseCaseResponseBuilder.error(
+          400,
+          "The meal provided for this menu does not exist",
+        );
 
       return UseCaseResponseBuilder.success(201, menu);
     },

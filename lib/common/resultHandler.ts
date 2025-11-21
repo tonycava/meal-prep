@@ -16,8 +16,8 @@ export const mealPrepResultHandler = new ResultHandler({
       const { statusCode, message } = ensureHttpError(error);
 
       if (statusCode === 400 || statusCode === 422) {
-        const cleanMessage = message.includes(': ')
-          ? message.split(': ').slice(1).join(': ')
+        const cleanMessage = message.includes(": ")
+          ? message.split(": ").slice(1).join(": ")
           : message;
 
         return void response.status(statusCode).json({

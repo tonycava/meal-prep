@@ -20,9 +20,9 @@ export const ListIngredientEndpoint = endpointsFactory
       offset: z.number(),
     }),
     handler: async ({
-                      input: { category, search, limit = 20, offset = 0 },
-                      logger,
-                    }) => {
+      input: { category, search, limit = 20, offset = 0 },
+      logger,
+    }) => {
       const where: Prisma.IngredientWhereInput = {};
 
       if (category) {
@@ -51,7 +51,9 @@ export const ListIngredientEndpoint = endpointsFactory
         prisma.ingredient.count({ where }),
       ]);
 
-      logger.debug(`Retrieved ${ingredients.length} ingredients out of ${total}`);
+      logger.debug(
+        `Retrieved ${ingredients.length} ingredients out of ${total}`,
+      );
 
       return {
         ingredients,
