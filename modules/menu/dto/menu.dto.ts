@@ -15,9 +15,13 @@ export const MenuDTOSchema = z.object({
   id: z.string(),
   name: z.string(),
   description: z.string().nullable(),
+  duration: z.number().nullable(),
   createdAt: z.string(),
   updatedAt: z.coerce.date(),
-  itemCount: z.number(),
+  menuMeals: z.array(z.object({
+    mealId: z.string(),
+    dayNumber: z.number(),
+  })),
 });
 
 export const ListMenusOutputSchema = z.object({

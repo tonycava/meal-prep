@@ -1,12 +1,13 @@
 import { Middleware } from "express-zod-api";
-import { prisma } from "../../lib/db";
+import { prisma } from "$lib/db";
+import createHttpError from "http-errors";
 
 export const authMiddleware = new Middleware({
-  handler: async ({ request }) => {
+  handler: async ({ request, response }) => {
     const apiKey = request.headers["x-api-key"];
 
     if (!apiKey || typeof apiKey !== "string") {
-      throw new Error("API key is required in x-api-key header");
+      throw createHttpError(401, "API key is required in 'x-api-key' header");
     }
 
     // Vérifier que l'API key existe et est active
@@ -15,11 +16,11 @@ export const authMiddleware = new Middleware({
     });
 
     if (!existingKey) {
-      throw new Error("Invalid API key");
+      throw createHttpError(401, "Invalid API key");
     }
 
     if (!existingKey.isActive) {
-      throw new Error("API key is inactive");
+      throw createHttpError(401, "API key is inactive");
     }
 
     return { apiKey, role: existingKey.role };
