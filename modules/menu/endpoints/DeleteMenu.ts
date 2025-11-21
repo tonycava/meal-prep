@@ -1,5 +1,5 @@
 import { endpointsFactory } from "$lib/common/endpointFactory.ts";
-import { authMiddleware } from "$lib/middlewares/authMiddleware.ts";
+import { authMiddleware } from "../../../lib/middlewares/authMiddleware";
 import { deleteMenuDto } from "../dto/deleteMenu.dto";
 import { DeleteMenuUseCase } from "../usecases/DeleteMenu";
 import { MenuRepository } from "../repositories/MenuRepository"
@@ -7,7 +7,7 @@ import createHttpError from "http-errors";
 import { z } from "zod";
 
 export const DeleteMenuEndpoint = endpointsFactory
-	.authMiddleware(authMiddleware)
+	.addMiddleware(authMiddleware)
 	.build({
 		method: "delete",
 		input: deleteMenuDto,

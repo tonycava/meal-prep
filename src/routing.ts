@@ -6,6 +6,7 @@ import { CreateRecipeEndPoint } from "$modules/recipe/endpoints/CreateRecipe.ts"
 import { DeleteRecipeEndPoint } from "$modules/recipe/endpoints/DeleteRecipe.ts";
 import { ListMenusEndpoint } from "$modules/menu/endpoints/ListMenus.ts";
 import { CreateMenuEndpoint } from "$modules/menu/endpoints/CreateMenu.ts";
+import { DeleteMenuEndpoint } from "$modules/menu/endpoints/DeleteMenu.ts"
 import { ListIngredientEndpoint } from "$modules/ingredient/endpoints/ListIngredient";
 import { CreateIngredientEndpoint } from "$modules/ingredient/endpoints/CreateIngredient";
 import { DeleteIngredientEndpoint } from "$modules/ingredient/endpoints/DeleteIngredient";
@@ -37,6 +38,7 @@ export const routing: Routing = {
       get: ListMenusEndpoint,
       post: CreateMenuEndpoint,
       patch: UpdateMenuEndpoint,
+	delete: DeleteMenuEndpoint
     }),
     ingredients: {
       "/": new DependsOnMethod({
