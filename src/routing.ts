@@ -12,6 +12,11 @@ import { DeleteIngredientEndpoint } from "$modules/ingredient/endpoints/DeleteIn
 import { UpdateIngredientEndpoint } from "$modules/ingredient/endpoints/UpdateIngredient";
 import { GetIngredientByIdEndpoint } from "$modules/ingredient/endpoints/GetIngredientByIdEndpoint";
 import { RegisterApiKeyEndpoint } from "$modules/apikey/endpoints/RegisterApiKey";
+import { ListMealsEndpoint } from "$modules/meal/endpoints/ListMeals";
+import { CreateMealEndpoint } from "$modules/meal/endpoints/CreateMeal";
+import { GetMealByIdEndpoint } from "$modules/meal/endpoints/GetMealById";
+import { UpdateMealEndpoint } from "$modules/meal/endpoints/UpdateMeal";
+import { DeleteMealEndpoint } from "$modules/meal/endpoints/DeleteMeal";
 import { HomeEndpoint } from "$lib/common/endpoints/HomeEndpoint.ts";
 
 export const routing: Routing = {
@@ -42,6 +47,17 @@ export const routing: Routing = {
         delete: DeleteIngredientEndpoint,
       }),
     },
+    meals: {
+      "/": new DependsOnMethod({
+      get: ListMealsEndpoint,
+      post: CreateMealEndpoint,
+      }),
+      "/:id": new DependsOnMethod({
+      get: GetMealByIdEndpoint,
+      put: UpdateMealEndpoint,
+      delete: DeleteMealEndpoint,
+      })
+      },
     "api-keys": {
       register: new DependsOnMethod({
         post: RegisterApiKeyEndpoint,
