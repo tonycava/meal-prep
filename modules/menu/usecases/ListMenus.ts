@@ -7,6 +7,7 @@ import {
 import { ListMenusOutput } from "../dto/menu.dto";
 import { IMenuRepositoryList } from "../interfaces/IMenuRepository";
 import { tryCatch } from "$lib/errors/tryCatch";
+import { HTTP_CODE } from "$lib/common/api/HttpCode.ts";
 
 type Input = InputFactory<
   { limit: number; offset: number; apiKey: string; role: string },
@@ -22,9 +23,9 @@ export const ListMenusUseCase: UseCase<Input, Output> = (dependencies) => {
         menuRepository.list(data.limit, data.offset, data.apiKey, data.role),
       );
       if (error)
-        return UseCaseResponseBuilder.error(500, error.userFriendlyMessage);
+        return UseCaseResponseBuilder.error(HTTP_CODE.INTERNAL_SERVER_ERROR, error.userFriendlyMessage);
 
-      return UseCaseResponseBuilder.success(200, result);
+      return UseCaseResponseBuilder.success(HTTP_CODE.OK, result);
     },
   };
 };

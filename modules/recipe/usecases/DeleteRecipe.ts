@@ -3,13 +3,14 @@ import {
   OutputFactory,
   UseCase,
   UseCaseResponseBuilder,
-} from "../../../lib/common/usecase";
+} from "$lib/common/usecase.ts";
 import {
   IRecipeRepositoryDelete,
   IRecipeRepositoryIsUseInOneMenu,
 } from "../interfaces/IRecipeRepository";
-import { tryCatch } from "../../../lib/errors/tryCatch";
+import { tryCatch } from "$lib/errors/tryCatch.ts";
 import { DeleteRecipeDto } from "../dto/deleteRecipeDto";
+import { HTTP_CODE } from "$lib/common/api/HttpCode.ts";
 
 type Input = InputFactory<
   { dto: DeleteRecipeDto },
@@ -28,20 +29,20 @@ export const DeleteRecipeUseCase: UseCase<Input, Output> = (dependencies) => {
       );
       if (isUsedError)
         return UseCaseResponseBuilder.error(
-          500,
+          HTTP_CODE.INTERNAL_SERVER_ERROR,
           isUsedError.userFriendlyMessage,
         );
       if (isUsed)
         return UseCaseResponseBuilder.error(
-          400,
+          HTTP_CODE.BAD_REQUEST,
           "Recipe is used in one or more menus and cannot be deleted.",
         );
 
       const [error] = await tryCatch(recipeRepository.delete(data.dto));
       if (error)
-        return UseCaseResponseBuilder.error(500, error.userFriendlyMessage);
+        return UseCaseResponseBuilder.error(HTTP_CODE.INTERNAL_SERVER_ERROR, error.userFriendlyMessage);
 
-      return UseCaseResponseBuilder.success(200, true);
+      return UseCaseResponseBuilder.success(HTTP_CODE.OK, true);
     },
   };
 };

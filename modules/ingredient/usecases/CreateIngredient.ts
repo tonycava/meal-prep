@@ -10,6 +10,7 @@ import {
 } from "../dto/ingredient.dto";
 import { IIngredientRepositoryCreate } from "../interfaces/IIngredientRepository";
 import { tryCatch } from "../../../lib/errors/tryCatch";
+import { HTTP_CODE } from "$lib/common/api/HttpCode.ts";
 
 type Input = InputFactory<
   { dto: CreateIngredientDtoType },
@@ -34,22 +35,22 @@ export const CreateIngredientUseCase: UseCase<Input, Output> = (
           )
         ) {
           return UseCaseResponseBuilder.error(
-            409,
+            HTTP_CODE.CONFLICT,
             "Un ingrédient avec ce nom existe déjà",
           );
         }
         return UseCaseResponseBuilder.error(
-          500,
+          HTTP_CODE.INTERNAL_SERVER_ERROR,
           error.userFriendlyMessage || error.message,
         );
       }
       if (!ingredient)
         return UseCaseResponseBuilder.error(
-          500,
+          HTTP_CODE.INTERNAL_SERVER_ERROR,
           "Erreur lors de la création de l'ingrédient",
         );
 
-      return UseCaseResponseBuilder.success(201, ingredient);
+      return UseCaseResponseBuilder.success(HTTP_CODE.CREATED, ingredient);
     },
   };
 };

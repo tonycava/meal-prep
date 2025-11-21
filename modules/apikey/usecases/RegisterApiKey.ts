@@ -8,6 +8,7 @@ import { IApiKeyRepositoryCreate } from "../interfaces/IApiKeyRepository";
 import { RegisterApiKeyInput } from "../dto/registerApiKey.dto";
 import { tryCatch } from "$lib/errors/tryCatch";
 import { ApiKey } from "@prisma/client";
+import { HTTP_CODE } from "$lib/common/api/HttpCode.ts";
 
 type Input = InputFactory<
   { input: RegisterApiKeyInput },
@@ -25,10 +26,10 @@ export const RegisterApiKeyUseCase: UseCase<Input, Output> = (dependencies) => {
       );
 
       if (error) {
-        return UseCaseResponseBuilder.error(500, error.userFriendlyMessage);
+        return UseCaseResponseBuilder.error(HTTP_CODE.INTERNAL_SERVER_ERROR, error.userFriendlyMessage);
       }
 
-      return UseCaseResponseBuilder.success(201, apiKey);
+      return UseCaseResponseBuilder.success(HTTP_CODE.INTERNAL_SERVER_ERROR, apiKey);
     },
   };
 };

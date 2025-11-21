@@ -3,9 +3,10 @@ import {
   OutputFactory,
   UseCase,
   UseCaseResponseBuilder,
-} from "../../../lib/common/usecase";
+} from "$lib/common/usecase.ts";
 import { IIngredientRepositoryDelete } from "../interfaces/IIngredientRepository";
-import { tryCatch } from "../../../lib/errors/tryCatch";
+import { tryCatch } from "$lib/errors/tryCatch.ts";
+import { HTTP_CODE } from "$lib/common/api/HttpCode.ts";
 
 type Input = InputFactory<
   { id: string },
@@ -23,11 +24,11 @@ export const DeleteIngredientUseCase: UseCase<Input, Output> = (
         ingredientRepository.delete(data.id),
       );
       if (error)
-        return UseCaseResponseBuilder.error(500, error.userFriendlyMessage);
+        return UseCaseResponseBuilder.error(HTTP_CODE.INTERNAL_SERVER_ERROR, error.userFriendlyMessage);
       if (!deleted)
-        return UseCaseResponseBuilder.error(404, "Ingrédient non trouvé");
+        return UseCaseResponseBuilder.error(HTTP_CODE.NOT_FOUND, "Ingrédient non trouvé");
 
-      return UseCaseResponseBuilder.success(204, undefined);
+      return UseCaseResponseBuilder.success(HTTP_CODE.NO_CONTENT, undefined);
     },
   };
 };
