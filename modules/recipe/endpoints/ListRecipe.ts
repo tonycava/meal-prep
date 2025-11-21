@@ -7,14 +7,16 @@ import { RecipeRepository } from "../repositories/RecipeRepository";
 import { authMiddleware } from "$lib/middlewares/authMiddleware";
 import { endpointsFactory } from "$lib/common/endpointFactory.ts";
 import { createUserFromOptions } from "$lib/common/User.ts";
+import { ApiResponse } from "$lib/common/api/ApiResponse.ts";
+import { UseCaseResponseSchema } from "$lib/common/usecase.ts";
 
 export const ListRecipesEndpoint = endpointsFactory
   .addMiddleware(authMiddleware)
   .build({
     method: "get",
     input: ListRecipesInputSchema,
-    output: ListRecipesOutputSchema,
-    handler: async ({ input, logger, options }) => {
+    output: UseCaseResponseSchema,
+    handler: async ({ input, options }) => {
       const { limit, offset, category, diet, search, ingredients } = input;
 
       const filters = {
@@ -23,10 +25,6 @@ export const ListRecipesEndpoint = endpointsFactory
         ...(search && { search }),
         ...(ingredients && { ingredients }),
       };
-
-      logger.info(
-        `Fetching recipes with limit ${limit}, offset ${offset}, filters: ${JSON.stringify(filters)}`,
-      );
 
       const response = await ListRecipesUseCase({
         recipeRepository: RecipeRepository(createUserFromOptions(options)),
@@ -37,12 +35,6 @@ export const ListRecipesEndpoint = endpointsFactory
         apiKey: options.apiKey,
       });
 
-      if (!response.isSuccess) {
-        throw new Error(response.message);
-      }
-
-      logger.info(`Fetched ${response.data.recipes.length} recipes`);
-
-      return response.data;
+      return ApiResponse.send(response);
     },
   });
