@@ -4,8 +4,9 @@ import { ListMenusOutput } from "$modules/menu/dto/menu.dto";
 import { DeleteMenuDto } from "$modules/menu/dto/deleteMenu.dto"
 import { prisma } from "$lib/db";
 import { AppError } from "$lib/errors/AppError";
+import { Prisma } from "../../../src/generated/prisma";
 
-export const MenuRepository = (): IMenuRepository => {
+export const MenuRepository = (user: User): IMenuRepository => {
 	return {
 		async list(limit: number, offset: number): Promise<ListMenusOutput> {
 
@@ -178,7 +179,8 @@ export const MenuRepository = (): IMenuRepository => {
 			};
 		},
 
-		async delete(menuDto: DeleteMenuDto, userr): Promise<void> {
+		async delete(menuDto: DeleteMenuDto): Promise<void> {
+			
 			const menu = await prisma.menu.findUnique({
 				where: { id: menuDto.id }
 			});
@@ -186,13 +188,24 @@ export const MenuRepository = (): IMenuRepository => {
 			if(!menu) {
 				throw new AppError(
 					"Not Found",
-					`Menu with id ${menuDto.id} not found`,
-					"Ce menu n'existe pas ou a déjà été supprimé.",
-					"warn"
+					`Menu ${menuDto.id} not found`,
+					"Ce menu n'existe pas.",
+					"error"
 				);
 			}
 
-			if(userRole)
+			if(user.role === "user" && menu.apiKeyId != user.apiKey) {
+				throw new AppError(
+					"Forbidden",
+					`User ${user.apiKey} tried to delete menu ${menu.id} owned by ${menu.apiKeyId}`,
+					"Vous n'avez pas les autorisations pour supprimer ce menu.",
+					"error"
+				);
+			}
+
+			await prisma.menu.delete({
+				where: { id: menuDto.id }
+			})
 		}
 	};
 };
