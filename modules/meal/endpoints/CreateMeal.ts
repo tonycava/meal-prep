@@ -5,13 +5,15 @@ import { authMiddleware } from "$lib/middlewares/authMiddleware";
 import { endpointsFactory } from "$lib/common/endpointFactory";
 import { SaveMealUseCase } from "../usecases/SaveMeal";
 import { MealRepository } from "../repositories/MealRepository";
+import { SingleMealOutputSchema } from "../dto/mealDto";
+import { z } from "zod";
 
 export const CreateMealEndpoint = endpointsFactory
   .addMiddleware(authMiddleware)
   .build({
     method: "post",
     input: createMealDto,
-    output: UseCaseResponseSchema,
+    output: z.object({ status: z.string(), data: SingleMealOutputSchema }),
     handler: async ({ input, options }) => {
       const saveMealResponse = await SaveMealUseCase({
         mealRepository: MealRepository(),
