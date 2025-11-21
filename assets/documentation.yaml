@@ -106,7 +106,7 @@ paths:
       summary: Récupérer les menus
       operationId: listMenus
       security:
-        - ApiKeyAuth: []
+        - ApiKeyAuth: [ ]
       parameters:
         - name: limit
           in: query
@@ -120,7 +120,22 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MenuListResponse"
+                type: object
+                properties:
+                  status: { type: string, const: success }
+                  data:
+                    type: object
+                    properties:
+                      menus:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/Menu"
+                      meta:
+                        type: object
+                        properties:
+                          total: { type: integer, default: 1 }
+                          offset: { type: integer }
+                          limit: { type: integer, default: 10 }
         "401":
           description: API key manquante ou invalide
           content:
@@ -157,14 +172,14 @@ paths:
       summary: Sauvegarder/Créer un menu
       operationId: createMenu
       security:
-        - ApiKeyAuth: []
+        - ApiKeyAuth: [ ]
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
-              required: [name, mealIds]
+              required: [ name, mealIds ]
               properties:
                 name: { type: string, example: "Menu de la semaine" }
                 description: { type: string, example: "Menu équilibré du dîner" }
@@ -174,7 +189,7 @@ paths:
                   description: Liste des IDs de repas à inclure dans le menu
                   items:
                     type: object
-                    required: [mealId, dayNumber]
+                    required: [ mealId, dayNumber ]
                     properties:
                       mealId: { type: string, format: uuid, description: "ID du repas existant" }
                       dayNumber: { type: integer, minimum: 1, maximum: 7, description: "Jour de la semaine (1-7)" }
@@ -184,7 +199,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SingleMenuResponse"
+                type: object
+                properties:
+                  status: { type: string, const: success }
+                  data: { $ref: "#/components/schemas/Menu" }
         "400":
           description: Données invalides
           content:
@@ -403,21 +421,24 @@ paths:
               properties:
                 name: { type: string }
                 description: { type: string }
-                duration: { type: integer }
+                duration: { type: integer, default: 1 }
                 meals:
                   type: array
                   items:
                     type: object
                     properties:
                       mealId: { type: string, format: uuid }
-                      dayNumber: { type: integer }
+                      dayNumber: { type: integer, default: 1 }
       responses:
         "200":
           description: Menu mis à jour avec succès
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SingleMenuResponse"
+                type: object
+                properties:
+                  status: { type: string, const: success }
+                  data: { $ref: "#/components/schemas/Menu" }
         "400":
           description: Données invalides
           content:
@@ -1790,41 +1811,43 @@ components:
         status: { type: string, const: success }
         data: { $ref: "#/components/schemas/MenuDetail" }
 
-    MenuListResponse:
+    MenuGenerationResponse:
       type: object
       properties:
         status: { type: string, const: success }
-        data:
+        data: { $ref: "#/components/schemas/MenuDetail" }
+        _links:
           type: object
+          description: Liens HATEOAS pour la navigation (Retry ou Save)
           properties:
-            menus:
-              type: array
-              items:
-                $ref: "#/components/schemas/Menu"
-            meta:
+            self:
               type: object
               properties:
-                total: { type: integer }
-                offset: { type: integer }
-                limit: { type: integer }
-
-    SingleMenuResponse:
-      type: object
-      properties:
-        status: { type: string, const: success }
-        data:
-          type: object
-          properties:
-            menus:
-              type: array
-              items:
-                $ref: "#/components/schemas/Menu"
-            meta:
+                href:
+                  type: string
+                  example: "/v1/menus/generate?duration=1"
+                method:
+                  type: string
+                  example: "GET"
+                title:
+                  type: string
+                  example: "Régénérer le menu (Retry)"
+            save:
               type: object
               properties:
-                total: { type: integer, const: 1 }
-                offset: { type: integer, const: 0 }
-                limit: { type: integer, const: 1 }
+                href:
+                  type: string
+                  example: "/v1/menus"
+                method:
+                  type: string
+                  example: "POST"
+                body:
+                title:
+                  type: string
+                  example: "Valider et sauvegarder le menu"
+          required:
+            - self
+            - save
 
     IngredientListResponse:
       type: object
