@@ -4,8 +4,16 @@ import { Recipe } from "../entities/Recipe";
 import { prisma } from "$lib/db";
 import { DeleteRecipeDto } from "$modules/recipe/dto/deleteRecipeDto.ts";
 import { AppError } from "$lib/errors/AppError.ts";
-import { ListRecipesOutput, IRecipeFilters, GetRecipeByIdOutput } from "../dto/recipeDto";
-import { RecipeCategory, DietType, Prisma } from "../../../src/generated/prisma";
+import {
+	ListRecipesOutput,
+	IRecipeFilters,
+	GetRecipeByIdOutput,
+} from "../dto/recipeDto";
+import {
+	RecipeCategory,
+	DietType,
+	Prisma,
+} from "../../../src/generated/prisma";
 import { UpdateRecipeDto } from "$modules/recipe/dto/updateRecipeDto.ts";
 import { User } from "$lib/common/User.ts";
 
@@ -17,37 +25,41 @@ export const RecipeRepository = (user: User): IRecipeRepository => {
 		},
 		async update(recipeDto: UpdateRecipeDto): Promise<void> {
 			try {
-				const whereAppend: Prisma.RecipeWhereUniqueInput | {} = user.role === "user" ? { apiKey: user.apiKey } : {};
+				const whereAppend: Prisma.RecipeWhereUniqueInput | object =
+					user.role === "user" ? { apiKey: user.apiKey } : {};
 
 				await prisma.recipe.update({
 					data: {
 						title: recipeDto.title,
 					},
-					where: { id: recipeDto.id, ...whereAppend }
-				})
+					where: { id: recipeDto.id, ...whereAppend },
+				});
 			} catch (error) {
+				console.error("An error occurred while updating recipe", error);
 				throw new AppError(
 					"Internal Server Error",
 					"An error occurred while updating recipe",
 					"Une erreur est survenue lors de la mise à jour d'une recette.",
-					"error"
-				)
+					"error",
+				);
 			}
 		},
 		async delete(recipeDto: DeleteRecipeDto): Promise<void> {
 			try {
-				const whereAppend: Prisma.RecipeWhereUniqueInput | {} = user.role === "user" ? { apiKey: user.apiKey } : {};
+				const whereAppend: Prisma.RecipeWhereUniqueInput | object =
+					user.role === "user" ? { apiKey: user.apiKey } : {};
 
 				await prisma.recipe.delete({
 					where: { id: recipeDto.id, ...whereAppend },
-				})
+				});
 			} catch (error) {
+				console.error("An error occurred while deleting recipe", error);
 				throw new AppError(
 					"Internal Server Error",
 					"An error occurred while deleting recipe",
 					"Une erreur est survenue lors de la suppression d'une recette.",
-					"error"
-				)
+					"error",
+				);
 			}
 		},
 		async save(recipeDto: CreateRecipeDto): Promise<Recipe> {
@@ -61,7 +73,7 @@ export const RecipeRepository = (user: User): IRecipeRepository => {
 						cookTimeMin: recipeDto.cookTimeMin,
 						instructions: recipeDto.instructions,
 						apiKey: { connect: { key: user.apiKey } },
-					}
+					},
 				});
 
 				for (const ingredient of recipeDto.ingredients) {
@@ -69,9 +81,9 @@ export const RecipeRepository = (user: User): IRecipeRepository => {
 						data: {
 							quantity: ingredient.quantity,
 							ingredient: { connect: { id: ingredient.id } },
-							recipe: { connect: { id: createdRecipe.id } }
-						}
-					})
+							recipe: { connect: { id: createdRecipe.id } },
+						},
+					});
 				}
 
 				return {
@@ -84,40 +96,44 @@ export const RecipeRepository = (user: User): IRecipeRepository => {
 					servings: createdRecipe.servings,
 					title: createdRecipe.title,
 					updatedAt: createdRecipe.updatedAt,
-					id: createdRecipe.id
-				}
+					id: createdRecipe.id,
+				};
 			} catch (error) {
 				console.log("Error saving recipe:", error);
 				throw new AppError(
 					"Internal Server Error",
 					"An error occurred while saving recipe",
 					"Une erreur est survenue lors de la sauvegarde d'une recette.",
-					"error"
-				)
+					"error",
+				);
 			}
-
 		},
-		async list(limit: number, offset: number, filters: IRecipeFilters): Promise<ListRecipesOutput> {
-
+		async list(
+			limit: number,
+			offset: number,
+			filters: IRecipeFilters,
+		): Promise<ListRecipesOutput> {
 			const where = {
-				...(user.role === "user" ? { apiKey: user.apiKey } : {} as any),
-				...(filters.category && { category: filters.category as RecipeCategory }),
+				...(user.role === "user" ? { apiKey: user.apiKey } : ({} as object)),
+				...(filters.category && {
+					category: filters.category as RecipeCategory,
+				}),
 				...(filters.diet && { diet: filters.diet as DietType }),
 				...(filters.ingredients && {
 					ingredients: {
 						some: {
 							ingredientId: {
-								in: filters.ingredients
-							}
-						}
-					}
+								in: filters.ingredients,
+							},
+						},
+					},
 				}),
 				...(filters.search && {
 					OR: [
-						{ title: { contains: filters.search, mode: 'insensitive' } },
-						{ description: { contains: filters.search, mode: 'insensitive' } }
-					]
-				})
+						{ title: { contains: filters.search, mode: "insensitive" } },
+						{ description: { contains: filters.search, mode: "insensitive" } },
+					],
+				}),
 			};
 
 			const [recipes, total] = await Promise.all([
@@ -125,22 +141,22 @@ export const RecipeRepository = (user: User): IRecipeRepository => {
 					where,
 					skip: offset,
 					take: limit,
-					orderBy: { createdAt: 'desc' },
+					orderBy: { createdAt: "desc" },
 					include: {
 						ingredients: {
 							include: {
-								ingredient: true
-							}
+								ingredient: true,
+							},
 						},
 						_count: {
-							select: { recipeMeals: true }
-						}
-					}
+							select: { recipeMeals: true },
+						},
+					},
 				}),
-				prisma.recipe.count({ where })
+				prisma.recipe.count({ where }),
 			]);
 
-			const data = recipes.map(recipe => ({
+			const data = recipes.map((recipe) => ({
 				id: recipe.id,
 				title: recipe.title,
 				description: recipe.description || "",
@@ -149,13 +165,13 @@ export const RecipeRepository = (user: User): IRecipeRepository => {
 				cookTimeMin: recipe.cookTimeMin || 0,
 				servings: recipe.servings,
 				isPublic: recipe.isPublic,
-				category: recipe.category || 'OTHER',
-				diet: recipe.diet || 'OTHER',
-				ingredients: recipe.ingredients.map(recipeIngredient => ({
+				category: recipe.category || "OTHER",
+				diet: recipe.diet || "OTHER",
+				ingredients: recipe.ingredients.map((recipeIngredient) => ({
 					id: recipeIngredient.ingredient.id,
 					name: recipeIngredient.ingredient.name,
 					quantity: recipeIngredient.quantity,
-					unit: recipeIngredient.unit
+					unit: recipeIngredient.unit,
 				})),
 				mealCount: recipe._count.recipeMeals,
 				createdAt: recipe.createdAt,
@@ -167,8 +183,8 @@ export const RecipeRepository = (user: User): IRecipeRepository => {
 				meta: {
 					total,
 					offset,
-					limit
-				}
+					limit,
+				},
 			};
 		},
 
@@ -178,13 +194,13 @@ export const RecipeRepository = (user: User): IRecipeRepository => {
 				include: {
 					ingredients: {
 						include: {
-							ingredient: true
-						}
+							ingredient: true,
+						},
 					},
 					_count: {
-						select: { recipeMeals: true }
-					}
-				}
+						select: { recipeMeals: true },
+					},
+				},
 			});
 
 			if (!recipe) {
@@ -192,8 +208,8 @@ export const RecipeRepository = (user: User): IRecipeRepository => {
 					"Not Found",
 					"Recipe not found",
 					"Recette non trouvée.",
-					"warn"
-				)
+					"warn",
+				);
 			}
 
 			const recipeDetailDto = {
@@ -205,9 +221,9 @@ export const RecipeRepository = (user: User): IRecipeRepository => {
 				cookTimeMin: recipe.cookTimeMin || 0,
 				servings: recipe.servings,
 				isPublic: recipe.isPublic,
-				category: recipe.category || 'OTHER',
-				diet: recipe.diet || 'OTHER',
-				ingredients: recipe.ingredients.map(recipeIngredient => ({
+				category: recipe.category || "OTHER",
+				diet: recipe.diet || "OTHER",
+				ingredients: recipe.ingredients.map((recipeIngredient) => ({
 					id: recipeIngredient.ingredient.id,
 					name: recipeIngredient.ingredient.name,
 					quantity: recipeIngredient.quantity,
@@ -222,12 +238,12 @@ export const RecipeRepository = (user: User): IRecipeRepository => {
 				mealCount: recipe._count.recipeMeals,
 				createdAt: recipe.createdAt,
 				updatedAt: recipe.updatedAt,
-				instructions: recipe.instructions
+				instructions: recipe.instructions,
 			};
 
 			return {
 				recipe: recipeDetailDto,
 			};
-		}
-	}
-}
+		},
+	};
+};

@@ -23,6 +23,7 @@ Bon appétit !
 - Github
 
 ## Installation
+
 ```bash
 
 npm install
@@ -36,79 +37,90 @@ Pour peupler la base de données avec les informations nutritionnelles des ingr�
 
 Lancez l'import des données :
 
-   ```bash
-   npm run import:csv
-   ```
+```bash
+npm run import:csv
+```
 
 ## Endpoints (v0.1 - Sprint 1)
 
-### Recettes 
-- []  `GET /recipes` - Liste des recettes
+### Recettes
+
+- [] `GET /recipes` - Liste des recettes
 
   **Query Parameters:**
-    - `category` (string) - Filtrer par catégorie (entrée, plat, dessert)
-    - `diet` (string) - Filtrer par régime alimentaire (végétarien, vegan, sans-gluten, etc.)
-    - `ingredients` (string) - IDs d'ingrédients séparés par virgules
-    - `search` (string) - Recherche par mot-clé dans le titre
-    - `limit` - Limiter le nombre de réponse retourné
-    - `offset` - Pagination
-- []  `GET /recipes/{id}` - Liste des détails d'une recette
-- []  `DELETE /recipes/{id}` - Supprimer une recette
-- []  `PUT /recipes/{id}` - Modifier une recette
-- [X]  `POST /recipes` - Ajouter une recette
+  - `category` (string) - Filtrer par catégorie (entrée, plat, dessert)
+  - `diet` (string) - Filtrer par régime alimentaire (végétarien, vegan, sans-gluten, etc.)
+  - `ingredients` (string) - IDs d'ingrédients séparés par virgules
+  - `search` (string) - Recherche par mot-clé dans le titre
+  - `limit` - Limiter le nombre de réponse retourné
+  - `offset` - Pagination
+
+- [] `GET /recipes/{id}` - Liste des détails d'une recette
+- [] `DELETE /recipes/{id}` - Supprimer une recette
+- [] `PUT /recipes/{id}` - Modifier une recette
+- [x] `POST /recipes` - Ajouter une recette
 
   **Body:**
-    - `title` - Titre de la recette
-    - `description` - Description de la recette
-    - `category` - Catégorie de la recette
-    - `ingredients` - Ingrédients de la recette
-    - `diet` - Régime lié (compatible) à la recette
-    - `image` (optionnel) - Image de la recette
-- []  `GET /recipes/{id}/search?ingredients=...` - Recherche une recette avec des ingrédients
-- []  `GET /recipes/{id}/nutrition` - Récupérer les informations nutritionnelles de la recette
+  - `title` - Titre de la recette
+  - `description` - Description de la recette
+  - `category` - Catégorie de la recette
+  - `ingredients` - Ingrédients de la recette
+  - `diet` - Régime lié (compatible) à la recette
+  - `image` (optionnel) - Image de la recette
+
+- [] `GET /recipes/{id}/search?ingredients=...` - Recherche une recette avec des ingrédients
+- [] `GET /recipes/{id}/nutrition` - Récupérer les informations nutritionnelles de la recette
 
 ### Menus
-- []  `GET /menus/weekly` - Générer un menu pour la semaine
+
+- [] `GET /menus/weekly` - Générer un menu pour la semaine
 
   **Query Parameters:**
-    - `mealsPerDay` - Nombre de repas par jour
-    - `servings` -  Nombre de personnes
-    - `maxBudget` (optionnel) - Buget maximum
-- []  `GET /menus/daily` - Générer un menu pour la journée
+  - `mealsPerDay` - Nombre de repas par jour
+  - `servings` - Nombre de personnes
+  - `maxBudget` (optionnel) - Buget maximum
+
+- [] `GET /menus/daily` - Générer un menu pour la journée
 
   **Query Parameters:**
-    - `numberOfMeals` - Nombre de repas par jour
-    - `servings` -  Nombre de personnes
-    - `maxBudget` (optionnel) - Buget maximum
-- []  `GET /menus/diet` - Générer un menu selon des critères spécifiques
+  - `numberOfMeals` - Nombre de repas par jour
+  - `servings` - Nombre de personnes
+  - `maxBudget` (optionnel) - Buget maximum
+
+- [] `GET /menus/diet` - Générer un menu selon des critères spécifiques
 
   **Query Parameters:**
   A voir ensemble
+
 - [] `GET /menus` - Récupérer tous les menus de l'utilisateur
-  
+
   **Query Parameters:**
-    - `limit` - Limiter le nombre de réponse retourné
-    - `offset` - Pagination
+  - `limit` - Limiter le nombre de réponse retourné
+  - `offset` - Pagination
+
 - [] `GET /menus/{id}` - Récupérer les détails d'un menu spécifique
 - [] `POST /menus` - Sauvegarder/Créer un menu
-  
+
   **Body:**
-    - `nom` - Nom du menu
-    - `meals` - Recettes contenu dans le menu
+  - `nom` - Nom du menu
+  - `meals` - Recettes contenu dans le menu
+
 - [] `PUT /menus/{id}` - Modifier un menu spécifique
 - [] `DELETE /menus/{id}` - Supprimer un menu specifique
 
 ### Ingrédients
-- []  `GET /ingredients?ingredients=...` - Recupérer les caractéristiques d'un ou plusieurs ingredients
-- []  `GET /ingredients` - Recuperer tout les ingrédients
+
+- [] `GET /ingredients?ingredients=...` - Recupérer les caractéristiques d'un ou plusieurs ingredients
+- [] `GET /ingredients` - Recuperer tout les ingrédients
 
   **Query Parameters:**
-    - `category` (string) - Filtre par catégorie
-    - `search` (string) - Recherche par nom
-    - `limit` - Limiter le nombre de réponse retourné
-    - `offset` - Pagination
-- []  `GET /ingredients/{id}` - Recuperer un ingrédients
-- []  `GET /ingredients/search?name=...` - Recuperer un ingrédient par nom
-- []  `POST /ingredients` - Créer un nouvel ingrédient
-- []  `PUT /ingredients/{id}` - Modifier un ingrédient
-- []  `DELETE /ingredients/{id}` - Supprimer un ingrédient
+  - `category` (string) - Filtre par catégorie
+  - `search` (string) - Recherche par nom
+  - `limit` - Limiter le nombre de réponse retourné
+  - `offset` - Pagination
+
+- [] `GET /ingredients/{id}` - Recuperer un ingrédients
+- [] `GET /ingredients/search?name=...` - Recuperer un ingrédient par nom
+- [] `POST /ingredients` - Créer un nouvel ingrédient
+- [] `PUT /ingredients/{id}` - Modifier un ingrédient
+- [] `DELETE /ingredients/{id}` - Supprimer un ingrédient

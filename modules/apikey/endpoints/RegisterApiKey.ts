@@ -1,11 +1,11 @@
-import { defaultEndpointsFactory } from "express-zod-api";
 import { RegisterApiKeyInputSchema } from "../dto/registerApiKey.dto";
 import { ApiKeyRepository } from "../repositories/ApiKeyRepository";
 import { RegisterApiKeyUseCase } from "../usecases/RegisterApiKey";
 import { ApiResponse } from "$lib/common/api/ApiResponse";
 import { UseCaseResponseSchema } from "$lib/common/usecase";
+import { endpointsFactory } from "$lib/common/endpointFactory.ts";
 
-export const RegisterApiKeyEndpoint = defaultEndpointsFactory.build({
+export const RegisterApiKeyEndpoint = endpointsFactory.build({
   method: "post",
   input: RegisterApiKeyInputSchema,
   output: UseCaseResponseSchema,

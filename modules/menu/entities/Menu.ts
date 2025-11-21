@@ -1,8 +1,12 @@
 export type Menu = {
-    id: string;
-    name: string;
-    description: string | null;
-    duration: number | null;
-    createdAt: string;
-    updatedAt: Date;
-}
+  id: string;
+  name: string;
+  description: string | null;
+  duration: number | null;
+  createdAt: string;
+  updatedAt: Date;
+  menuMeals: {
+    mealId: string;
+    dayNumber: number;
+  }[];
+};

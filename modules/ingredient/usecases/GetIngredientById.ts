@@ -1,7 +1,12 @@
-import { InputFactory, OutputFactory, UseCase, UseCaseResponseBuilder } from "../../../lib/common/usecase";
+import {
+  InputFactory,
+  OutputFactory,
+  UseCase,
+  UseCaseResponseBuilder,
+} from "$lib/common/usecase.ts";
 import { IngredientResponseDtoType } from "../dto/ingredient.dto";
 import { IIngredientRepositoryGetById } from "../interfaces/IIngredientRepository";
-import { tryCatch } from "../../../lib/errors/tryCatch";
+import { tryCatch } from "$lib/errors/tryCatch.ts";
 
 type Input = InputFactory<
   { id: string },
@@ -9,15 +14,21 @@ type Input = InputFactory<
 >;
 type Output = OutputFactory<IngredientResponseDtoType>;
 
-export const GetIngredientByIdUseCase: UseCase<Input, Output> = (dependencies) => {
+export const GetIngredientByIdUseCase: UseCase<Input, Output> = (
+  dependencies,
+) => {
   const { ingredientRepository } = dependencies;
   return {
     async execute(data): Promise<Output> {
-      const [error, ingredient] = await tryCatch(ingredientRepository.getById(data.id));
-      if (error) return UseCaseResponseBuilder.error(500, error.userFriendlyMessage);
-      if (!ingredient) return UseCaseResponseBuilder.error(404, "Ingrédient non trouvé");
+      const [error, ingredient] = await tryCatch(
+        ingredientRepository.getById(data.id),
+      );
+      if (error)
+        return UseCaseResponseBuilder.error(500, error.userFriendlyMessage);
+      if (!ingredient)
+        return UseCaseResponseBuilder.error(404, "Ingrédient non trouvé");
 
       return UseCaseResponseBuilder.success(200, ingredient);
-    }
+    },
   };
 };
