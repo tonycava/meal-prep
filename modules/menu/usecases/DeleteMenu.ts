@@ -3,6 +3,7 @@ import { IMenuRepositoryDelete } from "../interfaces/IMenuRepository";
 import { tryCatch } from "../../../lib/errors/tryCatch";
 import { DeleteMenuDto } from "../dto/deleteMenu.dto";
 import { StatusCode } from "../../../lib/helpers/http.helper";
+import { HttpCode } from "$lib/common/api/HttpCode.ts";
 
 type Input = InputFactory<
 	{ dto: DeleteMenuDto },
@@ -20,16 +21,15 @@ export const DeleteMenuUseCase: UseCase<Input, Output> = (dependencies) => {
 				menuRepository.delete(data.dto)
 			);
 			if(error) {
-				let status: StatusCode = 500;
+				let status: StatusCode = HttpCode.INTERNAL_SERVER_ERROR;
 
-				if(error.name === "Not Found") status = 404;
-				if(error.name === "Forbidden") status = 403;
-				if(error.name === "Conflict") status = 409;
-
+				if(error.name === "Not Found") status = HttpCode.NOT_FOUND;
+				if(error.name === "Forbidden") status = HttpCode.FORBIDDEN;
+				if(error.name === "Conflict") status = HttpCode.CONFLICT;
 				return UseCaseResponseBuilder.error(status, error.userFriendlyMessage);
 			}
 
-			return UseCaseResponseBuilder.success(200, true);
+			return UseCaseResponseBuilder.success(HttpCode.OK, true);
 		}
 	}
 }
