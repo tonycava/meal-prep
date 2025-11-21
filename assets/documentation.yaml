@@ -11,6 +11,8 @@ servers:
     description: Development server
 
 tags:
+  - name: API Keys
+    description: Gestion des clés API
   - name: Menus
     description: Gestion des menus
   - name: Repas
@@ -19,8 +21,6 @@ tags:
     description: Gestion des recettes
   - name: Ingrédients
     description: Gestion des ingrédients
-  - name: API Keys
-    description: Gestion des clés API
 
 paths:
   /v1/api-keys/register:
@@ -179,12 +179,12 @@ paths:
           application/json:
             schema:
               type: object
-              required: [ name, mealIds ]
+              required: [ name, menuMeals ]
               properties:
                 name: { type: string, example: "Menu de la semaine" }
                 description: { type: string, example: "Menu équilibré du dîner" }
                 duration: { type: integer, example: 1, description: "Durée du menu en jours" }
-                mealIds:
+                menuMeals:
                   type: array
                   description: Liste des IDs de repas à inclure dans le menu
                   items:
@@ -873,10 +873,10 @@ paths:
                   type: string
                   enum: [breakfast, lunch, dinner, snack]
                 recipeIds:
-                  type: array
-                  items:
-                    type: string
-                    format: uuid
+                  type: object
+                  properties:
+                    recipeId: { type: string, format: uuid }
+                    type: { type: string, example: "Plat" }
       responses:
         "201":
           description: Repas créé avec succès
@@ -1115,8 +1115,10 @@ paths:
                   type: string
                   enum: [breakfast, lunch, dinner, snack]
                 recipeIds:
-                  type: array
-                  items: { type: string, format: uuid }
+                  type: object
+                  properties:
+                    recipeId: { type: string, format: uuid }
+                    type: { type: string, example: "Plat" }
       responses:
         "200":
           description: Repas modifié avec succès
@@ -1683,7 +1685,7 @@ components:
             type: object
             properties:
               recipeId: { type: string, format: uuid }
-              type: { type: integer }
+              type: { type: string, example: "Plat" }
 
     MealListResponse:
       type: object
@@ -1710,7 +1712,7 @@ components:
         data:
           type: object
           properties:
-            menus:
+            meals:
               type: array
               items:
                 $ref: "#/components/schemas/MealSummary"
