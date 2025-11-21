@@ -120,22 +120,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  status: { type: string, const: success }
-                  data:
-                    type: object
-                    properties:
-                      menus:
-                        type: array
-                        items:
-                          $ref: "#/components/schemas/Menu"
-                      meta:
-                        type: object
-                        properties:
-                          total: { type: integer }
-                          offset: { type: integer }
-                          limit: { type: integer }
+                $ref: "#/components/schemas/MenuListResponse"
         "401":
           description: API key manquante ou invalide
           content:
@@ -199,10 +184,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  status: { type: string, const: success }
-                  data: { $ref: "#/components/schemas/Menu" }
+                $ref: "#/components/schemas/SingleMenuResponse"
         "400":
           description: Données invalides
           content:
@@ -422,10 +404,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  status: { type: string, const: success }
-                  data: { $ref: "#/components/schemas/Menu" }
+                $ref: "#/components/schemas/SingleMenuResponse"
         "400":
           description: Données invalides
           content:
@@ -567,17 +546,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  status: { type: string, const: success }
-                  data:
-                    type: object
-                    properties:
-                      recipes:
-                        type: array
-                        items:
-                          $ref: "#/components/schemas/Recipe"
-                      total: { type: integer }
+                $ref: "#/components/schemas/RecipeListResponse"
         "400":
           description: Paramètres de requête invalides
           content:
@@ -610,7 +579,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/RecipeResponse"
+                $ref: "#/components/schemas/SingleRecipeResponse"
         "400":
           description: Données invalides
           content:
@@ -659,7 +628,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/RecipeDetailResponse"
+                $ref: "#/components/schemas/SingleRecipeResponse"
         "404":
           description: Recette non trouvée
           content:
@@ -696,7 +665,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/RecipeResponse"
+                $ref: "#/components/schemas/SingleRecipeResponse"
         "400":
           description: Données invalides
           content:
@@ -819,17 +788,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  status: { type: string, const: success }
-                  data:
-                    type: object
-                    properties:
-                      meals:
-                        type: array
-                        items:
-                          $ref: "#/components/schemas/Meal"
-                      total: { type: integer }
+                $ref: "#/components/schemas/MealListResponse"
         "401":
           description: API key manquante ou invalide
           content:
@@ -890,7 +849,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MealResponse"
+                $ref: "#/components/schemas/SingleMealResponse"
         "400":
           description: Données invalides
           content:
@@ -1009,7 +968,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MealResponse"
+                $ref: "#/components/schemas/MealListResponse"
         "400":
           description: Paramètres invalides
           content:
@@ -1069,7 +1028,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MealResponse"
+                $ref: "#/components/schemas/SingleMealResponse"
         "401":
           description: API key manquante ou invalide
           content:
@@ -1130,7 +1089,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MealResponse"
+                $ref: "#/components/schemas/SingleMealResponse"
         "400":
           description: Données invalides
           content:
@@ -1282,24 +1241,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    const: success
-                  data:
-                    type: object
-                    properties:
-                      ingredients:
-                        type: array
-                        items:
-                          $ref: "#/components/schemas/Ingredient"
-                      total:
-                        type: integer
-                      limit:
-                        type: integer
-                      offset:
-                        type: integer
+                $ref: "#/components/schemas/IngredientListResponse"
         "400":
           description: Paramètres de requête invalides
           content:
@@ -1421,13 +1363,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    const: success
-                  data:
-                    $ref: "#/components/schemas/IngredientDetail"
+                $ref: "#/components/schemas/SingleIngredientResponse"
         "400":
           description: Données invalides
           content:
@@ -1479,13 +1415,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    const: success
-                  data:
-                    $ref: "#/components/schemas/IngredientDetail"
+                $ref: "#/components/schemas/SingleIngredientResponse"
         "404":
           $ref: "#/components/responses/NotFound"
         "500":
@@ -1556,13 +1486,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    const: success
-                  data:
-                    $ref: "#/components/schemas/IngredientDetail"
+                $ref: "#/components/schemas/SingleIngredientResponse"
         "404":
           $ref: "#/components/responses/NotFound"
         "400":
@@ -1712,6 +1636,119 @@ components:
         status: { type: string, const: success }
         data: { $ref: "#/components/schemas/Meal" }
 
+    MealSummary:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        mealType: { type: string }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+        recipeMeals:
+          type: array
+          items:
+            type: object
+            properties:
+              recipeId: { type: string, format: uuid }
+              type: { type: integer }
+
+    MealListResponse:
+      type: object
+      properties:
+        status: { type: string, const: success }
+        data:
+          type: object
+          properties:
+            meals:
+              type: array
+              items:
+                $ref: "#/components/schemas/MealSummary"
+            meta:
+              type: object
+              properties:
+                total: { type: integer }
+                offset: { type: integer }
+                limit: { type: integer }
+
+    SingleMealResponse:
+      type: object
+      properties:
+        status: { type: string, const: success }
+        data:
+          type: object
+          properties:
+            menus:
+              type: array
+              items:
+                $ref: "#/components/schemas/MealSummary"
+            meta:
+              type: object
+              properties:
+                total: { type: integer, const: 1 }
+                offset: { type: integer, const: 0 }
+                limit: { type: integer, const: 1 }
+
+    RecipeSummary:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        title: { type: string }
+        description: { type: string, nullable: true }
+        instructions: { type: string }
+        imageUrl: { type: string, nullable: true }
+        prepTimeMin: { type: integer }
+        cookTimeMin: { type: integer }
+        servings: { type: integer }
+        category: { type: string }
+        diet: { type: string }
+        isPublic: { type: boolean }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+        recipeIngredient:
+          type: array
+          items:
+            type: object
+            properties:
+              ingredientId: { type: string, format: uuid }
+              quantity: { type: number }
+              unit: { type: string }
+              notes: { type: string, nullable: true }
+
+    RecipeListResponse:
+      type: object
+      properties:
+        status: { type: string, const: success }
+        data:
+          type: object
+          properties:
+            recipes:
+              type: array
+              items:
+                $ref: "#/components/schemas/RecipeSummary"
+            meta:
+              type: object
+              properties:
+                total: { type: integer }
+                offset: { type: integer }
+                limit: { type: integer }
+
+    SingleRecipeResponse:
+      type: object
+      properties:
+        status: { type: string, const: success }
+        data:
+          type: object
+          properties:
+            recipes:
+              type: array
+              items:
+                $ref: "#/components/schemas/RecipeSummary"
+            meta:
+              type: object
+              properties:
+                total: { type: integer, const: 1 }
+                offset: { type: integer, const: 0 }
+                limit: { type: integer, const: 1 }
+
     Menu:
       type: object
       properties:
@@ -1752,6 +1789,78 @@ components:
       properties:
         status: { type: string, const: success }
         data: { $ref: "#/components/schemas/MenuDetail" }
+
+    MenuListResponse:
+      type: object
+      properties:
+        status: { type: string, const: success }
+        data:
+          type: object
+          properties:
+            menus:
+              type: array
+              items:
+                $ref: "#/components/schemas/Menu"
+            meta:
+              type: object
+              properties:
+                total: { type: integer }
+                offset: { type: integer }
+                limit: { type: integer }
+
+    SingleMenuResponse:
+      type: object
+      properties:
+        status: { type: string, const: success }
+        data:
+          type: object
+          properties:
+            menus:
+              type: array
+              items:
+                $ref: "#/components/schemas/Menu"
+            meta:
+              type: object
+              properties:
+                total: { type: integer, const: 1 }
+                offset: { type: integer, const: 0 }
+                limit: { type: integer, const: 1 }
+
+    IngredientListResponse:
+      type: object
+      properties:
+        status: { type: string, const: success }
+        data:
+          type: object
+          properties:
+            ingredients:
+              type: array
+              items:
+                $ref: "#/components/schemas/Ingredient"
+            meta:
+              type: object
+              properties:
+                total: { type: integer }
+                offset: { type: integer }
+                limit: { type: integer }
+
+    SingleIngredientResponse:
+      type: object
+      properties:
+        status: { type: string, const: success }
+        data:
+          type: object
+          properties:
+            ingredients:
+              type: array
+              items:
+                $ref: "#/components/schemas/Ingredient"
+            meta:
+              type: object
+              properties:
+                total: { type: integer, const: 1 }
+                offset: { type: integer, const: 0 }
+                limit: { type: integer, const: 1 }
 
     Ingredient:
       type: object
