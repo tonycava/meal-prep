@@ -1,11 +1,11 @@
 import { UpdateIngredientDto } from "../dto/ingredient.dto";
 import { UpdateIngredientUseCase } from "../usecases/UpdateIngredient";
 import { IngredientRepository } from "../repositories/IngredientRepository";
-import { ApiResponse } from "$lib/common/api/ApiResponse.ts";
-import { UseCaseResponseSchema } from "$lib/common/usecase.ts";
-import { authMiddleware } from "$lib/middlewares/authMiddleware.ts";
+import { ApiResponse } from "$lib/common/api/ApiResponse";
+import { UseCaseResponseSchema } from "$lib/common/usecase";
+import { authMiddleware } from "$lib/middlewares/authMiddleware";
 import { z } from "zod";
-import { endpointsFactory } from "$lib/common/endpointFactory.ts";
+import { endpointsFactory } from "$lib/common/endpointFactory";
 
 export const UpdateIngredientEndpoint = endpointsFactory
   .addMiddleware(authMiddleware)

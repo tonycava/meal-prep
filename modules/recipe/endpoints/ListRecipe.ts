@@ -1,14 +1,11 @@
-import {
-  ListRecipesInputSchema,
-  ListRecipesOutputSchema,
-} from "../dto/recipeDto";
+import { ListRecipesInputSchema } from "../dto/recipeDto";
 import { ListRecipesUseCase } from "../usecases/ListRecipes";
 import { RecipeRepository } from "../repositories/RecipeRepository";
 import { authMiddleware } from "$lib/middlewares/authMiddleware";
-import { endpointsFactory } from "$lib/common/endpointFactory.ts";
-import { createUserFromOptions } from "$lib/common/User.ts";
-import { ApiResponse } from "$lib/common/api/ApiResponse.ts";
-import { UseCaseResponseSchema } from "$lib/common/usecase.ts";
+import { endpointsFactory } from "$lib/common/endpointFactory";
+import { createUserFromOptions } from "$lib/common/User";
+import { ApiResponse } from "$lib/common/api/ApiResponse";
+import { UseCaseResponseSchema } from "$lib/common/usecase";
 
 export const ListRecipesEndpoint = endpointsFactory
   .addMiddleware(authMiddleware)

@@ -3,7 +3,7 @@ import { ApiKeyRepository } from "../repositories/ApiKeyRepository";
 import { RegisterApiKeyUseCase } from "../usecases/RegisterApiKey";
 import { ApiResponse } from "$lib/common/api/ApiResponse";
 import { UseCaseResponseSchema } from "$lib/common/usecase";
-import { endpointsFactory } from "$lib/common/endpointFactory.ts";
+import { endpointsFactory } from "$lib/common/endpointFactory";
 
 export const RegisterApiKeyEndpoint = endpointsFactory.build({
   method: "post",

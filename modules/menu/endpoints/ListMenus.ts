@@ -1,10 +1,10 @@
 import { defaultEndpointsFactory } from "express-zod-api";
-import { ListMenusInputSchema } from "../dto/menu.dto.ts";
-import { MenuRepository } from "$modules/menu/repositories/MenuRepository.ts";
-import { ListMenusUseCase } from "$modules/menu/usecases/ListMenus.ts";
-import { authMiddleware } from "$lib/middlewares/authMiddleware.ts";
-import {ApiResponse} from "$lib/common/api/ApiResponse.ts";
-import {UseCaseResponseSchema} from "$lib/common/usecase.ts";
+import { ListMenusInputSchema } from "../dto/menu.dto";
+import { MenuRepository } from "$modules/menu/repositories/MenuRepository";
+import { ListMenusUseCase } from "$modules/menu/usecases/ListMenus";
+import { authMiddleware } from "$lib/middlewares/authMiddleware";
+import { ApiResponse } from "$lib/common/api/ApiResponse";
+import { UseCaseResponseSchema } from "$lib/common/usecase";
 
 export const ListMenusEndpoint = defaultEndpointsFactory
   .addMiddleware(authMiddleware)
@@ -20,5 +20,5 @@ export const ListMenusEndpoint = defaultEndpointsFactory
       }).execute({ limit, offset, apiKey: options.apiKey, role: options.role });
 
       return ApiResponse.send(response);
-    }
-});
+    },
+  });

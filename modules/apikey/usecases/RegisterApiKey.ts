@@ -8,7 +8,7 @@ import { IApiKeyRepositoryCreate } from "../interfaces/IApiKeyRepository";
 import { RegisterApiKeyInput } from "../dto/registerApiKey.dto";
 import { tryCatch } from "$lib/errors/tryCatch";
 import { ApiKey } from "@prisma/client";
-import { HttpCode } from "$lib/common/api/HttpCode.ts";
+import { HttpCode } from "$lib/common/api/HttpCode";
 
 type Input = InputFactory<
   { input: RegisterApiKeyInput },

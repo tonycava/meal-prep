@@ -1,7 +1,7 @@
 import { CreateRecipeDto } from "../dto/createRecipeDto";
 import { Recipe } from "../entities/Recipe";
-import { DeleteRecipeDto } from "$modules/recipe/dto/deleteRecipeDto.ts";
-import { UpdateRecipeDto } from "$modules/recipe/dto/updateRecipeDto.ts";
+import { DeleteRecipeDto } from "$modules/recipe/dto/deleteRecipeDto";
+import { UpdateRecipeDto } from "$modules/recipe/dto/updateRecipeDto";
 import {
   GetRecipeByIdOutput,
   IRecipeFilters,

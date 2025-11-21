@@ -1,7 +1,7 @@
 import { createConfig } from "express-zod-api";
 import ui from "swagger-ui-express";
 import helmet from "helmet";
-import RateLimit from "$lib/common/api/RateLimit.ts";
+import RateLimit from "$lib/common/api/RateLimit";
 
 export const config = createConfig({
   http: { listen: 8090 }, // port, UNIX socket or Net::ListenOptions

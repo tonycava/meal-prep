@@ -1,12 +1,12 @@
 import { z } from "zod";
-import { prisma } from "$lib/db.ts";
+import { prisma } from "$lib/db";
 import { Prisma } from "../../../src/generated/prisma";
 import {
   IngredientListQueryDto,
   IngredientResponseDto,
 } from "../dto/ingredient.dto";
-import { endpointsFactory } from "$lib/common/endpointFactory.ts";
-import { authMiddleware } from "$lib/middlewares/authMiddleware.ts";
+import { endpointsFactory } from "$lib/common/endpointFactory";
+import { authMiddleware } from "$lib/middlewares/authMiddleware";
 
 export const ListIngredientEndpoint = endpointsFactory
   .addMiddleware(authMiddleware)

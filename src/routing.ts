@@ -1,11 +1,11 @@
 import path from "path";
 import { DependsOnMethod, Routing, ServeStatic } from "express-zod-api";
-import { ListRecipesEndpoint } from "../modules/recipe/endpoints/ListRecipe.ts";
-import { ListRecipeByIdEndpoint } from "../modules/recipe/endpoints/ListRecipeById.ts";
-import { CreateRecipeEndPoint } from "$modules/recipe/endpoints/CreateRecipe.ts";
-import { DeleteRecipeEndPoint } from "$modules/recipe/endpoints/DeleteRecipe.ts";
-import { ListMenusEndpoint } from "$modules/menu/endpoints/ListMenus.ts";
-import { CreateMenuEndpoint } from "$modules/menu/endpoints/CreateMenu.ts";
+import { ListRecipesEndpoint } from "../modules/recipe/endpoints/ListRecipe";
+import { ListRecipeByIdEndpoint } from "../modules/recipe/endpoints/ListRecipeById";
+import { CreateRecipeEndPoint } from "$modules/recipe/endpoints/CreateRecipe";
+import { DeleteRecipeEndPoint } from "$modules/recipe/endpoints/DeleteRecipe";
+import { ListMenusEndpoint } from "$modules/menu/endpoints/ListMenus";
+import { CreateMenuEndpoint } from "$modules/menu/endpoints/CreateMenu";
 import { ListIngredientEndpoint } from "$modules/ingredient/endpoints/ListIngredient";
 import { CreateIngredientEndpoint } from "$modules/ingredient/endpoints/CreateIngredient";
 import { DeleteIngredientEndpoint } from "$modules/ingredient/endpoints/DeleteIngredient";
@@ -17,8 +17,8 @@ import { CreateMealEndpoint } from "$modules/meal/endpoints/CreateMeal";
 import { GetMealByIdEndpoint } from "$modules/meal/endpoints/GetMealById";
 import { UpdateMealEndpoint } from "$modules/meal/endpoints/UpdateMeal";
 import { DeleteMealEndpoint } from "$modules/meal/endpoints/DeleteMeal";
-import { HomeEndpoint } from "$lib/common/endpoints/HomeEndpoint.ts";
-import { UpdateMenuEndpoint } from "$modules/menu/endpoints/UpdateMenu.ts";
+import { HomeEndpoint } from "$lib/common/endpoints/HomeEndpoint";
+import { UpdateMenuEndpoint } from "$modules/menu/endpoints/UpdateMenu";
 
 export const routing: Routing = {
   v1: {
@@ -51,15 +51,15 @@ export const routing: Routing = {
     },
     meals: {
       "/": new DependsOnMethod({
-      get: ListMealsEndpoint,
-      post: CreateMealEndpoint,
+        get: ListMealsEndpoint,
+        post: CreateMealEndpoint,
       }),
       "/:id": new DependsOnMethod({
-      get: GetMealByIdEndpoint,
-      put: UpdateMealEndpoint,
-      delete: DeleteMealEndpoint,
-      })
-      },
+        get: GetMealByIdEndpoint,
+        put: UpdateMealEndpoint,
+        delete: DeleteMealEndpoint,
+      }),
+    },
     "api-keys": {
       register: new DependsOnMethod({
         post: RegisterApiKeyEndpoint,

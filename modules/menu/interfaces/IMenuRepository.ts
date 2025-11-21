@@ -1,6 +1,6 @@
 import { Menu } from "../entities/Menu";
 import { ListMenusOutput } from "../dto/menu.dto";
-import { CreateMenuPartialDtoWithId } from "$modules/menu/dto/createMenu.dto.ts";
+import { CreateMenuPartialDtoWithId } from "$modules/menu/dto/createMenu.dto";
 
 export type CreateMenuDto = {
   name: string;
@@ -31,10 +31,9 @@ export type IMenuRepositoryUpdate = {
 
 export type IMenuRepositoryGetOne = {
   getOne(menuId: string): Promise<Menu | null>;
-}
+};
 
-export type IMenuRepository =
-  IMenuRepositoryList &
+export type IMenuRepository = IMenuRepositoryList &
   IMenuRepositorySave &
   IMenuRepositoryGetOne &
   IMenuRepositoryUpdate;

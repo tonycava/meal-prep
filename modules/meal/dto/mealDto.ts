@@ -33,13 +33,11 @@ export const GetMealByIdInputSchema = z.object({
 export const MealDTOSchema = z.object({
   id: z.uuid(),
   mealType: z.string(),
-  createdAt: z.string().datetime(),
-  updatedAt: z.string().datetime(),
   recipeMeals: z.array(
     z.object({
       recipeId: z.string(),
       type: z.number(),
-    })
+    }),
   ),
 });
 
@@ -81,7 +79,7 @@ export const RecipeDTOSchema = z.object({
       quantity: z.number(),
       unit: z.string(),
       notes: z.string().nullable(),
-    })
+    }),
   ),
 });
 

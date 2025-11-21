@@ -7,8 +7,8 @@ import {
 import { CreateMenuDto } from "../dto/createMenu.dto";
 import { IMenuRepositorySave } from "../interfaces/IMenuRepository";
 import { tryCatch } from "$lib/errors/tryCatch";
-import { Menu } from "$modules/menu/entities/Menu.ts";
-import { HttpCode } from "$lib/common/api/HttpCode.ts";
+import { Menu } from "$modules/menu/entities/Menu";
+import { HttpCode } from "$lib/common/api/HttpCode";
 
 type Input = InputFactory<
   { dto: CreateMenuDto; apiKey: string },

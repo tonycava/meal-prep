@@ -1,7 +1,7 @@
 import { INutritionRepository } from "../interfaces/INutritionRepository";
 import { IngredientWithQuantityAndUnit } from "../../ingredient/entities/Ingredient";
 import AiService from "../services/ai.service";
-import { AppError } from "$lib/errors/AppError.ts";
+import { AppError } from "$lib/errors/AppError";
 
 export const NutritionRepository = (): INutritionRepository => {
   return {

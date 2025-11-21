@@ -7,7 +7,7 @@ import {
 import { IRecipeRepositoryFindById } from "../interfaces/IRecipeRepository";
 import { GetRecipeByIdInput, GetRecipeByIdOutput } from "../dto/recipeDto";
 import { tryCatch } from "../../../lib/errors/tryCatch";
-import { HttpCode } from "$lib/common/api/HttpCode.ts";
+import { HttpCode } from "$lib/common/api/HttpCode";
 
 type Input = InputFactory<
   GetRecipeByIdInput,

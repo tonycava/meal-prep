@@ -1,9 +1,9 @@
-import { authMiddleware } from "$lib/middlewares/authMiddleware.ts";
-import { RecipeRepository } from "$modules/recipe/repositories/RecipeRepository.ts";
-import { UseCaseResponseSchema } from "$lib/common/usecase.ts";
-import { ApiResponse } from "$lib/common/api/ApiResponse.ts";
-import { UpdateRecipeUseCase } from "$modules/recipe/usecases/UpdateRecipe.ts";
-import { updateRecipeDto } from "$modules/recipe/dto/updateRecipeDto.ts";
+import { authMiddleware } from "$lib/middlewares/authMiddleware";
+import { RecipeRepository } from "$modules/recipe/repositories/RecipeRepository";
+import { UseCaseResponseSchema } from "$lib/common/usecase";
+import { ApiResponse } from "$lib/common/api/ApiResponse";
+import { UpdateRecipeUseCase } from "$modules/recipe/usecases/UpdateRecipe";
+import { updateRecipeDto } from "$modules/recipe/dto/updateRecipeDto";
 import { endpointsFactory } from "../../../lib/common/endpointFactory";
 import { createUserFromOptions } from "../../../lib/common/User";
 

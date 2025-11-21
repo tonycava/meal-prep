@@ -1,8 +1,8 @@
 import { NutritionalInfo } from "../entities/Nutrition";
 import { IngredientWithQuantityAndUnit } from "../../ingredient/entities/Ingredient";
 import { generateObject } from "ai";
-import { openrouter } from "$lib/openrouter.ts";
-import { nutritionalInfoSchema } from "$modules/recipe/dto/nutritionalInfoSchemaDto.ts";
+import { openrouter } from "$lib/openrouter";
+import { nutritionalInfoSchema } from "$modules/recipe/dto/nutritionalInfoSchemaDto";
 
 const generateNutritionFacts = async (
   ingredients: IngredientWithQuantityAndUnit[],

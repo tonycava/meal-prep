@@ -5,8 +5,8 @@ import {
   UseCaseResponseBuilder,
 } from "../../../lib/common/usecase";
 import { IRecipeRepositoryUpdate } from "../interfaces/IRecipeRepository";
-import { tryCatch } from "$lib/errors/tryCatch.ts";
-import { UpdateRecipeDto } from "$modules/recipe/dto/updateRecipeDto.ts";
+import { tryCatch } from "$lib/errors/tryCatch";
+import { UpdateRecipeDto } from "$modules/recipe/dto/updateRecipeDto";
 import { HttpCode } from "../../../lib/common/api/HttpCode";
 
 type Input = InputFactory<

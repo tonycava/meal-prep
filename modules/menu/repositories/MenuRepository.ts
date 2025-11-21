@@ -2,33 +2,45 @@ import { IMenuRepository, CreateMenuDto } from "../interfaces/IMenuRepository";
 import { Menu } from "../entities/Menu";
 import { ListMenusOutput } from "../dto/menu.dto";
 import { prisma } from "$lib/db";
-import { AppError } from "$lib/errors/AppError.ts";
-import { CreateMenuPartialDtoWithId } from "$modules/menu/dto/createMenu.dto.ts";
+import { AppError } from "$lib/errors/AppError";
+import { CreateMenuPartialDtoWithId } from "$modules/menu/dto/createMenu.dto";
 
 export const MenuRepository = (): IMenuRepository => {
-
   return {
     async update(menuDto: CreateMenuPartialDtoWithId): Promise<void> {
-      const menu = await this.getOne(menuDto.id)
+      const menu = await this.getOne(menuDto.id);
       if (!menu) return;
-      const mealsToDelete = menu.menuMeals.filter(child => !menuDto.mealIds?.some(c => c.mealId === child.mealId));
+      const mealsToDelete = menu.menuMeals.filter(
+        (child) => !menuDto.mealIds?.some((c) => c.mealId === child.mealId),
+      );
       for (const mealsToDeleteElement of mealsToDelete) {
-        await prisma.menuMeal.delete({ where: { menuId_mealId_dayNumber: { menuId: menuDto.id, mealId: mealsToDeleteElement.mealId, dayNumber: mealsToDeleteElement.dayNumber } } });
+        await prisma.menuMeal.delete({
+          where: {
+            menuId_mealId_dayNumber: {
+              menuId: menuDto.id,
+              mealId: mealsToDeleteElement.mealId,
+              dayNumber: mealsToDeleteElement.dayNumber,
+            },
+          },
+        });
       }
 
-      const mealsToAdd = menuDto.mealIds?.filter(
-        newMeal => !menu.menuMeals.some(existing => existing.mealId === newMeal.mealId)
-      ) || [];
-
+      const mealsToAdd =
+        menuDto.mealIds?.filter(
+          (newMeal) =>
+            !menu.menuMeals.some(
+              (existing) => existing.mealId === newMeal.mealId,
+            ),
+        ) || [];
 
       for (const mealToAdd of mealsToAdd) {
         await prisma.menuMeal.create({
           data: {
             menuId: menu.id,
             mealId: mealToAdd.mealId,
-            dayNumber: mealToAdd.dayNumber
-          }
-        })
+            dayNumber: mealToAdd.dayNumber,
+          },
+        });
       }
 
       await prisma.menu.update({
@@ -38,8 +50,7 @@ export const MenuRepository = (): IMenuRepository => {
           duration: menuDto.duration,
         },
         where: { id: menuDto.id },
-      })
-
+      });
 
       return;
     },
@@ -157,6 +168,6 @@ export const MenuRepository = (): IMenuRepository => {
           "error",
         );
       }
-    }
+    },
   };
 };

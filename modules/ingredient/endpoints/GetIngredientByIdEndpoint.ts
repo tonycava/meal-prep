@@ -1,10 +1,10 @@
 import { z } from "zod";
 import { GetIngredientByIdUseCase } from "../usecases/GetIngredientById";
 import { IngredientRepository } from "../repositories/IngredientRepository";
-import { ApiResponse } from "$lib/common/api/ApiResponse.ts";
-import { UseCaseResponseSchema } from "$lib/common/usecase.ts";
-import { endpointsFactory } from "$lib/common/endpointFactory.ts";
-import { authMiddleware } from "$lib/middlewares/authMiddleware.ts";
+import { ApiResponse } from "$lib/common/api/ApiResponse";
+import { UseCaseResponseSchema } from "$lib/common/usecase";
+import { endpointsFactory } from "$lib/common/endpointFactory";
+import { authMiddleware } from "$lib/middlewares/authMiddleware";
 
 export const GetIngredientByIdEndpoint = endpointsFactory
   .addMiddleware(authMiddleware)

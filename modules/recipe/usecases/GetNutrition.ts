@@ -3,12 +3,12 @@ import {
   OutputFactory,
   UseCase,
   UseCaseResponseBuilder,
-} from "$lib/common/usecase.ts";
+} from "$lib/common/usecase";
 import { GetNutritionDto } from "../dto/getNutritionDto";
-import { INutritionRepositoryCalculateNutrition } from "$modules/recipe/interfaces/INutritionRepository.ts";
-import { NutritionalInfo } from "$modules/recipe/entities/Nutrition.ts";
-import { IIngredientRepositoryGetAllOfRecipe } from "$modules/recipe/interfaces/IIngredientRepository.ts";
-import { tryCatch } from "$lib/errors/tryCatch.ts";
+import { INutritionRepositoryCalculateNutrition } from "$modules/recipe/interfaces/INutritionRepository";
+import { NutritionalInfo } from "$modules/recipe/entities/Nutrition";
+import { IIngredientRepositoryGetAllOfRecipe } from "$modules/recipe/interfaces/IIngredientRepository";
+import { tryCatch } from "$lib/errors/tryCatch";
 import { HttpCode } from "../../../lib/common/api/HttpCode";
 
 type Input = InputFactory<

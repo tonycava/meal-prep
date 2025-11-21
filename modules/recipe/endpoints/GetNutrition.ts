@@ -1,10 +1,10 @@
-import { ApiResponse } from "$lib/common/api/ApiResponse.ts";
-import { UseCaseResponseSchema } from "$lib/common/usecase.ts";
-import { authMiddleware } from "$lib/middlewares/authMiddleware.ts";
+import { ApiResponse } from "$lib/common/api/ApiResponse";
+import { UseCaseResponseSchema } from "$lib/common/usecase";
+import { authMiddleware } from "$lib/middlewares/authMiddleware";
 import { getNutritionDto } from "../dto/getNutritionDto";
 import { GetNutrutionUseCase } from "../usecases/GetNutrition";
-import { NutritionRepository } from "$modules/recipe/repositories/NutritionRepository.ts";
-import { IngredientRepository } from "$modules/recipe/repositories/IngredientRepository.ts";
+import { NutritionRepository } from "$modules/recipe/repositories/NutritionRepository";
+import { IngredientRepository } from "$modules/recipe/repositories/IngredientRepository";
 import { endpointsFactory } from "../../../lib/common/endpointFactory";
 import RateLimit from "../../../lib/common/api/RateLimit";
 

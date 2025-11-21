@@ -1,6 +1,6 @@
 import { ensureHttpError, ResultHandler } from "express-zod-api";
 import { z } from "zod";
-import { AppError } from "$lib/errors/AppError.ts";
+import { AppError } from "$lib/errors/AppError";
 
 export const mealPrepResultHandler = new ResultHandler({
   positive: (data) => ({

@@ -4,9 +4,9 @@ import {
 } from "../dto/recipeDto";
 import { RecipeRepository } from "../repositories/RecipeRepository";
 import { ListRecipeByIdUseCase } from "../usecases/ListRecipeById";
-import { endpointsFactory } from "$lib/common/endpointFactory.ts";
-import { createUserFromOptions } from "$lib/common/User.ts";
-import { authMiddleware } from "$lib/middlewares/authMiddleware.ts";
+import { endpointsFactory } from "$lib/common/endpointFactory";
+import { createUserFromOptions } from "$lib/common/User";
+import { authMiddleware } from "$lib/middlewares/authMiddleware";
 
 export const ListRecipeByIdEndpoint = endpointsFactory
   .addMiddleware(authMiddleware)

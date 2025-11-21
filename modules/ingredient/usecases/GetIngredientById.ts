@@ -3,10 +3,10 @@ import {
   OutputFactory,
   UseCase,
   UseCaseResponseBuilder,
-} from "$lib/common/usecase.ts";
+} from "$lib/common/usecase";
 import { IngredientResponseDtoType } from "../dto/ingredient.dto";
 import { IIngredientRepositoryGetById } from "../interfaces/IIngredientRepository";
-import { tryCatch } from "$lib/errors/tryCatch.ts";
+import { tryCatch } from "$lib/errors/tryCatch";
 
 type Input = InputFactory<
   { id: string },

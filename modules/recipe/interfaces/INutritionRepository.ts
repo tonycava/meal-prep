@@ -1,5 +1,5 @@
-import { NutritionalInfo } from "$modules/recipe/entities/Nutrition.ts";
-import { IngredientWithQuantityAndUnit } from "$modules/ingredient/entities/Ingredient.ts";
+import { NutritionalInfo } from "$modules/recipe/entities/Nutrition";
+import { IngredientWithQuantityAndUnit } from "$modules/ingredient/entities/Ingredient";
 
 export interface INutritionRepositoryCalculateNutrition {
   calculateNutrition(

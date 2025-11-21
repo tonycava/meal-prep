@@ -3,14 +3,14 @@ import {
   OutputFactory,
   UseCase,
   UseCaseResponseBuilder,
-} from "$lib/common/usecase.ts";
+} from "$lib/common/usecase";
 import {
   IRecipeRepositoryDelete,
   IRecipeRepositoryIsUseInOneMenu,
 } from "../interfaces/IRecipeRepository";
-import { tryCatch } from "$lib/errors/tryCatch.ts";
+import { tryCatch } from "$lib/errors/tryCatch";
 import { DeleteRecipeDto } from "../dto/deleteRecipeDto";
-import { HttpCode } from "$lib/common/api/HttpCode.ts";
+import { HttpCode } from "$lib/common/api/HttpCode";
 
 type Input = InputFactory<
   { dto: DeleteRecipeDto },

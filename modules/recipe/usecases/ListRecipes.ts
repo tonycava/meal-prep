@@ -3,11 +3,11 @@ import {
   InputFactory,
   UseCaseResponseBuilder,
   OutputFactory,
-} from "$lib/common/usecase.ts";
+} from "$lib/common/usecase";
 import { IRecipeRepositoryList } from "../interfaces/IRecipeRepository";
 import { IRecipeFilters, ListRecipesOutput } from "../dto/recipeDto";
-import { tryCatch } from "$lib/errors/tryCatch.ts";
-import { HttpCode } from "$lib/common/api/HttpCode.ts";
+import { tryCatch } from "$lib/errors/tryCatch";
+import { HttpCode } from "$lib/common/api/HttpCode";
 
 type Input = InputFactory<
   { limit: number; offset: number; filters?: IRecipeFilters; apiKey: string },

@@ -1,11 +1,11 @@
 import { createRecipeDto } from "../dto/createRecipeDto";
-import { ApiResponse } from "$lib/common/api/ApiResponse.ts";
-import { authMiddleware } from "$lib/middlewares/authMiddleware.ts";
+import { ApiResponse } from "$lib/common/api/ApiResponse";
+import { authMiddleware } from "$lib/middlewares/authMiddleware";
 import { z } from "zod";
-import { endpointsFactory } from "$lib/common/endpointFactory.ts";
-import { SaveRecipeUseCase } from "$modules/recipe/usecases/SaveRecipe.ts";
-import { RecipeRepository } from "$modules/recipe/repositories/RecipeRepository.ts";
-import { createUserFromOptions } from "$lib/common/User.ts";
+import { endpointsFactory } from "$lib/common/endpointFactory";
+import { SaveRecipeUseCase } from "$modules/recipe/usecases/SaveRecipe";
+import { RecipeRepository } from "$modules/recipe/repositories/RecipeRepository";
+import { createUserFromOptions } from "$lib/common/User";
 
 export const CreateRecipeEndPoint = endpointsFactory
   .addMiddleware(authMiddleware)

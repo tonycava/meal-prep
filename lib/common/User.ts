@@ -1,4 +1,4 @@
-import { Options } from "$lib/middlewares/authMiddleware.ts";
+import { Options } from "$lib/middlewares/authMiddleware";
 
 export type User = {
   apiKey: string;

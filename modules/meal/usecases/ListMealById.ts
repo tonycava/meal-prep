@@ -19,7 +19,7 @@ export const GetMealByIdUseCase: UseCase<Input, Output> = (dependencies) => {
   return {
     async execute(data): Promise<Output> {
       const [error, result] = await tryCatch(
-        mealRepository.findById(data.id, data.apiKey)
+        mealRepository.findById(data.id, data.apiKey),
       );
 
       if (error)
@@ -28,7 +28,10 @@ export const GetMealByIdUseCase: UseCase<Input, Output> = (dependencies) => {
       if (!result) {
         return UseCaseResponseBuilder.error(404, "Meal not found");
       }
-      return UseCaseResponseBuilder.success(200, { menus: [result], meta: { total: 1, offset: 0, limit: 1 } });
+      return UseCaseResponseBuilder.success(200, {
+        menus: [result],
+        meta: { total: 1, offset: 0, limit: 1 },
+      });
     },
   };
 };

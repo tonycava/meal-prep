@@ -2,8 +2,8 @@ import { IRecipeRepository } from "../interfaces/IRecipeRepository";
 import { CreateRecipeDto } from "../dto/createRecipeDto";
 import { Recipe } from "../entities/Recipe";
 import { prisma } from "$lib/db";
-import { DeleteRecipeDto } from "$modules/recipe/dto/deleteRecipeDto.ts";
-import { AppError } from "$lib/errors/AppError.ts";
+import { DeleteRecipeDto } from "$modules/recipe/dto/deleteRecipeDto";
+import { AppError } from "$lib/errors/AppError";
 import {
   ListRecipesOutput,
   IRecipeFilters,
@@ -14,8 +14,8 @@ import {
   DietType,
   Prisma,
 } from "../../../src/generated/prisma";
-import { UpdateRecipeDto } from "$modules/recipe/dto/updateRecipeDto.ts";
-import { User } from "$lib/common/User.ts";
+import { UpdateRecipeDto } from "$modules/recipe/dto/updateRecipeDto";
+import { User } from "$lib/common/User";
 
 export const RecipeRepository = (user: User): IRecipeRepository => {
   return {
@@ -132,14 +132,19 @@ export const RecipeRepository = (user: User): IRecipeRepository => {
           { isPublic: true },
           ...(filters.search
             ? [
-              { title: { contains: filters.search, mode: "insensitive" } },
-              { description: { contains: filters.search, mode: "insensitive" } },
-            ]
+                { title: { contains: filters.search, mode: "insensitive" } },
+                {
+                  description: {
+                    contains: filters.search,
+                    mode: "insensitive",
+                  },
+                },
+              ]
             : []),
         ],
       };
 
-      console.dir(where, {depth: null})
+      console.dir(where, { depth: null });
 
       const [recipes, total] = await Promise.all([
         prisma.recipe.findMany({

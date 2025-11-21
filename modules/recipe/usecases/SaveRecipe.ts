@@ -8,7 +8,7 @@ import { CreateRecipeDto } from "../dto/createRecipeDto";
 import { Recipe } from "../entities/Recipe";
 import { IRecipeRepositorySave } from "../interfaces/IRecipeRepository";
 import { tryCatch } from "../../../lib/errors/tryCatch";
-import { HttpCode } from "$lib/common/api/HttpCode.ts";
+import { HttpCode } from "$lib/common/api/HttpCode";
 
 type Input = InputFactory<
   { dto: CreateRecipeDto },
