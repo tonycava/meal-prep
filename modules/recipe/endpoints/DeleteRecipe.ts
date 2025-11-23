@@ -8,15 +8,15 @@ import { createUserFromOptions } from "$lib/common/User.ts";
 import { endpointsFactory } from "$lib/common/endpointFactory.ts";
 
 export const DeleteRecipeEndPoint = endpointsFactory
-  .addMiddleware(authMiddleware)
-  .build({
-    method: "delete",
-    input: deleteRecipeDto,
-    output: UseCaseResponseSchema,
-    handler: async ({ input, options }) => {
-      const deleteRecipeResponse = await DeleteRecipeUseCase({
-        recipeRepository: RecipeRepository(createUserFromOptions(options)),
-      }).execute({ dto: input });
-      return ApiResponse.send(deleteRecipeResponse);
-    },
-  });
+	.addMiddleware(authMiddleware)
+	.build({
+		method: "delete",
+		input: deleteRecipeDto,
+		output: UseCaseResponseSchema,
+		handler: async ({ input, options }) => {
+			const deleteRecipeResponse = await DeleteRecipeUseCase({
+				recipeRepository: RecipeRepository(createUserFromOptions(options)),
+			}).execute({ dto: input });
+			return ApiResponse.send(deleteRecipeResponse);
+		},
+	});
