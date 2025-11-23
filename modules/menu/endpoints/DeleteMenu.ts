@@ -5,25 +5,21 @@ import { DeleteMenuUseCase } from "../usecases/DeleteMenu";
 import { MenuRepository } from "../repositories/MenuRepository"
 import createHttpError from "http-errors";
 import { z } from "zod";
+import { ApiResponse } from "$lib/common/api/ApiResponse";
+import { UseCaseResponseSchema } from "$lib/common/usecase";
+import { createUserFromOptions } from "$lib/common/User";
 
 export const DeleteMenuEndpoint = endpointsFactory
 	.addMiddleware(authMiddleware)
 	.build({
 		method: "delete",
 		input: deleteMenuDto,
-		output: z.object({ message: z.string() }),
-		handler: async ({ input, options, logger }) => {
+		output: UseCaseResponseSchema,
+		handler: async ({ input, options }) => {
+			const deleteMenuResponse = await DeleteMenuUseCase({
+				menuRepository: MenuRepository(createUserFromOptions(options))
+			}).execute({ dto: input });
 
-			const useCase = DeleteMenuUseCase({
-				menuRepository: MenuRepository(options.user)
-			})
-
-			const response = await useCase.execute({ dto: input });
-
-			if(!response.isSuccess) {
-				throw createHttpError(response.status, response.message)
-			}
-
-			return { message: "Menu supprimé avec succès" };
+			return ApiResponse.send(deleteMenuResponse);
 		}
 	})

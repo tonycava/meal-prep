@@ -6,6 +6,7 @@ export const authMiddleware = new Middleware({
   handler: async ({ request }) => {
     const apiKey = request.headers["x-api-key"];
 
+
     if (!apiKey || typeof apiKey !== "string") {
       throw createHttpError(401, "API key is required in 'x-api-key' header");
     }

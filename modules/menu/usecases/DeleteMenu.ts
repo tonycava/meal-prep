@@ -18,7 +18,7 @@ export const DeleteMenuUseCase: UseCase<Input, Output> = (dependencies) => {
 		async execute(data): Promise<Output> {
 
 			const [error] = await tryCatch(
-				menuRepository.delete(data.dto)
+				menuRepository.delete(data.dto),
 			);
 			if(error) {
 				let status: StatusCode = HttpCode.INTERNAL_SERVER_ERROR;
