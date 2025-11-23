@@ -1,8 +1,8 @@
-import { InputFactory, OutputFactory, UseCase, UseCaseResponseBuilder } from "../../../lib/common/usecase";
+import { InputFactory, OutputFactory, UseCase, UseCaseResponseBuilder } from "$lib/common/usecase";
 import { IMenuRepositoryDelete } from "../interfaces/IMenuRepository";
-import { tryCatch } from "../../../lib/errors/tryCatch";
+import { tryCatch } from "$lib/errors/tryCatch";
 import { DeleteMenuDto } from "../dto/deleteMenu.dto";
-import { StatusCode } from "../../../lib/helpers/http.helper";
+import { StatusCode } from "$lib/helpers/http.helper";
 import { HttpCode } from "$lib/common/api/HttpCode.ts";
 
 type Input = InputFactory<

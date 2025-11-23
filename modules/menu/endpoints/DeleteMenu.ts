@@ -1,10 +1,8 @@
 import { endpointsFactory } from "$lib/common/endpointFactory.ts";
-import { authMiddleware } from "../../../lib/middlewares/authMiddleware";
+import { authMiddleware } from "$lib/middlewares/authMiddleware";
 import { deleteMenuDto } from "../dto/deleteMenu.dto";
-import { DeleteMenuUseCase } from "../usecases/DeleteMenu";
-import { MenuRepository } from "../repositories/MenuRepository"
-import createHttpError from "http-errors";
-import { z } from "zod";
+import { DeleteMenuUseCase } from "$modules/menu/usecases/DeleteMenu";
+import { MenuRepository } from "$modules/menu/repositories/MenuRepository"
 import { ApiResponse } from "$lib/common/api/ApiResponse";
 import { UseCaseResponseSchema } from "$lib/common/usecase";
 import { createUserFromOptions } from "$lib/common/User";
