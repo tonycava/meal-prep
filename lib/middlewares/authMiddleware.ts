@@ -24,7 +24,7 @@ export const authMiddleware = new Middleware({
       throw createHttpError(401, "API key is inactive");
     }
 
-    return { apiKey, role: existingKey.role };
+    return { apiKey, apiKeyId: existingKey.id, role: existingKey.role };
   },
 });
 

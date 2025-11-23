@@ -176,10 +176,10 @@ export const MenuRepository = (user: User): IMenuRepository => {
 				);
 			}
 
-			if(user.role === "user" && menu.apiKeyId != user.apiKey) {
+			if(user.role.toLowerCase() === "user" && menu.apiKeyId != user.apiKeyId) {
 				throw new AppError(
 					"Forbidden",
-					`User ${user.apiKey} tried to delete menu ${menu.id} owned by ${menu.apiKeyId}`,
+					`User ${user.apiKeyId} tried to delete menu ${menu.id} owned by ${menu.apiKeyId}`,
 					"Vous n'avez pas les autorisations pour supprimer ce menu.",
 					"error"
 				);
