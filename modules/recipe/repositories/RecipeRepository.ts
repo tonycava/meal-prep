@@ -86,80 +86,80 @@ export const RecipeRepository = (user: User): IRecipeRepository => {
 					});
 				}
 
-        return {
-          cookTimeMin: createdRecipe.cookTimeMin,
-          createdAt: createdRecipe.createdAt,
-          description: createdRecipe.description,
-          imageUrl: createdRecipe.imageUrl,
-          isPublic: createdRecipe.isPublic,
-          prepTimeMin: createdRecipe.prepTimeMin,
-          servings: createdRecipe.servings,
-          title: createdRecipe.title,
-          updatedAt: createdRecipe.updatedAt,
-          id: createdRecipe.id,
-        };
-      } catch (error) {
-        console.log("Error saving recipe:", error);
-        throw new AppError(
-          "Internal Server Error",
-          "An error occurred while saving recipe",
-          "Une erreur est survenue lors de la sauvegarde d'une recette.",
-          "error",
-        );
-      }
-    },
-    async list(
-      limit: number,
-      offset: number,
-      filters: IRecipeFilters,
-    ): Promise<ListRecipesOutput> {
-      const where: Prisma.RecipeWhereInput = {
-        ...(filters.category && {
-          category: filters.category as RecipeCategory,
-        }),
-        ...(filters.diet && { diet: filters.diet as DietType }),
-        ...(filters.ingredients && {
-          ingredients: {
-            some: {
-              ingredientId: {
-                in: filters.ingredients,
-              },
-            },
-          },
-        }),
-        OR: [
-          user.role === "user" ? { apiKeyId: user.apiKey } : ({} as object),
-          { isPublic: true },
-          ...(filters.search
-            ? [
-              { title: { contains: filters.search, mode: "insensitive" } },
-              { description: { contains: filters.search, mode: "insensitive" } },
-            ]
-            : []),
-        ],
-      };
+				return {
+					cookTimeMin: createdRecipe.cookTimeMin,
+					createdAt: createdRecipe.createdAt,
+					description: createdRecipe.description,
+					imageUrl: createdRecipe.imageUrl,
+					isPublic: createdRecipe.isPublic,
+					prepTimeMin: createdRecipe.prepTimeMin,
+					servings: createdRecipe.servings,
+					title: createdRecipe.title,
+					updatedAt: createdRecipe.updatedAt,
+					id: createdRecipe.id,
+				};
+			} catch (error) {
+				console.log("Error saving recipe:", error);
+				throw new AppError(
+					"Internal Server Error",
+					"An error occurred while saving recipe",
+					"Une erreur est survenue lors de la sauvegarde d'une recette.",
+					"error",
+				);
+			}
+		},
+		async list(
+			limit: number,
+			offset: number,
+			filters: IRecipeFilters,
+		): Promise<ListRecipesOutput> {
+			const where: Prisma.RecipeWhereInput = {
+				...(filters.category && {
+					category: filters.category as RecipeCategory,
+				}),
+				...(filters.diet && { diet: filters.diet as DietType }),
+				...(filters.ingredients && {
+					ingredients: {
+						some: {
+							ingredientId: {
+								in: filters.ingredients,
+							},
+						},
+					},
+				}),
+				OR: [
+					user.role === "user" ? { apiKeyId: user.apiKey } : ({} as object),
+					{ isPublic: true },
+					...(filters.search
+						? [
+							{ title: { contains: filters.search, mode: "insensitive" } },
+							{ description: { contains: filters.search, mode: "insensitive" } },
+						]
+						: []),
+				],
+			};
 
-      console.dir(where, {depth: null})
+			console.dir(where, { depth: null })
 
-      const [recipes, total] = await Promise.all([
-        prisma.recipe.findMany({
-          where,
-          skip: offset,
-          take: limit,
-          orderBy: { createdAt: "desc" },
-          include: {
-            ingredients: {
-              include: {
-                ingredient: true,
-              },
-            },
-            _count: {
-              select: { recipeMeals: true },
-            },
-          },
-        }),
-        prisma.recipe.count({ where }),
-      ]);
+			const [recipes, total] = await Promise.all([
+				prisma.recipe.findMany({
+					where,
+					skip: offset,
+					take: limit,
+					orderBy: { createdAt: "desc" },
+					include: {
+						ingredients: {
+							include: {
+								ingredient: true,
+							},
+						},
+						_count: {
+							select: { recipeMeals: true },
+						},
+					},
+				}),
+				prisma.recipe.count({ where }),
+			]);
 
 			const data = recipes.map((recipe) => ({
 				id: recipe.id,

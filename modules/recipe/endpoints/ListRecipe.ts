@@ -1,6 +1,6 @@
 import {
-  ListRecipesInputSchema,
-  ListRecipesOutputSchema,
+	ListRecipesInputSchema,
+	ListRecipesOutputSchema,
 } from "../dto/recipeDto";
 import { ListRecipesUseCase } from "../usecases/ListRecipes";
 import { RecipeRepository } from "../repositories/RecipeRepository";
@@ -11,30 +11,30 @@ import { ApiResponse } from "$lib/common/api/ApiResponse.ts";
 import { UseCaseResponseSchema } from "$lib/common/usecase.ts";
 
 export const ListRecipesEndpoint = endpointsFactory
-  .addMiddleware(authMiddleware)
-  .build({
-    method: "get",
-    input: ListRecipesInputSchema,
-    output: UseCaseResponseSchema,
-    handler: async ({ input, options }) => {
-      const { limit, offset, category, diet, search, ingredients } = input;
+	.addMiddleware(authMiddleware)
+	.build({
+		method: "get",
+		input: ListRecipesInputSchema,
+		output: UseCaseResponseSchema,
+		handler: async ({ input, options }) => {
+			const { limit, offset, category, diet, search, ingredients } = input;
 
-      const filters = {
-        ...(category && { category }),
-        ...(diet && { diet }),
-        ...(search && { search }),
-        ...(ingredients && { ingredients }),
-      };
+			const filters = {
+				...(category && { category }),
+				...(diet && { diet }),
+				...(search && { search }),
+				...(ingredients && { ingredients }),
+			};
 
-      const response = await ListRecipesUseCase({
-        recipeRepository: RecipeRepository(createUserFromOptions(options)),
-      }).execute({
-        limit,
-        offset,
-        filters: Object.keys(filters).length > 0 ? filters : undefined,
-        apiKey: options.apiKey,
-      });
+			const response = await ListRecipesUseCase({
+				recipeRepository: RecipeRepository(createUserFromOptions(options)),
+			}).execute({
+				limit,
+				offset,
+				filters: Object.keys(filters).length > 0 ? filters : undefined,
+				apiKey: options.apiKey,
+			});
 
-      return ApiResponse.send(response);
-    },
-  });
+			return ApiResponse.send(response);
+		},
+	});

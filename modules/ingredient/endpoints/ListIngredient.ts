@@ -1,65 +1,69 @@
-import { z } from "zod";
-import { prisma } from "$lib/db.ts";
-import { Prisma } from "../../../src/generated/prisma";
-import {
-  IngredientListQueryDto,
-  IngredientResponseDto,
-} from "../dto/ingredient.dto";
+import { IngredientListQueryDto } from "$modules/ingredient/dto/ingredient.dto";
 import { endpointsFactory } from "$lib/common/endpointFactory.ts";
-import { authMiddleware } from "$lib/middlewares/authMiddleware.ts";
+import { UseCaseResponseSchema } from "$lib/common/usecase";
+import { ListIngredientsUseCase } from "$modules/ingredient/usecases/ListIngredients";
+import { IngredientRepository } from "../repositories/IngredientRepository";
+import { ApiResponse } from "$lib/common/api/ApiResponse";
 
-export const ListIngredientEndpoint = endpointsFactory
-  .addMiddleware(authMiddleware)
-  .build({
-    method: "get",
-    input: IngredientListQueryDto,
-    output: z.object({
-      ingredients: z.array(IngredientResponseDto),
-      total: z.number(),
-      limit: z.number(),
-      offset: z.number(),
-    }),
-    handler: async ({
-      input: { category, search, limit = 20, offset = 0 },
-      logger,
-    }) => {
-      const where: Prisma.IngredientWhereInput = {};
+export const ListIngredientsEndpoint = endpointsFactory
+	.build({
+		method: "get",
+		input: IngredientListQueryDto,
+		output: UseCaseResponseSchema,
+		handler: async ({ input }) => {
+			const { limit, offset, category, search } = input;
 
-      if (category) {
-        where.category = category;
-      }
+			const filters = {
+				...(category && { category }),
+				...(search && { search })
+			};
 
-      if (search) {
-        where.name = {
-          contains: search,
-        };
-      }
+			const response = await ListIngredientsUseCase({
+				ingredientRepository: IngredientRepository()
+			}).execute({
+				limit,
+				offset,
+				filters: Object.keys(filters).length > 0 ? filters : undefined,
+			})
 
-      const [ingredients, total] = await Promise.all([
-        prisma.ingredient.findMany({
-          where,
-          take: limit,
-          skip: offset,
-          orderBy: {
-            name: "asc",
-          },
-          include: {
-            minerals: true,
-            vitamins: true,
-          },
-        }),
-        prisma.ingredient.count({ where }),
-      ]);
+			return ApiResponse.send(response);
+			// const where: Prisma.IngredientWhereInput = {};
 
-      logger.debug(
-        `Retrieved ${ingredients.length} ingredients out of ${total}`,
-      );
+			// if (category) {
+			// 	where.category = category;
+			// }
 
-      return {
-        ingredients,
-        total,
-        limit,
-        offset,
-      };
-    },
-  });
+			// if (search) {
+			// 	where.name = {
+			// 		contains: search,
+			// 	};
+			// }
+
+			// const [ingredients, total] = await Promise.all([
+			// 	prisma.ingredient.findMany({
+			// 		where,
+			// 		take: limit,
+			// 		skip: offset,
+			// 		orderBy: {
+			// 			name: "asc",
+			// 		},
+			// 		include: {
+			// 			minerals: true,
+			// 			vitamins: true,
+			// 		},
+			// 	}),
+			// 	prisma.ingredient.count({ where }),
+			// ]);
+
+			// logger.debug(
+			// 	`Retrieved ${ingredients.length} ingredients out of ${total}`,
+			// );
+
+			// return {
+			// 	ingredients,
+			// 	total,
+			// 	limit,
+			// 	offset,
+			// };
+		},
+	});
