@@ -1,6 +1,6 @@
 services:
   app:
-    image: meal-prep:latest
+    image: tonycava/meal-prep:latest
     container_name: meal-prep-app
     build:
       context: .

@@ -160,7 +160,7 @@ export const MenuRepository = (): IMenuRepository => {
           menuMeals: createdMenu.menuMeals,
         };
       } catch (error) {
-        console.log(error);
+        console.error("La création du menu a échoué", error);
         throw new AppError(
           "Internal Server Error",
           "An error occurred while saving the menu.",

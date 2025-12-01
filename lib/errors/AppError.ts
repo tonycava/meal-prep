@@ -47,14 +47,14 @@ export class AppError extends Error {
   }
 
   static createUnexpectedError(error: unknown) {
-    const message = error instanceof Error ? error.message : "Unknown error";
+    const message = error instanceof Error ? error.message : "An error from our end occurred, we're deeply sorry for the inconvenience. Please try again later.";
     if (message === "Unknown error") {
       console.error(error);
     }
     return new AppError(
       "Internal Server Error",
       message,
-      "An error from our end occurred, we're deeply sorry for the inconvenience. Please try again later.",
+      message,
       "error",
     );
   }

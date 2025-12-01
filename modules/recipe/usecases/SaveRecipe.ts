@@ -14,7 +14,7 @@ type Input = InputFactory<
   { dto: CreateRecipeDto },
   { recipeRepository: IRecipeRepositorySave }
 >;
-type Output = OutputFactory<Recipe>;
+type Output = OutputFactory<{ recipe: Recipe }>;
 
 export const SaveRecipeUseCase: UseCase<Input, Output> = (dependencies) => {
   const { recipeRepository } = dependencies;
@@ -23,11 +23,12 @@ export const SaveRecipeUseCase: UseCase<Input, Output> = (dependencies) => {
       const [error, recipe] = await tryCatch(recipeRepository.save(data.dto));
       if (error)
         return UseCaseResponseBuilder.error(
-          HttpCode.INTERNAL_SERVER_ERROR,
+          HttpCode.BAD_REQUEST,
           error.userFriendlyMessage,
         );
 
-      return UseCaseResponseBuilder.success(HttpCode.CREATED, recipe);
+
+      return UseCaseResponseBuilder.success(HttpCode.CREATED, { recipe });
     },
   };
 };

@@ -1,7 +1,7 @@
 import path from "path";
 import { DependsOnMethod, Routing, ServeStatic } from "express-zod-api";
-import { ListRecipesEndpoint } from "../modules/recipe/endpoints/ListRecipe";
-import { ListRecipeByIdEndpoint } from "../modules/recipe/endpoints/ListRecipeById";
+import { ListRecipesEndpoint } from "$modules/recipe/endpoints/ListRecipe";
+import { GetRecipeByIdEndpoint } from "$modules/recipe/endpoints/GetRecipeById";
 import { CreateRecipeEndPoint } from "$modules/recipe/endpoints/CreateRecipe";
 import { DeleteRecipeEndPoint } from "$modules/recipe/endpoints/DeleteRecipe";
 import { ListMenusEndpoint } from "$modules/menu/endpoints/ListMenus";
@@ -19,6 +19,8 @@ import { UpdateMealEndpoint } from "$modules/meal/endpoints/UpdateMeal";
 import { DeleteMealEndpoint } from "$modules/meal/endpoints/DeleteMeal";
 import { HomeEndpoint } from "$lib/common/endpoints/HomeEndpoint";
 import { UpdateMenuEndpoint } from "$modules/menu/endpoints/UpdateMenu";
+import { UpdateRecipeEndpoint } from "$modules/recipe/endpoints/UpdateRecipe";
+import { GetNutritionEndPoint } from "$modules/recipe/endpoints/GetNutrition";
 
 export const routing: Routing = {
   v1: {
@@ -27,12 +29,19 @@ export const routing: Routing = {
       "/": new DependsOnMethod({
         get: ListRecipesEndpoint,
         post: CreateRecipeEndPoint,
-        delete: DeleteRecipeEndPoint,
       }),
-      "/:id": new DependsOnMethod({
-        get: ListRecipeByIdEndpoint,
-      }),
+      "/:id": {
+        "/": new DependsOnMethod({
+          get: GetRecipeByIdEndpoint,
+          delete: DeleteRecipeEndPoint,
+          patch: UpdateRecipeEndpoint,
+        }),
+        "/nutrition": new DependsOnMethod({
+          get: GetNutritionEndPoint,
+        }),
+      },
     },
+
     menus: new DependsOnMethod({
       get: ListMenusEndpoint,
       post: CreateMenuEndpoint,

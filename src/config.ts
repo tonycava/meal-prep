@@ -8,6 +8,7 @@ export const config = createConfig({
   cors: false, // decide whether to enable CORS
   inputSources: {
     patch: ["body", "query", "params"],
+    get: ["body", "query", "params"],
   },
   beforeRouting: ({ app }) => {
     app.use(helmet());

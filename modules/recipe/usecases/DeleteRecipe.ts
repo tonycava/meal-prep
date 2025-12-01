@@ -18,7 +18,7 @@ type Input = InputFactory<
     recipeRepository: IRecipeRepositoryDelete & IRecipeRepositoryIsUseInOneMenu;
   }
 >;
-type Output = OutputFactory<boolean>;
+type Output = OutputFactory<string>;
 
 export const DeleteRecipeUseCase: UseCase<Input, Output> = (dependencies) => {
   const { recipeRepository } = dependencies;
@@ -45,7 +45,7 @@ export const DeleteRecipeUseCase: UseCase<Input, Output> = (dependencies) => {
           error.userFriendlyMessage,
         );
 
-      return UseCaseResponseBuilder.success(HttpCode.OK, true);
+      return UseCaseResponseBuilder.success(HttpCode.OK, "Recipe deleted successfully");
     },
   };
 };

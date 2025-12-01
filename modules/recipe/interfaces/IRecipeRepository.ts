@@ -1,15 +1,13 @@
 import { CreateRecipeDto } from "../dto/createRecipeDto";
-import { Recipe } from "../entities/Recipe";
+import { RecipeWithIngredients } from "../entities/Recipe";
 import { DeleteRecipeDto } from "$modules/recipe/dto/deleteRecipeDto";
 import { UpdateRecipeDto } from "$modules/recipe/dto/updateRecipeDto";
-import {
-  GetRecipeByIdOutput,
-  IRecipeFilters,
-  ListRecipesOutput,
-} from "../dto/recipeDto";
+
+import { WithPagination } from "$lib/common/types/WithPagination";
+import { IRecipeFilters } from "$modules/recipe/utils/IRecipeFilters";
 
 export type IRecipeRepositorySave = {
-  save(recipeDto: CreateRecipeDto): Promise<Recipe>;
+  save(recipeDto: CreateRecipeDto): Promise<RecipeWithIngredients>;
 };
 
 export type IRecipeRepositoryList = {
@@ -17,11 +15,11 @@ export type IRecipeRepositoryList = {
     limit: number,
     offset: number,
     filters: IRecipeFilters,
-  ): Promise<ListRecipesOutput>;
+  ): Promise<WithPagination<RecipeWithIngredients[], "recipes">>;
 };
 
 export type IRecipeRepositoryFindById = {
-  findById(id: string, apiKey: string): Promise<GetRecipeByIdOutput>;
+  findById(id: string): Promise<RecipeWithIngredients | null>;
 };
 
 export type IRecipeRepositoryDelete = {
@@ -29,7 +27,7 @@ export type IRecipeRepositoryDelete = {
 };
 
 export type IRecipeRepositoryUpdate = {
-  update(recipeDto: UpdateRecipeDto): Promise<void>;
+  update(recipeDto: UpdateRecipeDto): Promise<RecipeWithIngredients | null>;
 };
 
 export type IRecipeRepositoryIsUseInOneMenu = {

@@ -32,7 +32,8 @@ export const mealPrepResultHandler = new ResultHandler({
         error: { message: appError.userFriendlyMessage },
       });
     }
-    console.dir(output, { depth: null });
-    response.status(output.status as number).json({ data: output });
+
+    const data = typeof output.data === "object" ? (output as any).data : { message: (output as any).data || output.message };
+    response.status(output.status as number).json({ status: "success", data });
   },
 });

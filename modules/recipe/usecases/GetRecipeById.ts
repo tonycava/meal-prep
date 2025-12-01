@@ -1,31 +1,29 @@
 import {
-  InputFactory,
-  OutputFactory,
   UseCase,
+  InputFactory,
   UseCaseResponseBuilder,
+  OutputFactory,
 } from "$lib/common/usecase";
-import { IRecipeRepositoryUpdate } from "../interfaces/IRecipeRepository";
+import { IRecipeRepositoryFindById } from "../interfaces/IRecipeRepository";
 import { tryCatch } from "$lib/errors/tryCatch";
-import { UpdateRecipeDto } from "$modules/recipe/dto/updateRecipeDto";
 import { HttpCode } from "$lib/common/api/HttpCode";
 import { RecipeWithIngredients } from "$modules/recipe/entities/Recipe";
 
 type Input = InputFactory<
-  { dto: UpdateRecipeDto },
-  { recipeRepository: IRecipeRepositoryUpdate }
+  { id: string; apiKey: string },
+  { recipeRepository: IRecipeRepositoryFindById }
 >;
 type Output = OutputFactory<{ recipe: RecipeWithIngredients }>;
 
-export const UpdateRecipeUseCase: UseCase<Input, Output> = (dependencies) => {
+export const GetRecipeByIdUseCase: UseCase<Input, Output> = (dependencies) => {
   const { recipeRepository } = dependencies;
   return {
     async execute(data): Promise<Output> {
-      const [error, recipe] = await tryCatch(recipeRepository.update(data.dto));
-      if (!recipe)
-        return UseCaseResponseBuilder.error(
-          HttpCode.NOT_FOUND,
-          "Cette recette n'existe pas.",
-        );
+      const [error, recipe] = await tryCatch(
+        recipeRepository.findById(data.id),
+      );
+
+      console.log("GetRecipeByIdUseCase: recipe =", recipe, error);
 
       if (error)
         return UseCaseResponseBuilder.error(
@@ -33,6 +31,12 @@ export const UpdateRecipeUseCase: UseCase<Input, Output> = (dependencies) => {
           error.userFriendlyMessage,
         );
 
+      if (!recipe) {
+        return UseCaseResponseBuilder.error(
+          HttpCode.NOT_FOUND,
+          "Recipe not found",
+        );
+      }
       return UseCaseResponseBuilder.success(HttpCode.OK, { recipe });
     },
   };

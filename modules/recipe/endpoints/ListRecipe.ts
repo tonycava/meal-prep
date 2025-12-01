@@ -1,4 +1,3 @@
-import { ListRecipesInputSchema } from "../dto/recipeDto";
 import { ListRecipesUseCase } from "../usecases/ListRecipes";
 import { RecipeRepository } from "../repositories/RecipeRepository";
 import { authMiddleware } from "$lib/middlewares/authMiddleware";
@@ -6,16 +5,17 @@ import { endpointsFactory } from "$lib/common/endpointFactory";
 import { createUserFromOptions } from "$lib/common/User";
 import { ApiResponse } from "$lib/common/api/ApiResponse";
 import { UseCaseResponseSchema } from "$lib/common/usecase";
+import { listRecipesInputDto } from "$modules/recipe/dto/listRecipesInputDto";
 
 export const ListRecipesEndpoint = endpointsFactory
   .addMiddleware(authMiddleware)
   .build({
     method: "get",
-    input: ListRecipesInputSchema,
+    input: listRecipesInputDto,
     output: UseCaseResponseSchema,
     handler: async ({ input, options }) => {
       const { limit, offset, category, diet, search, ingredients } = input;
-
+      console.log({input})
       const filters = {
         ...(category && { category }),
         ...(diet && { diet }),
