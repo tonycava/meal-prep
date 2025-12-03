@@ -2,6 +2,7 @@ import { ensureHttpError, ResultHandler } from "express-zod-api";
 import { z } from "zod";
 import { AppError } from "$lib/errors/AppError.ts";
 import { HttpCode } from "./api/HttpCode";
+import { stat } from "fs";
 
 export const mealPrepResultHandler = new ResultHandler({
 	positive: (data) => ({
@@ -30,7 +31,7 @@ export const mealPrepResultHandler = new ResultHandler({
 				statusCode === HttpCode.NOT_FOUND ||
 				statusCode === HttpCode.CONFLICT) {
 				return void response.status(statusCode).json({
-					status: "error",
+					status: statusCode as number,
 					error: { message },
 				});
 			}
@@ -48,6 +49,21 @@ export const mealPrepResultHandler = new ResultHandler({
 				error: { message: output.message as string },
 			});
 		}
-		response.status(output.status as number).json({ data: output });
+
+		const responseData = output.data as any;
+
+		if (responseData && typeof responseData === 'object' && 'meta' in responseData) {
+			const { meta, ...rest } = responseData;
+			return void response.status(output.status as number).json({
+				status: "success",
+				data: rest,
+				meta
+			} as any);
+		}
+
+		response.status(output.status as number).json({
+			status: output.status as number,
+			data: output.data
+		} as any);
 	}
 });

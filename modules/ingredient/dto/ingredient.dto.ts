@@ -107,7 +107,7 @@ export const CreateIngredientDto = z.object({
 			(val) => val !== undefined && val.length > 0,
 			"Name is required",
 		),
-	category: ingredientCategorySchema.optional(),
+	category: ingredientCategorySchema.default(IngredientCategory.OTHER),
 	proteins: z.number().min(0).default(0),
 	fats: z.number().min(0).default(0),
 	carbs: z.number().min(0).default(0),

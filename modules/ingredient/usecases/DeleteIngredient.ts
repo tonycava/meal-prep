@@ -12,7 +12,7 @@ type Input = InputFactory<
   { id: string },
   { ingredientRepository: IIngredientRepositoryDelete }
 >;
-type Output = OutputFactory<void>;
+type Output = OutputFactory<{message: string}>;
 
 export const DeleteIngredientUseCase: UseCase<Input, Output> = (
   dependencies,
@@ -31,10 +31,10 @@ export const DeleteIngredientUseCase: UseCase<Input, Output> = (
       if (!deleted)
         return UseCaseResponseBuilder.error(
           HttpCode.NOT_FOUND,
-          "Ingrédient non trouvé",
+          "Ingredient not found",
         );
 
-      return UseCaseResponseBuilder.success(HttpCode.NO_CONTENT, undefined);
+      return UseCaseResponseBuilder.success(HttpCode.OK, { message: "Ingredient deleted successfully" });
     },
   };
 };

@@ -7,6 +7,7 @@ import {
 import { IngredientResponseDtoType } from "../dto/ingredient.dto";
 import { IIngredientRepositoryGetById } from "../interfaces/IIngredientRepository";
 import { tryCatch } from "$lib/errors/tryCatch.ts";
+import { HttpCode } from "$lib/common/api/HttpCode";
 
 type Input = InputFactory<
   { id: string },
@@ -24,11 +25,11 @@ export const GetIngredientByIdUseCase: UseCase<Input, Output> = (
         ingredientRepository.getById(data.id),
       );
       if (error)
-        return UseCaseResponseBuilder.error(500, error.userFriendlyMessage);
+        return UseCaseResponseBuilder.error(HttpCode.INTERNAL_SERVER_ERROR, error.userFriendlyMessage);
       if (!ingredient)
-        return UseCaseResponseBuilder.error(404, "Ingrédient non trouvé");
+        return UseCaseResponseBuilder.error(HttpCode.NOT_FOUND, "Ingredient not found");
 
-      return UseCaseResponseBuilder.success(200, ingredient);
+      return UseCaseResponseBuilder.success(HttpCode.OK, ingredient);
     },
   };
 };

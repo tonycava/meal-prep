@@ -92,7 +92,7 @@ paths:
                 properties:
                   status:
                     type: string
-                    const: error
+                    const: 422
                   message:
                     type: string
                     example: "Name is required"
@@ -122,7 +122,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: success }
+                  status: { type: string, const: 200 }
                   data:
                     type: object
                     properties:
@@ -143,7 +143,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 401 }
                   message: { type: string, example: "API key is required in 'x-api-key' header" }
         "403":
           description: API key inactive
@@ -152,7 +152,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 403 }
                   message: { type: string, example: "API key is inactive" }
         "422":
           description: Paramètres de requête invalides
@@ -161,7 +161,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 422 }
                   message: { type: string, example: "Invalid limit parameter" }
         "500":
           $ref: "#/components/responses/InternalError"
@@ -201,16 +201,16 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: success }
+                  status: { type: string, const: 201 }
                   data: { $ref: "#/components/schemas/Menu" }
         "400":
-          description: Données invalides
+          description: Requête invalide
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 400 }
                   message: { type: string, example: "The meal provided for this menu does not exist" }
         "401":
           description: API key manquante ou invalide
@@ -219,7 +219,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 401 }
                   message: { type: string, example: "Invalid API key" }
         "404":
           description: Repas non trouvé
@@ -228,7 +228,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 404 }
                   message: { type: string, example: "Meal not found" }
         "500":
           $ref: "#/components/responses/InternalError"
@@ -320,7 +320,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 400 }
                   error: { type: object, properties: { message: { type: string, example: "Invalid duration parameter" } } }
         "401":
           description: API key manquante ou invalide
@@ -329,7 +329,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 401 }
                   error: { type: object, properties: { message: { type: string, example: "API key is required in 'x-api-key' header" } } }
         "403":
           description: API key inactive
@@ -338,7 +338,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 403 }
                   error: { type: object, properties: { message: { type: string, example: "API key is inactive" } } }
         "404":
           description: Aucune recette trouvée avec les critères
@@ -347,7 +347,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: err404or }
                   error: { type: object, properties: { message: { type: string, example: "No recipes found matching criteria" } } }
         "500":
           $ref: "#/components/responses/InternalError"
@@ -379,7 +379,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 401 }
                   error: { type: object, properties: { message: { type: string, example: "API key is required in 'x-api-key' header" } } }
         "403":
           description: API key inactive
@@ -388,7 +388,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 403 }
                   error: { type: object, properties: { message: { type: string, example: "API key is inactive" } } }
         "404":
           description: Menu non trouvé
@@ -397,7 +397,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 404 }
                   error: { type: object, properties: { message: { type: string, example: "Menu not found" } } }
         "500":
           $ref: "#/components/responses/InternalError"
@@ -437,16 +437,16 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: success }
+                  status: { type: string, const: 200 }
                   data: { $ref: "#/components/schemas/Menu" }
         "400":
-          description: Données invalides
+          description: Requête invalide
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 400 }
                   error: { type: object, properties: { message: { type: string, example: "L'ID du repas doit être un UUID valide." } } }
         "401":
           description: API key manquante ou invalide
@@ -455,7 +455,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 401 }
                   error: { type: object, properties: { message: { type: string, example: "API key is required in 'x-api-key' header" } } }
         "403":
           description: API key inactive
@@ -464,7 +464,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 403 }
                   error: { type: object, properties: { message: { type: string, example: "API key is inactive" } } }
         "404":
           description: Menu ou repas non trouvé
@@ -473,7 +473,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 404 }
                   error: { type: object, properties: { message: { type: string, example: "Menu not found" } } }
         "500":
           $ref: "#/components/responses/InternalError"
@@ -497,7 +497,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: success }
+                  status: { type: string, const: 200 }
                   data:
                     type: object
                     properties:
@@ -509,7 +509,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 401 }
                   error: { type: object, properties: { message: { type: string, example: "API key is required in 'x-api-key' header" } } }
         "403":
           description: API key inactive
@@ -518,7 +518,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 403 }
                   error: { type: object, properties: { message: { type: string, example: "API key is inactive" } } }
         "404":
           description: Menu non trouvé
@@ -527,7 +527,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 404 }
                   error: { type: object, properties: { message: { type: string, example: "Menu not found" } } }
         "500":
           $ref: "#/components/responses/InternalError"
@@ -588,7 +588,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 400 }
                   error: { type: object, properties: { message: { type: string, example: "Invalid limit parameter" } } }
         "500":
           $ref: "#/components/responses/InternalError"
@@ -615,13 +615,13 @@ paths:
               schema:
                 $ref: "#/components/schemas/SingleRecipeResponse"
         "400":
-          description: Données invalides
+          description: Requête invalide
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 400 }
                   error: { type: object, properties: { message: { type: string, example: "Title is required" } } }
         "401":
           description: API key manquante ou invalide
@@ -630,7 +630,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 401 }
                   error: { type: object, properties: { message: { type: string, example: "API key is required in 'x-api-key' header" } } }
         "403":
           description: API key inactive
@@ -639,7 +639,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 403 }
                   error: { type: object, properties: { message: { type: string, example: "API key is inactive" } } }
         "500":
           $ref: "#/components/responses/InternalError"
@@ -670,7 +670,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 404 }
                   error: { type: object, properties: { message: { type: string, example: "Recipe not found" } } }
         "500":
           $ref: "#/components/responses/InternalError"
@@ -701,13 +701,13 @@ paths:
               schema:
                 $ref: "#/components/schemas/SingleRecipeResponse"
         "400":
-          description: Données invalides
+          description: Requête invalide
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 400 }
                   error: { type: object, properties: { message: { type: string, example: "Title is required" } } }
         "401":
           description: API key manquante ou invalide
@@ -716,7 +716,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 401 }
                   error: { type: object, properties: { message: { type: string, example: "API key is required in 'x-api-key' header" } } }
         "403":
           description: API key inactive
@@ -725,7 +725,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 403 }
                   error: { type: object, properties: { message: { type: string, example: "API key is inactive" } } }
         "404":
           description: Recette non trouvée
@@ -734,7 +734,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 404 }
                   error: { type: object, properties: { message: { type: string, example: "Recipe not found" } } }
         "500":
           $ref: "#/components/responses/InternalError"
@@ -760,7 +760,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: success }
+                  status: { type: string, const: 200 }
                   data:
                     type: object
                     properties:
@@ -772,7 +772,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 401 }
                   error: { type: object, properties: { message: { type: string, example: "API key is required in 'x-api-key' header" } } }
         "403":
           description: API key inactive
@@ -781,7 +781,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 403 }
                   error: { type: object, properties: { message: { type: string, example: "API key is inactive" } } }
         "404":
           description: Recette non trouvée
@@ -790,7 +790,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 404 }
                   error: { type: object, properties: { message: { type: string, example: "Recipe not found" } } }
         "500":
           $ref: "#/components/responses/InternalError"
@@ -830,7 +830,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 401 }
                   error: { type: object, properties: { message: { type: string, example: "API key is required in 'x-api-key' header" } } }
         "403":
           description: API key inactive
@@ -839,7 +839,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 403 }
                   error: { type: object, properties: { message: { type: string, example: "API key is inactive" } } }
         "422":
           description: Paramètres de requête invalides
@@ -848,7 +848,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 422 }
                   error: { type: object, properties: { message: { type: string, example: "Invalid limit parameter" } } }
         "500":
           $ref: "#/components/responses/InternalError"
@@ -885,13 +885,13 @@ paths:
               schema:
                 $ref: "#/components/schemas/SingleMealResponse"
         "400":
-          description: Données invalides
+          description: Requête invalide
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 400 }
                   error: { type: object, properties: { message: { type: string, example: "MealType is required" } } }
         "401":
           description: API key manquante ou invalide
@@ -900,7 +900,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 401 }
                   error: { type: object, properties: { message: { type: string, example: "API key is required in 'x-api-key' header" } } }
         "403":
           description: API key inactive
@@ -909,7 +909,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 403 }
                   error: { type: object, properties: { message: { type: string, example: "API key is inactive" } } }
         "404":
           description: Recettes non trouvées
@@ -918,7 +918,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 404 }
                   error: { type: object, properties: { message: { type: string, example: "One or more recipes not found" } } }
         "500":
           $ref: "#/components/responses/InternalError"
@@ -1010,7 +1010,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 400 }
                   error: { type: object, properties: { message: { type: string, example: "Invalid parameter value" } } }
         "401":
           description: API key manquante ou invalide
@@ -1019,7 +1019,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 401 }
                   error: { type: object, properties: { message: { type: string, example: "API key is required in 'x-api-key' header" } } }
         "403":
           description: API key inactive
@@ -1028,7 +1028,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 403 }
                   error: { type: object, properties: { message: { type: string, example: "API key is inactive" } } }
         "404":
           description: Aucune recette trouvée
@@ -1037,7 +1037,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 404 }
                   error: { type: object, properties: { message: { type: string, example: "No recipes found matching criteria" } } }
         "500":
           $ref: "#/components/responses/InternalError"
@@ -1070,7 +1070,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 401 }
                   error: { type: object, properties: { message: { type: string, example: "API key is required in 'x-api-key' header" } } }
         "403":
           description: API key inactive
@@ -1079,7 +1079,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 403 }
                   error: { type: object, properties: { message: { type: string, example: "API key is inactive" } } }
         "404":
           description: Repas non trouvé
@@ -1088,7 +1088,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 404 }
                   error: { type: object, properties: { message: { type: string, example: "Meal not found" } } }
         "500":
           $ref: "#/components/responses/InternalError"
@@ -1127,13 +1127,13 @@ paths:
               schema:
                 $ref: "#/components/schemas/SingleMealResponse"
         "400":
-          description: Données invalides
+          description: Requête invalide
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 400 }
                   error: { type: object, properties: { message: { type: string, example: "MealType is required" } } }
         "401":
           description: API key manquante ou invalide
@@ -1142,7 +1142,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 401 }
                   error: { type: object, properties: { message: { type: string, example: "API key is required in 'x-api-key' header" } } }
         "403":
           description: API key inactive
@@ -1151,7 +1151,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 403 }
                   error: { type: object, properties: { message: { type: string, example: "API key is inactive" } } }
         "404":
           description: Repas ou recettes non trouvé(e)s
@@ -1160,7 +1160,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 404 }
                   error: { type: object, properties: { message: { type: string, example: "Meal not found" } } }
         "500":
           $ref: "#/components/responses/InternalError"
@@ -1185,7 +1185,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: success }
+                  status: { type: string, const: 200 }
                   data:
                     type: object
                     properties:
@@ -1197,7 +1197,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 401 }
                   error: { type: object, properties: { message: { type: string, example: "API key is required in 'x-api-key' header" } } }
         "403":
           description: API key inactive
@@ -1206,7 +1206,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 403 }
                   error: { type: object, properties: { message: { type: string, example: "API key is inactive" } } }
         "404":
           description: Repas non trouvé
@@ -1215,7 +1215,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: error }
+                  status: { type: string, const: 404 }
                   error: { type: object, properties: { message: { type: string, example: "Meal not found" } } }
         "500":
           $ref: "#/components/responses/InternalError"
@@ -1416,7 +1416,7 @@ paths:
                     items:
                       $ref: "#/components/schemas/Ingredient"
         "400":
-          description: Données invalides
+          description: Requête invalide
           content:
             application/json:
               schema:
@@ -1475,7 +1475,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SingleIngredientResponse"
+                $ref: "#/components/schemas/SingleIngredientDetailResponse"
         "400":
           description: Requête invalide
           content:
@@ -1497,7 +1497,7 @@ paths:
         "500":
           $ref: "#/components/responses/InternalError"
 
-    put:
+    patch:
       tags:
         - Ingrédients
       summary: Modifier un ingrédient
@@ -1514,7 +1514,7 @@ paths:
             type: string
             format: uuid
       requestBody:
-        required: true
+        required: false
         content:
           application/json:
             schema:
@@ -1562,11 +1562,43 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SingleIngredientResponse"
-        "404":
-          $ref: "#/components/responses/NotFound"
+                $ref: "#/components/schemas/SingleIngredientDetailResponse"
         "400":
-          $ref: "#/components/responses/BadRequest"
+          description: Requête invalide
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, const: 400 }
+                  error: { type: object, properties: { message: { type: string, example: "Invalid UUID" } } }
+        "401":
+          description: API key manquante ou invalide
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, const: 401 }
+                  error: { type: object, properties: { message: { type: string, example: "API key is required in 'x-api-key' header" } } }
+        "404":
+          description: Ressource non trouvée
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, const: 404 }
+                  error: { type: object, properties: { message: { type: string, example: "Ingredient not found" } } }
+        "409":
+          description: Ressource déjà existante
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, const: 409 }
+                  error: { type: object, properties: { message: { type: string, example: "An ingredient with this name already exists" } } }
         "500":
           $ref: "#/components/responses/InternalError"
 
@@ -1596,15 +1628,31 @@ paths:
                 properties:
                   status:
                     type: string
-                    const: success
+                    const: 200
                   data:
                     type: object
                     properties:
                       message:
                         type: string
                         example: Ingredient deleted successfully
+        "401":
+          description: API key manquante ou invalide
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, const: 401 }
+                  error: { type: object, properties: { message: { type: string, example: "API key is required in 'x-api-key' header" } } }
         "404":
-          $ref: "#/components/responses/NotFound"
+          description: Ressource non trouvée
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, const: 404 }
+                  error: { type: object, properties: { message: { type: string, example: "Ingredient not found" } } }
         "500":
           $ref: "#/components/responses/InternalError"
 
@@ -1917,6 +1965,15 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Ingredient"
+
+    SingleIngredientDetailResponse:
+      type: object
+      properties:
+        status: { type: string, const: 200 }
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/IngredientDetail"
 
     Ingredient:
       type: object

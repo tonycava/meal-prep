@@ -1,5 +1,6 @@
 import { IIngredientRepository } from "../interfaces/IIngredientRepository";
-import { CreateIngredientDtoType, UpdateIngredientDtoType, IngredientResponseDtoType, IIngredientFilters, ListIngredientsOutput } from "$modules/ingredient/dto/ingredient.dto";
+import { CreateIngredientDtoType, IngredientResponseDtoType, IIngredientFilters, ListIngredientsOutput } from "$modules/ingredient/dto/ingredient.dto";
+import { PatchIngredientDtoType } from "$modules/ingredient/dto/patchIngredient.dto";
 import { prisma } from "$lib/db";
 import { IngredientCategory, Prisma } from "src/generated/prisma"
 import { AppError } from "$lib/errors/AppError";
@@ -11,41 +12,41 @@ export const IngredientRepository = (): IIngredientRepository => {
 		): Promise<IngredientResponseDtoType> {
 			try {
 				const createdIngredient = await prisma.ingredient.create({
-				data: {
-					name: ingredientDto.name!,
-					category: ingredientDto.category!,
-					proteins: ingredientDto.proteins!,
-					fats: ingredientDto.fats!,
-					carbs: ingredientDto.carbs!,
-					sugars: ingredientDto.sugars!,
-					fiber: ingredientDto.fiber!,
-					salt: ingredientDto.salt!,
-					calories: ingredientDto.calories!,
-					minerals: ingredientDto.minerals
-						? {
-							create: ingredientDto.minerals.map((mineral) => ({
-								mineralType: mineral.mineralType,
-								value: mineral.value,
-							})),
-						}
-						: undefined,
-					vitamins: ingredientDto.vitamins
-						? {
-							create: ingredientDto.vitamins.map((vitamin) => ({
-								vitaminType: vitamin.vitaminType,
-								value: vitamin.value,
-							})),
-						}
-						: undefined,
-				},
-				include: {
-					minerals: true,
-					vitamins: true,
-				},
-			});
+					data: {
+						name: ingredientDto.name!,
+						category: ingredientDto.category!,
+						proteins: ingredientDto.proteins!,
+						fats: ingredientDto.fats!,
+						carbs: ingredientDto.carbs!,
+						sugars: ingredientDto.sugars!,
+						fiber: ingredientDto.fiber!,
+						salt: ingredientDto.salt!,
+						calories: ingredientDto.calories!,
+						minerals: ingredientDto.minerals
+							? {
+								create: ingredientDto.minerals.map((mineral) => ({
+									mineralType: mineral.mineralType,
+									value: mineral.value,
+								})),
+							}
+							: undefined,
+						vitamins: ingredientDto.vitamins
+							? {
+								create: ingredientDto.vitamins.map((vitamin) => ({
+									vitaminType: vitamin.vitaminType,
+									value: vitamin.value,
+								})),
+							}
+							: undefined,
+					},
+					include: {
+						minerals: true,
+						vitamins: true,
+					},
+				});
 
-			return createdIngredient;
-			} catch (error) { 
+				return createdIngredient;
+			} catch (error) {
 				console.log("Error saving recipe:", error);
 				throw new AppError(
 					"Internal Server Error",
@@ -110,77 +111,49 @@ export const IngredientRepository = (): IIngredientRepository => {
 		},
 
 		async update(
-			id: string,
-			ingredientDto: UpdateIngredientDtoType,
+			ingredientDto: PatchIngredientDtoType,
 		): Promise<IngredientResponseDtoType | null> {
-			// Check if ingredient exists
+			const dto = ingredientDto as PatchIngredientDtoType & { id: string };
+
 			const existingIngredient = await prisma.ingredient.findUnique({
-				where: { id },
+				where: {
+					id: dto.id
+				}
 			});
+
 			if (!existingIngredient) {
 				return null;
 			}
 
-			if (ingredientDto.minerals !== undefined) {
-				await prisma.ingredientMineral.deleteMany({
-					where: { ingredientId: id },
-				});
+			const { id, minerals, vitamins, ...updateData } = dto;
+
+			const prismaUpdateData: any = {
+				...updateData,
+			};
+
+			if (minerals !== undefined) {
+				prismaUpdateData.minerals = {
+					deleteMany: {},
+					create: minerals,
+				};
 			}
 
-			if (ingredientDto.vitamins !== undefined) {
-				await prisma.ingredientVitamin.deleteMany({
-					where: { ingredientId: id },
-				});
+			if (vitamins !== undefined) {
+				prismaUpdateData.vitamins = {
+					deleteMany: {},
+					create: vitamins,
+				};
 			}
 
 			const updatedIngredient = await prisma.ingredient.update({
 				where: { id },
-				data: {
-					...(ingredientDto.name !== undefined && { name: ingredientDto.name }),
-					...(ingredientDto.category !== undefined && {
-						category: ingredientDto.category,
-					}),
-					...(ingredientDto.proteins !== undefined && {
-						proteins: ingredientDto.proteins,
-					}),
-					...(ingredientDto.fats !== undefined && { fats: ingredientDto.fats }),
-					...(ingredientDto.carbs !== undefined && {
-						carbs: ingredientDto.carbs,
-					}),
-					...(ingredientDto.sugars !== undefined && {
-						sugars: ingredientDto.sugars,
-					}),
-					...(ingredientDto.fiber !== undefined && {
-						fiber: ingredientDto.fiber,
-					}),
-					...(ingredientDto.salt !== undefined && { salt: ingredientDto.salt }),
-					...(ingredientDto.calories !== undefined && {
-						calories: ingredientDto.calories,
-					}),
-					...(ingredientDto.minerals && {
-						minerals: {
-							create: ingredientDto.minerals.map((mineral) => ({
-								mineralType: mineral.mineralType,
-								value: mineral.value,
-							})),
-						},
-					}),
-					...(ingredientDto.vitamins && {
-						vitamins: {
-							create: ingredientDto.vitamins.map((vitamin) => ({
-								vitaminType: vitamin.vitaminType,
-								value: vitamin.value,
-							})),
-						},
-					}),
-				},
+				data: prismaUpdateData,
 				include: {
 					minerals: true,
 					vitamins: true,
 				},
 			});
-
-			return updatedIngredient;
+			return updatedIngredient as IngredientResponseDtoType;
 		},
 
 		async delete(id: string): Promise<boolean> {

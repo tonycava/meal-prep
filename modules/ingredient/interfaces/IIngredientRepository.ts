@@ -21,10 +21,7 @@ export type IIngredientRepositoryCreate = {
 };
 
 export type IIngredientRepositoryUpdate = {
-	update(
-		id: string,
-		ingredientDto: UpdateIngredientDtoType,
-	): Promise<IngredientResponseDtoType | null>;
+	update(ingredientDto: UpdateIngredientDtoType): Promise<IngredientResponseDtoType | null>;
 };
 
 export type IIngredientRepositoryDelete = {
