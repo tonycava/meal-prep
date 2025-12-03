@@ -2,13 +2,15 @@ import { IIngredientRepository } from "../interfaces/IIngredientRepository";
 import { CreateIngredientDtoType, UpdateIngredientDtoType, IngredientResponseDtoType, IIngredientFilters, ListIngredientsOutput } from "$modules/ingredient/dto/ingredient.dto";
 import { prisma } from "$lib/db";
 import { IngredientCategory, Prisma } from "src/generated/prisma"
+import { AppError } from "$lib/errors/AppError";
 
 export const IngredientRepository = (): IIngredientRepository => {
 	return {
 		async create(
 			ingredientDto: CreateIngredientDtoType,
 		): Promise<IngredientResponseDtoType> {
-			const createdIngredient = await prisma.ingredient.create({
+			try {
+				const createdIngredient = await prisma.ingredient.create({
 				data: {
 					name: ingredientDto.name!,
 					category: ingredientDto.category!,
@@ -43,6 +45,15 @@ export const IngredientRepository = (): IIngredientRepository => {
 			});
 
 			return createdIngredient;
+			} catch (error) { 
+				console.log("Error saving recipe:", error);
+				throw new AppError(
+					"Internal Server Error",
+					"An error occurred while saving the menu.",
+					"La création de l'ingrédient a échoué.",
+					"error",
+				);
+			}
 		},
 
 		async list(

@@ -22,10 +22,12 @@ export const SaveRecipeUseCase: UseCase<Input, Output> = (dependencies) => {
     async execute(data): Promise<Output> {
       const [error, recipe] = await tryCatch(recipeRepository.save(data.dto));
       if (error)
-        return UseCaseResponseBuilder.error(
+        {
+		console.log("Error save recipe du usecase")
+		return UseCaseResponseBuilder.error(
           HttpCode.INTERNAL_SERVER_ERROR,
           error.userFriendlyMessage,
-        );
+        );}
 
       return UseCaseResponseBuilder.success(HttpCode.CREATED, recipe);
     },

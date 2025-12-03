@@ -8,16 +8,18 @@ import { RecipeRepository } from "$modules/recipe/repositories/RecipeRepository.
 import { createUserFromOptions } from "$lib/common/User.ts";
 
 export const CreateRecipeEndPoint = endpointsFactory
-  .addMiddleware(authMiddleware)
-  .build({
-    method: "post",
-    input: createRecipeDto,
-    output: z.any(),
-    handler: async ({ input, options }) => {
-      const createRecipeResponse = await SaveRecipeUseCase({
-        recipeRepository: RecipeRepository(createUserFromOptions(options)),
-      }).execute({ dto: input });
+	.addMiddleware(authMiddleware)
+	.build({
+		method: "post",
+		input: createRecipeDto,
+		output: z.any(),
+		handler: async ({ input, options }) => {
+			const createRecipeResponse = await SaveRecipeUseCase({
+				recipeRepository: RecipeRepository(createUserFromOptions(options)),
+			}).execute({ dto: input });
 
-      return ApiResponse.send(createRecipeResponse);
-    },
-  });
+			console.log(createRecipeResponse);
+
+			return ApiResponse.send(createRecipeResponse);
+		},
+	});

@@ -18,7 +18,7 @@ export const CreateIngredientEndpoint = endpointsFactory
       const createIngredientResponse = await CreateIngredientUseCase({
         ingredientRepository: IngredientRepository(),
       }).execute({ dto: input });
-
+	
       return ApiResponse.send(createIngredientResponse);
     },
   });

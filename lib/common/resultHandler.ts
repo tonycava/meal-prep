@@ -15,18 +15,16 @@ export const mealPrepResultHandler = new ResultHandler({
 	handler: ({ error, output, response }) => {
 		if (error) {
 			const { statusCode, message } = ensureHttpError(error);
-
 			if (statusCode === HttpCode.BAD_REQUEST || statusCode === HttpCode.UNPROCESSABLE_ENTITY) {
+				console.log("test");
 				const cleanMessage = message.includes(": ")
 					? message.split(": ").slice(1).join(": ")
 					: message;
-
 				return void response.status(statusCode).json({
-					status: "error",
+					status: statusCode as number,
 					error: { message: cleanMessage },
 				});
 			}
-
 			if (statusCode === HttpCode.UNAUTHORIZED ||
 				statusCode === HttpCode.FORBIDDEN ||
 				statusCode === HttpCode.NOT_FOUND ||
@@ -36,14 +34,20 @@ export const mealPrepResultHandler = new ResultHandler({
 					error: { message },
 				});
 			}
-
 			const appError = AppError.createUnexpectedError(error);
 			return void response.status(statusCode).json({
 				status: "error",
 				error: { message: appError.userFriendlyMessage },
 			});
 		}
+
 		console.dir(output, { depth: null });
+		if ('message' in output && !('data' in output)) {
+			return void response.status(output.status as number).json({
+				status: output.status as string,
+				error: { message: output.message as string },
+			});
+		}
 		response.status(output.status as number).json({ data: output });
-	},
+	}
 });

@@ -16,7 +16,7 @@ export const CreateMenuEndpoint = endpointsFactory
       const saveMenuResponse = await SaveMenuUseCase({
         menuRepository: MenuRepository(),
       }).execute({ dto: input, apiKey: options.apiKey });
-
+	
       return ApiResponse.send(saveMenuResponse);
     },
   });

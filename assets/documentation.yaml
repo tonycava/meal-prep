@@ -1287,6 +1287,15 @@ paths:
                 properties:
                   status: { type: string, const: error }
                   error: { type: object, properties: { message: { type: string, example: "Invalid limit parameter" } } }
+        "404":
+          description: Ressource non trouvée
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, const: error }
+                  error: { type: object, properties: { message: { type: string, example: "Can not GET /v1/ingredients" } } }
         "500":
           $ref: "#/components/responses/InternalError"
 
@@ -1427,6 +1436,15 @@ paths:
                 properties:
                   status: { type: string, const: error }
                   error: { type: object, properties: { message: { type: string, example: "API key is inactive" } } }
+        "409":
+          description: Ressource déjà existante
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, const: error }
+                  error: { type: object, properties: { message: { type: string, example: "An ingredient with this name already exists" } } }
         "500":
           $ref: "#/components/responses/InternalError"
 

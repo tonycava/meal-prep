@@ -1,18 +1,6 @@
 import { IngredientCategory } from "src/generated/prisma";
 import { z } from "zod";
 
-// export const IngredientCategoryEnum = z.enum([
-// 	"VEGETABLE",
-// 	"FRUIT",
-// 	"MEAT",
-// 	"FISH",
-// 	"DAIRY",
-// 	"GRAIN",
-// 	"NUT",
-// 	"SPICE",
-// 	"OTHER",
-// ]);
-
 export const MineralTypeEnum = z.enum([
 	"CALCIUM",
 	"IRON",
@@ -117,7 +105,7 @@ export const CreateIngredientDto = z.object({
 		.optional()
 		.refine(
 			(val) => val !== undefined && val.length > 0,
-			"Le champ 'name' est obligatoire et doit être une chaîne non vide",
+			"Name is required",
 		),
 	category: ingredientCategorySchema.optional(),
 	proteins: z.number().min(0).default(0),
