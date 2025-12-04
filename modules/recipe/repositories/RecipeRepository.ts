@@ -73,6 +73,15 @@ export const RecipeRepository = (user: User): IRecipeRepository => {
 						cookTimeMin: recipeDto.cookTimeMin,
 						instructions: recipeDto.instructions,
 						apiKey: { connect: { key: user.apiKey } },
+						ingredients: {
+							create: recipeDto.ingredients.map((ingredient) => ({
+								quantity: ingredient.quantity,
+								unit: ingredient.unit, 
+								ingredient: {
+									connect: { id: ingredient.id }
+								}
+							}))
+						}
 					},
 				});
 
@@ -127,13 +136,26 @@ export const RecipeRepository = (user: User): IRecipeRepository => {
 						},
 					},
 				}),
-				OR: [
-					user.role === "user" ? { apiKeyId: user.apiKey } : ({} as object),
-					{ isPublic: true },
+				AND: [
 					...(filters.search
 						? [
-							{ title: { contains: filters.search, mode: "insensitive" } },
-							{ description: { contains: filters.search, mode: "insensitive" } },
+							{
+								OR: [
+									{ title: { contains: filters.search } },
+									{ description: { contains: filters.search } },
+								],
+							},
+						]
+						: []),
+
+					...(user.role.toLowerCase() !== "admin"
+						? [
+							{
+								OR: [
+									{ isPublic: true },
+									...(user.role.toLowerCase() === "user" ? [{ apiKeyId: user.apiKeyId }] : []),
+								],
+							},
 						]
 						: []),
 				],

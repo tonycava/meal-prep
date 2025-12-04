@@ -6,13 +6,14 @@ import { endpointsFactory } from "$lib/common/endpointFactory.ts";
 import { SaveRecipeUseCase } from "$modules/recipe/usecases/SaveRecipe.ts";
 import { RecipeRepository } from "$modules/recipe/repositories/RecipeRepository.ts";
 import { createUserFromOptions } from "$lib/common/User.ts";
+import { UseCaseResponseSchema } from "$lib/common/usecase";
 
 export const CreateRecipeEndPoint = endpointsFactory
 	.addMiddleware(authMiddleware)
 	.build({
 		method: "post",
 		input: createRecipeDto,
-		output: z.any(),
+		output: UseCaseResponseSchema,
 		handler: async ({ input, options }) => {
 			const createRecipeResponse = await SaveRecipeUseCase({
 				recipeRepository: RecipeRepository(createUserFromOptions(options)),

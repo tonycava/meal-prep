@@ -52,7 +52,7 @@ export const CreateIngredientUseCase: UseCase<Input, Output> = (
 			if (!ingredient)
 				return UseCaseResponseBuilder.error(
 					HttpCode.INTERNAL_SERVER_ERROR,
-					"Erreur lors de la création de l'ingrédient",
+					"Error during ingredient creation",
 				);
 
 			return UseCaseResponseBuilder.success(HttpCode.CREATED, ingredient);

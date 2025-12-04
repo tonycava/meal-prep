@@ -544,7 +544,7 @@ paths:
           in: query
           schema:
             type: string
-            enum: [appetizer, side_dish, dessert, snack, beverage, other]
+            enum: [STARTER, MAIN_COURSE, DESSERT, OTHER]
         - name: diet
           in: query
           schema:
@@ -590,6 +590,24 @@ paths:
                 properties:
                   status: { type: string, const: 400 }
                   error: { type: object, properties: { message: { type: string, example: "Invalid limit parameter" } } }
+        "401":
+          description: API key manquante ou invalide
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, const: 401 }
+                  error: { type: object, properties: { message: { type: string, example: "API key is required in 'x-api-key' header" } } }
+        "404":
+          description: Ressource non trouvée
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, const: 404 }
+                  error: { type: object, properties: { message: { type: string, example: "Can not GET /v1/ingredients" } } }
         "500":
           $ref: "#/components/responses/InternalError"
 
@@ -641,6 +659,15 @@ paths:
                 properties:
                   status: { type: string, const: 403 }
                   error: { type: object, properties: { message: { type: string, example: "API key is inactive" } } }
+        "404":
+          description: Ressource non trouvée
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, const: 404 }
+                  error: { type: object, properties: { message: { type: string, example: "Ingredient not found" } } }
         "500":
           $ref: "#/components/responses/InternalError"
 
@@ -1827,20 +1854,21 @@ components:
         isPublic: { type: boolean }
         createdAt: { type: string, format: date-time }
         updatedAt: { type: string, format: date-time }
-        recipeIngredient:
+        mealCount: { type: integer, default: 0 }
+        ingredients:
           type: array
           items:
             type: object
             properties:
-              ingredientId: { type: string, format: uuid }
+              id: { type: string, format: uuid }
+              name: { type: string, nullable: true }
               quantity: { type: number, default: 1 }
               unit: { type: string }
-              notes: { type: string, nullable: true }
 
     RecipeListResponse:
       type: object
       properties:
-        status: { type: string, const: success }
+        status: { type: string, const: 200 }
         data:
           type: object
           properties:

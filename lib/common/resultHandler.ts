@@ -2,7 +2,6 @@ import { ensureHttpError, ResultHandler } from "express-zod-api";
 import { z } from "zod";
 import { AppError } from "$lib/errors/AppError.ts";
 import { HttpCode } from "./api/HttpCode";
-import { stat } from "fs";
 
 export const mealPrepResultHandler = new ResultHandler({
 	positive: (data) => ({
@@ -17,9 +16,9 @@ export const mealPrepResultHandler = new ResultHandler({
 		if (error) {
 			const { statusCode, message } = ensureHttpError(error);
 			if (statusCode === HttpCode.BAD_REQUEST || statusCode === HttpCode.UNPROCESSABLE_ENTITY) {
-				console.log("test");
+				console.log("test2");
 				const cleanMessage = message.includes(": ")
-					? message.split(": ").slice(1).join(": ")
+					? message.split(": ").slice(0).join(": ")
 					: message;
 				return void response.status(statusCode).json({
 					status: statusCode as number,
@@ -37,7 +36,7 @@ export const mealPrepResultHandler = new ResultHandler({
 			}
 			const appError = AppError.createUnexpectedError(error);
 			return void response.status(statusCode).json({
-				status: "error",
+				status: statusCode as number,
 				error: { message: appError.userFriendlyMessage },
 			});
 		}
