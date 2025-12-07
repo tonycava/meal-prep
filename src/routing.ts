@@ -11,6 +11,7 @@ import { DeleteMenuEndpoint } from "$modules/menu/endpoints/DeleteMenu.ts"
 import { ListIngredientsEndpoint } from "$modules/ingredient/endpoints/ListIngredient";
 import { CreateIngredientEndpoint } from "$modules/ingredient/endpoints/CreateIngredient";
 import { DeleteIngredientEndpoint } from "$modules/ingredient/endpoints/DeleteIngredient";
+import { PutIngredientEndpoint } from "$modules/ingredient/endpoints/PutIngredient.ts";
 import { PatchIngredientEndpoint } from "$modules/ingredient/endpoints/PatchIngredient";
 import { GetIngredientByIdEndpoint } from "$modules/ingredient/endpoints/GetIngredientByIdEndpoint";
 import { RegisterApiKeyEndpoint } from "$modules/apikey/endpoints/RegisterApiKey";
@@ -53,6 +54,7 @@ export const routing: Routing = {
 			}),
 			"/:id": new DependsOnMethod({
 				get: GetIngredientByIdEndpoint,
+				put: PutIngredientEndpoint,
 				patch: PatchIngredientEndpoint,
 				delete: DeleteIngredientEndpoint,
 			}),
