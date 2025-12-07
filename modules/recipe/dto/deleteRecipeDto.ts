@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const deleteRecipeDto = z.object({
-  id: z.uuid("Un identifinat est requis."),
+  id: z.uuid("An id is required"),
 });
 
 export type DeleteRecipeDto = z.infer<typeof deleteRecipeDto>;

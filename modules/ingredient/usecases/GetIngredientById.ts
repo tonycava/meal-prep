@@ -1,8 +1,8 @@
 import {
-  InputFactory,
-  OutputFactory,
-  UseCase,
-  UseCaseResponseBuilder,
+	InputFactory,
+	OutputFactory,
+	UseCase,
+	UseCaseResponseBuilder,
 } from "$lib/common/usecase.ts";
 import { IngredientResponseDtoType } from "../dto/ingredient.dto";
 import { IIngredientRepositoryGetById } from "../interfaces/IIngredientRepository";
@@ -10,26 +10,26 @@ import { tryCatch } from "$lib/errors/tryCatch.ts";
 import { HttpCode } from "$lib/common/api/HttpCode";
 
 type Input = InputFactory<
-  { id: string },
-  { ingredientRepository: IIngredientRepositoryGetById }
+	{ id: string },
+	{ ingredientRepository: IIngredientRepositoryGetById }
 >;
 type Output = OutputFactory<IngredientResponseDtoType>;
 
 export const GetIngredientByIdUseCase: UseCase<Input, Output> = (
-  dependencies,
+	dependencies,
 ) => {
-  const { ingredientRepository } = dependencies;
-  return {
-    async execute(data): Promise<Output> {
-      const [error, ingredient] = await tryCatch(
-        ingredientRepository.getById(data.id),
-      );
-      if (error)
-        return UseCaseResponseBuilder.error(HttpCode.INTERNAL_SERVER_ERROR, error.userFriendlyMessage);
-      if (!ingredient)
-        return UseCaseResponseBuilder.error(HttpCode.NOT_FOUND, "Ingredient not found");
+	const { ingredientRepository } = dependencies;
+	return {
+		async execute(data): Promise<Output> {
+			const [error, ingredient] = await tryCatch(
+				ingredientRepository.getById(data.id),
+			);
+			if (error)
+				return UseCaseResponseBuilder.error(HttpCode.INTERNAL_SERVER_ERROR, error.userFriendlyMessage);
+			if (!ingredient)
+				return UseCaseResponseBuilder.error(HttpCode.NOT_FOUND, "Ingredient not found");
 
-      return UseCaseResponseBuilder.success(HttpCode.OK, ingredient);
-    },
-  };
+			return UseCaseResponseBuilder.success(HttpCode.OK, ingredient);
+		},
+	};
 };

@@ -3,6 +3,7 @@ import { DependsOnMethod, Routing, ServeStatic } from "express-zod-api";
 import { ListRecipesEndpoint } from "../modules/recipe/endpoints/ListRecipe.ts";
 import { ListRecipeByIdEndpoint } from "../modules/recipe/endpoints/ListRecipeById.ts";
 import { CreateRecipeEndPoint } from "$modules/recipe/endpoints/CreateRecipe.ts";
+import { UpdateRecipeEndpoint } from "$modules/recipe/endpoints/UpdateRecipe.ts";
 import { DeleteRecipeEndPoint } from "$modules/recipe/endpoints/DeleteRecipe.ts";
 import { ListMenusEndpoint } from "$modules/menu/endpoints/ListMenus.ts";
 import { CreateMenuEndpoint } from "$modules/menu/endpoints/CreateMenu.ts";
@@ -32,6 +33,7 @@ export const routing: Routing = {
 			}),
 			"/:id": new DependsOnMethod({
 				get: ListRecipeByIdEndpoint,
+				patch: UpdateRecipeEndpoint,
 				delete: DeleteRecipeEndPoint,
 			}),
 		},

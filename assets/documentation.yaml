@@ -544,7 +544,7 @@ paths:
           in: query
           schema:
             type: string
-            enum: [appetizer, side_dish, dessert, snack, beverage, other]
+            enum: [STARTER, MAIN_COURSE, DESSERT, OTHER]
         - name: diet
           in: query
           schema:
@@ -590,6 +590,24 @@ paths:
                 properties:
                   status: { type: string, const: 400 }
                   error: { type: object, properties: { message: { type: string, example: "Invalid limit parameter" } } }
+        "401":
+          description: API key manquante ou invalide
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, const: 401 }
+                  error: { type: object, properties: { message: { type: string, example: "API key is required in 'x-api-key' header" } } }
+        "404":
+          description: Ressource non trouvée
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, const: 404 }
+                  error: { type: object, properties: { message: { type: string, example: "Can not GET /v1/ingredients" } } }
         "500":
           $ref: "#/components/responses/InternalError"
 
@@ -641,6 +659,15 @@ paths:
                 properties:
                   status: { type: string, const: 403 }
                   error: { type: object, properties: { message: { type: string, example: "API key is inactive" } } }
+        "404":
+          description: Ressource non trouvée
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, const: 404 }
+                  error: { type: object, properties: { message: { type: string, example: "Ingredient not found" } } }
         "500":
           $ref: "#/components/responses/InternalError"
 
@@ -663,6 +690,24 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SingleRecipeResponse"
+        "400":
+          description: Requête invalide
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, const: 400 }
+                  error: { type: object, properties: { message: { type: string, example: "An id is required" } } }
+        "401":
+          description: API key manquante ou invalide
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, const: 401 }
+                  error: { type: object, properties: { message: { type: string, example: "API key is required in 'x-api-key' header" } } }
         "404":
           description: Recette non trouvée
           content:
@@ -708,7 +753,7 @@ paths:
                 type: object
                 properties:
                   status: { type: string, const: 400 }
-                  error: { type: object, properties: { message: { type: string, example: "Title is required" } } }
+                  error: { type: object, properties: { message: { type: string, example: "L'identifiant doit être un UUID valide." } } }
         "401":
           description: API key manquante ou invalide
           content:
@@ -765,6 +810,15 @@ paths:
                     type: object
                     properties:
                       message: { type: string, example: "Recipe deleted successfully" }
+        "400":
+          description: Requête invalide
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, const: 400 }
+                  error: { type: object, properties: { message: { type: string, example: "Id must be a valid UUID" } } }
         "401":
           description: API key manquante ou invalide
           content:
@@ -1412,9 +1466,7 @@ paths:
                 properties:
                   status: { type: string, const: 201 }
                   data:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/Ingredient"
+                    $ref: "#/components/schemas/Ingredient"
         "400":
           description: Requête invalide
           content:
@@ -1827,20 +1879,21 @@ components:
         isPublic: { type: boolean }
         createdAt: { type: string, format: date-time }
         updatedAt: { type: string, format: date-time }
-        recipeIngredient:
+        mealCount: { type: integer, default: 0 }
+        ingredients:
           type: array
           items:
             type: object
             properties:
-              ingredientId: { type: string, format: uuid }
+              id: { type: string, format: uuid }
+              name: { type: string, nullable: true }
               quantity: { type: number, default: 1 }
               unit: { type: string }
-              notes: { type: string, nullable: true }
 
     RecipeListResponse:
       type: object
       properties:
-        status: { type: string, const: success }
+        status: { type: string, const: 200 }
         data:
           type: object
           properties:
@@ -1860,18 +1913,7 @@ components:
       properties:
         status: { type: string, const: success }
         data:
-          type: object
-          properties:
-            recipes:
-              type: array
-              items:
-                $ref: "#/components/schemas/RecipeSummary"
-            meta:
-              type: object
-              properties:
-                total: { type: integer, const: 1 }
-                offset: { type: integer, const: 0 }
-                limit: { type: integer, const: 10 }
+          $ref: "#/components/schemas/RecipeSummary"
 
     Menu:
       type: object
@@ -1971,9 +2013,7 @@ components:
       properties:
         status: { type: string, const: 200 }
         data:
-          type: array
-          items:
-            $ref: "#/components/schemas/IngredientDetail"
+          $ref: "#/components/schemas/IngredientDetail"
 
     Ingredient:
       type: object

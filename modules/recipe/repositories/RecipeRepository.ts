@@ -1,5 +1,7 @@
 import { IRecipeRepository } from "../interfaces/IRecipeRepository";
 import { CreateRecipeDto } from "../dto/createRecipeDto";
+import { GetRecipeByIdDto, RecipeDetailDto } from "../dto/recipeDto";
+import { UpdateRecipeOutput } from "$modules/recipe/dto/updateRecipeDto.ts";
 import { Recipe } from "../entities/Recipe";
 import { prisma } from "$lib/db";
 import { DeleteRecipeDto } from "$modules/recipe/dto/deleteRecipeDto.ts";
@@ -13,6 +15,7 @@ import {
 	RecipeCategory,
 	DietType,
 	Prisma,
+	UnitType,
 } from "../../../src/generated/prisma";
 import { UpdateRecipeDto } from "$modules/recipe/dto/updateRecipeDto.ts";
 import { User } from "$lib/common/User.ts";
@@ -23,19 +26,80 @@ export const RecipeRepository = (user: User): IRecipeRepository => {
 			const menu = await prisma.recipeMeal.findFirst({ where: { recipeId } });
 			return !!menu;
 		},
-		async update(recipeDto: UpdateRecipeDto): Promise<void> {
+		async update(recipeDto: UpdateRecipeDto): Promise<UpdateRecipeOutput> {
 			try {
-				const whereAppend: Prisma.RecipeWhereUniqueInput | object =
-					user.role === "user" ? { apiKey: user.apiKey } : {};
+				const whereCondition: Prisma.RecipeWhereUniqueInput = {
+					id: recipeDto.id,
+					...(user.role.toLowerCase() === "user" ? {
+						apiKeyId: user.apiKeyId
+					} : {})
+				};
 
-				await prisma.recipe.update({
+				const recipe = await prisma.recipe.findFirst({
+					where: whereCondition,
+				});
+
+				if (!recipe) {
+					throw new AppError(
+						"Not Found",
+						"Recipe not found",
+						"Recette non trouvée.",
+						"warn",
+					);
+				}
+
+				const updatedRecipe = await prisma.recipe.update({
 					data: {
 						title: recipeDto.title,
+						description: recipeDto.description,
+						instructions: recipeDto.instructions,
+						imageUrl: recipeDto.imageUrl,
+						prepTimeMin: recipeDto.prepTimeMin,
+						cookTimeMin: recipeDto.cookTimeMin,
+						servings: recipeDto.servings,
+						category: recipeDto.category,
+						diet: recipeDto.diet,
+						isPublic: recipeDto.isPublic,
 					},
-					where: { id: recipeDto.id, ...whereAppend },
+					where: { id: recipeDto.id },
+					include: {
+						ingredients: {
+							include: {
+								ingredient: true
+							}
+						}
+					},
 				});
+
+				return {
+					id: updatedRecipe.id,
+					title: updatedRecipe.title,
+					description: updatedRecipe.description,
+					instructions: updatedRecipe.instructions,
+					imageUrl: updatedRecipe.imageUrl,
+					prepTimeMin: updatedRecipe.prepTimeMin,
+					cookTimeMin: updatedRecipe.cookTimeMin,
+					servings: updatedRecipe.servings,
+					category: updatedRecipe.category,
+					diet: updatedRecipe.diet,
+					isPublic: updatedRecipe.isPublic,
+					createdAt: updatedRecipe.createdAt,
+					updatedAt: updatedRecipe.updatedAt,
+					ingredients: updatedRecipe.ingredients.map(ri => ({
+						id: ri.ingredient.id,
+						name: ri.ingredient.name,
+						quantity: ri.quantity,
+						unit: ri.unit as UnitType
+					}))
+				};
+
 			} catch (error) {
 				console.error("An error occurred while updating recipe", error);
+
+				if (error instanceof AppError) {
+					throw error;
+				}
+
 				throw new AppError(
 					"Internal Server Error",
 					"An error occurred while updating recipe",
@@ -44,16 +108,40 @@ export const RecipeRepository = (user: User): IRecipeRepository => {
 				);
 			}
 		},
-		async delete(recipeDto: DeleteRecipeDto): Promise<void> {
+		async delete(recipeDto: DeleteRecipeDto): Promise<boolean> {
 			try {
-				const whereAppend: Prisma.RecipeWhereUniqueInput | object =
-					user.role === "user" ? { apiKey: user.apiKey } : {};
+				const whereAppend: Prisma.RecipeWhereUniqueInput = {
+					id: recipeDto.id,
+					...(user.role.toLowerCase() === "user" ? {
+						apiKeyId: user.apiKeyId
+					} : {})
+				};
+
+				const recipe = await prisma.recipe.findFirst({
+					where: whereAppend,
+				});
+
+				if (!recipe) {
+					throw new AppError(
+						"Not Found",
+						"Recipe not found",
+						"Recipe not found",
+						"warn",
+					);
+				}
 
 				await prisma.recipe.delete({
-					where: { id: recipeDto.id, ...whereAppend },
+					where: { id: recipeDto.id },
 				});
+
+				return true;
 			} catch (error) {
 				console.error("An error occurred while deleting recipe", error);
+
+				if (error instanceof AppError) {
+					throw error;
+				}
+
 				throw new AppError(
 					"Internal Server Error",
 					"An error occurred while deleting recipe",
@@ -68,35 +156,72 @@ export const RecipeRepository = (user: User): IRecipeRepository => {
 					data: {
 						title: recipeDto.title,
 						description: recipeDto.description,
-						isPublic: recipeDto.isPublic,
+						instructions: recipeDto.instructions,
+						imageUrl: recipeDto.imageUrl,
 						prepTimeMin: recipeDto.prepTimeMin,
 						cookTimeMin: recipeDto.cookTimeMin,
-						instructions: recipeDto.instructions,
+						servings: recipeDto.servings,
+						category: recipeDto.category,
+						diet: recipeDto.diet,
+						isPublic: recipeDto.isPublic,
 						apiKey: { connect: { key: user.apiKey } },
+						ingredients: {
+							create: await Promise.all(
+								recipeDto.ingredients.map(async (ingredient) => {
+									if (ingredient.id) {
+										return {
+											quantity: ingredient.quantity,
+											unit: ingredient.unit,
+											ingredient: {
+												connect: { id: ingredient.id }
+											}
+										};
+									}
+
+									return {
+										quantity: ingredient.quantity,
+										unit: ingredient.unit,
+										ingredient: {
+											connectOrCreate: {
+												where: { name: ingredient.name! },
+												create: { name: ingredient.name! }
+											}
+										}
+									};
+								})
+							)
+						}
 					},
+					include: {
+						ingredients: {
+							include: {
+								ingredient: true
+							}
+						}
+					}
 				});
 
-				for (const ingredient of recipeDto.ingredients) {
-					await prisma.recipeIngredient.create({
-						data: {
-							quantity: ingredient.quantity,
-							ingredient: { connect: { id: ingredient.id } },
-							recipe: { connect: { id: createdRecipe.id } },
-						},
-					});
-				}
-
 				return {
-					cookTimeMin: createdRecipe.cookTimeMin,
-					createdAt: createdRecipe.createdAt,
-					description: createdRecipe.description,
-					imageUrl: createdRecipe.imageUrl,
-					isPublic: createdRecipe.isPublic,
-					prepTimeMin: createdRecipe.prepTimeMin,
-					servings: createdRecipe.servings,
-					title: createdRecipe.title,
-					updatedAt: createdRecipe.updatedAt,
 					id: createdRecipe.id,
+					title: createdRecipe.title,
+					description: createdRecipe.description,
+					instructions: createdRecipe.instructions,
+					imageUrl: createdRecipe.imageUrl,
+					prepTimeMin: createdRecipe.prepTimeMin,
+					cookTimeMin: createdRecipe.cookTimeMin,
+					servings: createdRecipe.servings,
+					category: createdRecipe.category,
+					diet: createdRecipe.diet,
+					isPublic: createdRecipe.isPublic,
+					createdAt: createdRecipe.createdAt,
+					updatedAt: createdRecipe.updatedAt,
+					mealCount: 0,
+					ingredients: createdRecipe.ingredients.map(ri => ({
+						id: ri.ingredient.id,
+						name: ri.ingredient.name,
+						quantity: ri.quantity,
+						unit: ri.unit as UnitType
+					}))
 				};
 			} catch (error) {
 				console.log("Error saving recipe:", error);
@@ -127,13 +252,26 @@ export const RecipeRepository = (user: User): IRecipeRepository => {
 						},
 					},
 				}),
-				OR: [
-					user.role === "user" ? { apiKeyId: user.apiKey } : ({} as object),
-					{ isPublic: true },
+				AND: [
 					...(filters.search
 						? [
-							{ title: { contains: filters.search, mode: "insensitive" } },
-							{ description: { contains: filters.search, mode: "insensitive" } },
+							{
+								OR: [
+									{ title: { contains: filters.search } },
+									{ description: { contains: filters.search } },
+								],
+							},
+						]
+						: []),
+
+					...(user.role.toLowerCase() !== "admin"
+						? [
+							{
+								OR: [
+									{ isPublic: true },
+									...(user.role.toLowerCase() === "user" ? [{ apiKeyId: user.apiKeyId }] : []),
+								],
+							},
 						]
 						: []),
 				],
@@ -193,9 +331,19 @@ export const RecipeRepository = (user: User): IRecipeRepository => {
 			};
 		},
 
-		async findById(id: string): Promise<GetRecipeByIdOutput> {
-			const recipe = await prisma.recipe.findUnique({
-				where: { id },
+		async findById(recipeDto: GetRecipeByIdDto): Promise<RecipeDetailDto> { 
+			const whereCondition: Prisma.RecipeWhereInput = {
+				id: recipeDto.id,
+				...(user.role.toLowerCase() === "user" ? {
+					OR: [
+						{ apiKeyId: user.apiKeyId },
+						{ isPublic: true }
+					]
+				} : {})
+			};
+
+			const recipe = await prisma.recipe.findFirst({
+				where: whereCondition,
 				include: {
 					ingredients: {
 						include: {
@@ -217,7 +365,7 @@ export const RecipeRepository = (user: User): IRecipeRepository => {
 				);
 			}
 
-			const recipeDetailDto = {
+			return {
 				id: recipe.id,
 				title: recipe.title,
 				description: recipe.description || "",
@@ -245,10 +393,6 @@ export const RecipeRepository = (user: User): IRecipeRepository => {
 				updatedAt: recipe.updatedAt,
 				instructions: recipe.instructions,
 			};
-
-			return {
-				recipe: recipeDetailDto,
-			};
-		},
+		}
 	};
 };

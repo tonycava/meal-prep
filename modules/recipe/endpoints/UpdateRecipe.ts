@@ -14,9 +14,10 @@ export const UpdateRecipeEndpoint = endpointsFactory
 		input: updateRecipeDto,
 		output: UseCaseResponseSchema,
 		handler: async ({ input, options }) => {
-			const deleteRecipeResponse = await UpdateRecipeUseCase({
+			const response = await UpdateRecipeUseCase({
 				recipeRepository: RecipeRepository(createUserFromOptions(options)),
 			}).execute({ dto: input });
-			return ApiResponse.send(deleteRecipeResponse);
+
+			return ApiResponse.send(response);
 		},
 	});
