@@ -21,7 +21,7 @@ import { DeleteMealEndpoint } from "$modules/meal/endpoints/DeleteMeal";
 import { HomeEndpoint } from "$lib/common/endpoints/HomeEndpoint";
 import { UpdateMenuEndpoint } from "$modules/menu/endpoints/UpdateMenu";
 import { GenerateMenuEndpoint } from "$modules/menu/endpoints/GenerateMenu";
-import {GetRecipeByIdEndpoint} from "$modules/recipe/endpoints/GetRecipeById";
+import {ListRecipeByIdEndpoint} from "$modules/recipe/endpoints/ListRecipeById";
 
 export const routing: Routing = {
 	v1: {
@@ -32,7 +32,7 @@ export const routing: Routing = {
 				post: CreateRecipeEndPoint,
 			}),
 			"/:id": new DependsOnMethod({
-				get: GetRecipeByIdEndpoint,
+				get: ListRecipeByIdEndpoint,
 				patch: UpdateRecipeEndpoint,
 				delete: DeleteRecipeEndPoint,
 			}),

@@ -1,42 +1,45 @@
 import { CreateRecipeDto } from "../dto/createRecipeDto";
-import { RecipeWithIngredients } from "../entities/Recipe";
-import { DeleteRecipeDto } from "$modules/recipe/dto/deleteRecipeDto";
-import { UpdateRecipeDto } from "$modules/recipe/dto/updateRecipeDto";
-
-import { WithPagination } from "$lib/common/types/WithPagination";
-import { IRecipeFilters } from "$modules/recipe/utils/IRecipeFilters";
+import { Recipe } from "../entities/Recipe";
+import { DeleteRecipeDto } from "$modules/recipe/dto/deleteRecipeDto.ts";
+import { UpdateRecipeDto, UpdateRecipeOutput } from "$modules/recipe/dto/updateRecipeDto.ts";
+import {
+	GetRecipeByIdDto,
+	GetRecipeByIdOutput,
+	IRecipeFilters,
+	ListRecipesOutput,
+} from "../dto/recipeDto";
 
 export type IRecipeRepositorySave = {
-  save(recipeDto: CreateRecipeDto): Promise<RecipeWithIngredients>;
+	save(recipeDto: CreateRecipeDto): Promise<Recipe>;
 };
 
 export type IRecipeRepositoryList = {
-  list(
-    limit: number,
-    offset: number,
-    filters: IRecipeFilters,
-  ): Promise<WithPagination<RecipeWithIngredients[], "recipes">>;
+	list(
+		limit: number,
+		offset: number,
+		filters: IRecipeFilters,
+	): Promise<ListRecipesOutput>;
 };
 
 export type IRecipeRepositoryFindById = {
-  findById(id: string): Promise<RecipeWithIngredients | null>;
+	findById(recipeDto: GetRecipeByIdDto): Promise<GetRecipeByIdOutput>;
 };
 
 export type IRecipeRepositoryDelete = {
-  delete(recipeDto: DeleteRecipeDto): Promise<void>;
+	delete(recipeDto: DeleteRecipeDto): Promise<boolean>;
 };
 
 export type IRecipeRepositoryUpdate = {
-  update(recipeDto: UpdateRecipeDto): Promise<RecipeWithIngredients | null>;
+	update(recipeDto: UpdateRecipeDto): Promise<UpdateRecipeOutput>;
 };
 
 export type IRecipeRepositoryIsUseInOneMenu = {
-  isUseInOneMenu(recipeId: string): Promise<boolean>;
+	isUseInOneMenu(recipeId: string): Promise<boolean>;
 };
 
 export type IRecipeRepository = IRecipeRepositorySave &
-  IRecipeRepositoryDelete &
-  IRecipeRepositoryList &
-  IRecipeRepositoryUpdate &
-  IRecipeRepositoryFindById &
-  IRecipeRepositoryIsUseInOneMenu;
+	IRecipeRepositoryDelete &
+	IRecipeRepositoryList &
+	IRecipeRepositoryUpdate &
+	IRecipeRepositoryFindById &
+	IRecipeRepositoryIsUseInOneMenu;

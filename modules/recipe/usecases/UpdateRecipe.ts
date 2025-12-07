@@ -1,39 +1,38 @@
 import {
-  InputFactory,
-  OutputFactory,
-  UseCase,
-  UseCaseResponseBuilder,
+	InputFactory,
+	OutputFactory,
+	UseCase,
+	UseCaseResponseBuilder,
 } from "$lib/common/usecase";
 import { IRecipeRepositoryUpdate } from "../interfaces/IRecipeRepository";
 import { tryCatch } from "$lib/errors/tryCatch";
-import { UpdateRecipeDto } from "$modules/recipe/dto/updateRecipeDto";
+import { UpdateRecipeDto, UpdateRecipeOutput } from "$modules/recipe/dto/updateRecipeDto";
 import { HttpCode } from "$lib/common/api/HttpCode";
-import { RecipeWithIngredients } from "$modules/recipe/entities/Recipe";
 
 type Input = InputFactory<
-  { dto: UpdateRecipeDto },
-  { recipeRepository: IRecipeRepositoryUpdate }
+	{ dto: UpdateRecipeDto },
+	{ recipeRepository: IRecipeRepositoryUpdate }
 >;
-type Output = OutputFactory<{ recipe: RecipeWithIngredients }>;
+type Output = OutputFactory<UpdateRecipeOutput>;
 
 export const UpdateRecipeUseCase: UseCase<Input, Output> = (dependencies) => {
-  const { recipeRepository } = dependencies;
-  return {
-    async execute(data): Promise<Output> {
-      const [error, recipe] = await tryCatch(recipeRepository.update(data.dto));
-      if (!recipe)
-        return UseCaseResponseBuilder.error(
-          HttpCode.NOT_FOUND,
-          "Cette recette n'existe pas.",
-        );
+	const { recipeRepository } = dependencies;
+	return {
+		async execute(data): Promise<Output> {
+			const [error, result] = await tryCatch(recipeRepository.update(data.dto));
+			if (error)
+				return UseCaseResponseBuilder.error(
+					HttpCode.NOT_FOUND,
+					error.userFriendlyMessage
+				);
 
-      if (error)
-        return UseCaseResponseBuilder.error(
-          HttpCode.INTERNAL_SERVER_ERROR,
-          error.userFriendlyMessage,
-        );
+			if (!result)
+				return UseCaseResponseBuilder.error(
+					HttpCode.INTERNAL_SERVER_ERROR,
+					"Error during recipe update"
+				);
 
-      return UseCaseResponseBuilder.success(HttpCode.OK, { recipe });
-    },
-  };
+			return UseCaseResponseBuilder.success(HttpCode.OK, result);
+		},
+	};
 };

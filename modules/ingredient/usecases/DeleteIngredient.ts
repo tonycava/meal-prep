@@ -1,40 +1,40 @@
 import {
-  InputFactory,
-  OutputFactory,
-  UseCase,
-  UseCaseResponseBuilder,
+	InputFactory,
+	OutputFactory,
+	UseCase,
+	UseCaseResponseBuilder,
 } from "$lib/common/usecase";
 import { IIngredientRepositoryDelete } from "../interfaces/IIngredientRepository";
 import { tryCatch } from "$lib/errors/tryCatch";
 import { HttpCode } from "$lib/common/api/HttpCode";
 
 type Input = InputFactory<
-  { id: string },
-  { ingredientRepository: IIngredientRepositoryDelete }
+	{ id: string },
+	{ ingredientRepository: IIngredientRepositoryDelete }
 >;
-type Output = OutputFactory<void>;
+type Output = OutputFactory<{ message: string }>;
 
 export const DeleteIngredientUseCase: UseCase<Input, Output> = (
-  dependencies,
+	dependencies,
 ) => {
-  const { ingredientRepository } = dependencies;
-  return {
-    async execute(data): Promise<Output> {
-      const [error, deleted] = await tryCatch(
-        ingredientRepository.delete(data.id),
-      );
-      if (error)
-        return UseCaseResponseBuilder.error(
-          HttpCode.INTERNAL_SERVER_ERROR,
-          error.userFriendlyMessage,
-        );
-      if (!deleted)
-        return UseCaseResponseBuilder.error(
-          HttpCode.NOT_FOUND,
-          "Ingrédient non trouvé",
-        );
+	const { ingredientRepository } = dependencies;
+	return {
+		async execute(data): Promise<Output> {
+			const [error, deleted] = await tryCatch(
+				ingredientRepository.delete(data.id),
+			);
+			if (error)
+				return UseCaseResponseBuilder.error(
+					HttpCode.INTERNAL_SERVER_ERROR,
+					error.userFriendlyMessage,
+				);
+			if (!deleted)
+				return UseCaseResponseBuilder.error(
+					HttpCode.NOT_FOUND,
+					"Ingredient not found",
+				);
 
-      return UseCaseResponseBuilder.success(HttpCode.NO_CONTENT, undefined);
-    },
-  };
+			return UseCaseResponseBuilder.success(HttpCode.OK, { message: "Ingredient deleted successfully" });
+		},
+	};
 };
