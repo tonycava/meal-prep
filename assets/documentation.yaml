@@ -539,6 +539,8 @@ paths:
       summary: Lister les recettes
       description: Récupère la liste des recettes
       operationId: listRecipes
+      security:
+        - ApiKeyAuth: []
       parameters:
         - name: category
           in: query
@@ -678,6 +680,8 @@ paths:
       summary: Détails d'une recette
       description: Récupère une recette donnée via son identifiant
       operationId: getRecipe
+      security:
+        - ApiKeyAuth: []
       parameters:
         - name: id
           in: path
