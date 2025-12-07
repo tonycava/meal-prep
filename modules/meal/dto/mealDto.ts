@@ -53,12 +53,7 @@ export const ListMealsOutputSchema = z.object({
 });
 
 export const SingleMealOutputSchema = z.object({
-  menus: z.array(MealDTOSchema),
-  meta: z.object({
-    total: z.literal(1),
-    offset: z.literal(0),
-    limit: z.literal(1),
-  }),
+  meals: z.array(MealDTOSchema),
 });
 
 export const RecipeDTOSchema = z.object({

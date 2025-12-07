@@ -17,7 +17,7 @@ export const UpdateMealUseCase: UseCase<Input, Output> = (dependencies) => {
       const [error, meal] = await tryCatch(mealRepository.update(data.dto));
       if (error) return UseCaseResponseBuilder.error(500, error.userFriendlyMessage)
 
-      return UseCaseResponseBuilder.success(200, { menus: [meal], meta: { total: 1, offset: 0, limit: 1 } });
+      return UseCaseResponseBuilder.success(200, { menus: [meal], meta: { total: 1, offset: 0, limit: 1 } } );
     }
   }
 };

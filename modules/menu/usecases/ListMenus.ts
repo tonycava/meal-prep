@@ -4,13 +4,13 @@ import {
   UseCase,
   UseCaseResponseBuilder,
 } from "$lib/common/usecase";
-import { ListMenusOutput } from "../dto/menu.dto";
+import { ListMenusOutput } from "../dto/menuDto";
 import { IMenuRepositoryList } from "../interfaces/IMenuRepository";
 import { tryCatch } from "$lib/errors/tryCatch";
 import { HttpCode } from "$lib/common/api/HttpCode.ts";
 
 type Input = InputFactory<
-  { limit: number; offset: number; apiKey: string; role: string },
+  { limit: number; offset: number; role: string },
   { menuRepository: IMenuRepositoryList }
 >;
 type Output = OutputFactory<ListMenusOutput>;
@@ -20,7 +20,7 @@ export const ListMenusUseCase: UseCase<Input, Output> = (dependencies) => {
   return {
     async execute(data): Promise<Output> {
       const [error, result] = await tryCatch(
-        menuRepository.list(data.limit, data.offset, data.apiKey, data.role),
+        menuRepository.list(data.limit, data.offset, data.role),
       );
       if (error)
         return UseCaseResponseBuilder.error(

@@ -1,6 +1,6 @@
 import { endpointsFactory } from "$lib/common/endpointFactory.ts";
 import { authMiddleware } from "$lib/middlewares/authMiddleware";
-import { deleteMenuDto } from "../dto/deleteMenu.dto";
+import { deleteMenuDto } from "../dto/deleteMenuDto";
 import { DeleteMenuUseCase } from "$modules/menu/usecases/DeleteMenu";
 import { MenuRepository } from "$modules/menu/repositories/MenuRepository"
 import { ApiResponse } from "$lib/common/api/ApiResponse";

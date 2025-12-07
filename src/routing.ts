@@ -20,6 +20,7 @@ import { UpdateMealEndpoint } from "$modules/meal/endpoints/UpdateMeal";
 import { DeleteMealEndpoint } from "$modules/meal/endpoints/DeleteMeal";
 import { HomeEndpoint } from "$lib/common/endpoints/HomeEndpoint.ts";
 import { UpdateMenuEndpoint } from "$modules/menu/endpoints/UpdateMenu.ts";
+import { GenerateMenuEndpoint } from "$modules/menu/endpoints/GenerateMenu.ts";
 
 export const routing: Routing = {
 	v1: {
@@ -38,6 +39,9 @@ export const routing: Routing = {
 			"/": new DependsOnMethod({
 				get: ListMenusEndpoint,
 				post: CreateMenuEndpoint,
+			}),
+			generate: new DependsOnMethod({
+				get: GenerateMenuEndpoint,
 			}),
 			"/:id": new DependsOnMethod({
 				patch: UpdateMenuEndpoint,

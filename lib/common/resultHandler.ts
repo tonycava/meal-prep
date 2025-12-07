@@ -61,6 +61,15 @@ export const mealPrepResultHandler = new ResultHandler({
 			} as any);
 		}
 
+		// Check if output has _links (HATEOAS)
+		if ('_links' in output) {
+			return void response.status(output.status as number).json({
+				status: output.status as number,
+				data: output.data,
+				_links: (output as any)._links
+			} as any);
+		}
+
 		response.status(output.status as number).json({
 			status: output.status as number,
 			data: output.data

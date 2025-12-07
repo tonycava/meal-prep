@@ -3,13 +3,13 @@ import {
   InputFactory,
   UseCaseResponseBuilder,
   OutputFactory,
-} from "../../../lib/common/usecase";
+} from "$lib/common/usecase.ts";
 import { IMealRepositoryFindById } from "../interfaces/IMealRepository";
 import { SingleMealOutput } from "../dto/mealDto";
-import { tryCatch } from "../../../lib/errors/tryCatch";
+import { tryCatch } from "$lib/errors/tryCatch.ts";
 
 type Input = InputFactory<
-  { id: string; apiKey: string },
+  { id: string; },
   { mealRepository: IMealRepositoryFindById }
 >;
 type Output = OutputFactory<SingleMealOutput>;
@@ -19,7 +19,7 @@ export const GetMealByIdUseCase: UseCase<Input, Output> = (dependencies) => {
   return {
     async execute(data): Promise<Output> {
       const [error, result] = await tryCatch(
-        mealRepository.findById(data.id, data.apiKey)
+        mealRepository.findById(data.id)
       );
 
       if (error)
@@ -28,7 +28,7 @@ export const GetMealByIdUseCase: UseCase<Input, Output> = (dependencies) => {
       if (!result) {
         return UseCaseResponseBuilder.error(404, "Meal not found");
       }
-      return UseCaseResponseBuilder.success(200, { menus: [result], meta: { total: 1, offset: 0, limit: 1 } });
+      return UseCaseResponseBuilder.success(200, { meals: [result] });
     },
   };
 };

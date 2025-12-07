@@ -4,14 +4,14 @@ import {
   UseCase,
   UseCaseResponseBuilder,
 } from "$lib/common/usecase";
-import { CreateMenuDto } from "../dto/createMenu.dto";
+import { CreateMenuDto } from "../dto/createMenuDto";
 import { IMenuRepositorySave } from "../interfaces/IMenuRepository";
 import { tryCatch } from "$lib/errors/tryCatch";
 import { Menu } from "$modules/menu/entities/Menu.ts";
 import { HttpCode } from "$lib/common/api/HttpCode.ts";
 
 type Input = InputFactory<
-  { dto: CreateMenuDto; apiKey: string },
+  { dto: CreateMenuDto; },
   { menuRepository: IMenuRepositorySave }
 >;
 type Output = OutputFactory<Menu>;
@@ -21,7 +21,7 @@ export const SaveMenuUseCase: UseCase<Input, Output> = (dependencies) => {
   return {
     async execute(data): Promise<Output> {
       const [error, menu] = await tryCatch(
-        menuRepository.save(data.dto, data.apiKey),
+        menuRepository.save(data.dto),
       );
       if (error)
         return UseCaseResponseBuilder.error(

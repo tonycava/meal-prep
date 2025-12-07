@@ -4,7 +4,7 @@ import { IMealFilters, ListMealsOutput } from "../dto/mealDto";
 import { tryCatch } from "$lib/errors/tryCatch.ts";
 
 type Input = InputFactory<
-  {limit: number, offset: number, filters?: IMealFilters, apiKey: string},
+  {limit: number, offset: number, filters?: IMealFilters },
   { mealRepository: IMealRepositoryList }
 >;
 
@@ -14,7 +14,7 @@ export const ListMealsUseCase: UseCase<Input, Output> = (dependencies) => {
   const { mealRepository } = dependencies;
   return {
     async execute(data): Promise<Output> {
-      const [error, result] = await tryCatch(mealRepository.list(data.limit, data.offset, data.filters || {}, data.apiKey));
+      const [error, result] = await tryCatch(mealRepository.list(data.limit, data.offset, data.filters || {}));
       
       if (error) return UseCaseResponseBuilder.error(500, error.userFriendlyMessage);
 

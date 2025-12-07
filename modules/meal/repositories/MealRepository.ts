@@ -11,8 +11,9 @@ import {
 } from "../dto/mealDto";
 import { MealType } from "../../../src/generated/prisma";
 import { UpdateMealDto } from "$modules/meal/dto/updateMealDto.ts";
+import { User } from "$lib/common/User.ts";
 
-export const MealRepository = (): IMealRepository => {
+export const MealRepository = (user: User): IMealRepository => {
   return {
     async update(mealDto: UpdateMealDto): Promise<void> {
       try {
@@ -139,15 +140,10 @@ export const MealRepository = (): IMealRepository => {
       };
     },
 
-    async findById(id: string, apiKey: string): Promise<GetMealByIdOutput> {
-      const apiKeyRecord = await prisma.apiKey.findUnique({
-        where: { key: apiKey },
-      });
-
+    async findById(id: string): Promise<GetMealByIdOutput> {
       const meal = await prisma.meal.findFirst({
         where: {
           id,
-          ...(apiKeyRecord && { apiKeyId: apiKeyRecord.id }),
         },
         include: {
           recipeMeals: {

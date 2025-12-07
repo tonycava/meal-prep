@@ -5,10 +5,10 @@ import {
 } from "../dto/mealDto";
 import { GetMealByIdUseCase } from "../usecases/ListMealById";
 import { MealRepository } from "../repositories/MealRepository";
-import { ApiResponse } from "../../../lib/common/api/ApiResponse";
-import { UseCaseResponseSchema } from "../../../lib/common/usecase";
-import { authMiddleware } from "../../../lib/middlewares/authMiddleware";
+import { ApiResponse } from "$lib/common/api/ApiResponse.ts";
+import { authMiddleware } from "$lib/middlewares/authMiddleware.ts";
 import { z } from "zod";
+import { createUserFromOptions } from "$lib/common/User.ts";
 
 export const GetMealByIdEndpoint = defaultEndpointsFactory
   .addMiddleware(authMiddleware)
@@ -18,8 +18,8 @@ export const GetMealByIdEndpoint = defaultEndpointsFactory
     output: z.object({ status: z.string(), data: SingleMealOutputSchema }),
     handler: async ({ input, options }) => {
       const getMealResponse = await GetMealByIdUseCase({
-        mealRepository: MealRepository(),
-      }).execute({ id: input.id, apiKey: options.apiKey });
+        mealRepository: MealRepository(createUserFromOptions(options)),
+      }).execute({ id: input.id });
 
       return ApiResponse.send(getMealResponse);
     },

@@ -7,7 +7,7 @@ import {
 import { IMenuRepositoryUpdate } from "../interfaces/IMenuRepository";
 import { tryCatch } from "$lib/errors/tryCatch";
 import { HttpCode } from "$lib/common/api/HttpCode.ts";
-import { CreateMenuPartialDtoWithId } from "../dto/createMenu.dto";
+import { CreateMenuPartialDtoWithId } from "../dto/createMenuDto";
 
 type Input = InputFactory<
   { dto: CreateMenuPartialDtoWithId },
