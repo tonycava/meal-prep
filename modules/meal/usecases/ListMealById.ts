@@ -5,14 +5,14 @@ import {
   OutputFactory,
 } from "$lib/common/usecase.ts";
 import { IMealRepositoryFindById } from "../interfaces/IMealRepository";
-import { SingleMealOutput } from "../dto/mealDto";
+import { GetMealByIdOutput } from "../dto/mealDto";
 import { tryCatch } from "$lib/errors/tryCatch.ts";
 
 type Input = InputFactory<
   { id: string; },
   { mealRepository: IMealRepositoryFindById }
 >;
-type Output = OutputFactory<SingleMealOutput>;
+type Output = OutputFactory<GetMealByIdOutput>;
 
 export const GetMealByIdUseCase: UseCase<Input, Output> = (dependencies) => {
   const { mealRepository } = dependencies;
@@ -28,7 +28,7 @@ export const GetMealByIdUseCase: UseCase<Input, Output> = (dependencies) => {
       if (!result) {
         return UseCaseResponseBuilder.error(404, "Meal not found");
       }
-      return UseCaseResponseBuilder.success(200, { meals: [result] });
+      return UseCaseResponseBuilder.success(200, result);
     },
   };
 };

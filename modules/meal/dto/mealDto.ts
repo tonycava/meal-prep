@@ -27,7 +27,6 @@ export const GetMealByIdInputSchema = z.object({
   id: z.uuid({
     message: "Invalid meal ID format",
   }),
-  apiKey: z.string(),
 });
 
 export const MealDTOSchema = z.object({
@@ -54,6 +53,10 @@ export const ListMealsOutputSchema = z.object({
 
 export const SingleMealOutputSchema = z.object({
   meals: z.array(MealDTOSchema),
+});
+
+export const GetMealByIdOutputSchema = z.object({
+  meal: MealDTOSchema,
 });
 
 export const RecipeDTOSchema = z.object({
@@ -103,6 +106,7 @@ export type MealDto = z.infer<typeof MealDTOSchema>;
 export type ListMealsOutput = z.infer<typeof ListMealsOutputSchema>;
 export type GetMealByIdInput = z.infer<typeof GetMealByIdInputSchema>;
 export type SingleMealOutput = z.infer<typeof SingleMealOutputSchema>;
+export type GetMealByIdOutput = z.infer<typeof GetMealByIdOutputSchema>;
 export type RecipeDto = z.infer<typeof RecipeDTOSchema>;
 export type RecipeListOutput = z.infer<typeof RecipeListOutputSchema>;
 export type SingleRecipeOutput = z.infer<typeof SingleRecipeOutputSchema>;
