@@ -19,8 +19,6 @@ export const CreateRecipeEndPoint = endpointsFactory
 				recipeRepository: RecipeRepository(createUserFromOptions(options)),
 			}).execute({ dto: input });
 
-			console.log(createRecipeResponse);
-
 			return ApiResponse.send(createRecipeResponse);
 		},
 	});

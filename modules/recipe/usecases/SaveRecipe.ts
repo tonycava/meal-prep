@@ -22,7 +22,7 @@ export const SaveRecipeUseCase: UseCase<Input, Output> = (dependencies) => {
 		async execute(data): Promise<Output> {
 			const [error, recipe] = await tryCatch(recipeRepository.save(data.dto));
 			if (error) {
-				console.log("Error save recipe du usecase")
+				console.log("Error save recipe du usecase: ", error);
 				return UseCaseResponseBuilder.error(
 					HttpCode.NOT_FOUND,
 					"Ingredient not found",
@@ -34,7 +34,6 @@ export const SaveRecipeUseCase: UseCase<Input, Output> = (dependencies) => {
 					"Error during recipe creation",
 				);
 			}
-
 			return UseCaseResponseBuilder.success(HttpCode.CREATED, recipe);
 		},
 	};

@@ -1,34 +1,26 @@
 import {
-  GetRecipeByIdInputSchema,
-  GetRecipeByIdOutputSchema,
+	GetRecipeByIdInputSchema,
+	GetRecipeByIdOutputSchema,
 } from "../dto/recipeDto";
 import { RecipeRepository } from "../repositories/RecipeRepository";
 import { ListRecipeByIdUseCase } from "../usecases/ListRecipeById";
 import { endpointsFactory } from "$lib/common/endpointFactory.ts";
 import { createUserFromOptions } from "$lib/common/User.ts";
 import { authMiddleware } from "$lib/middlewares/authMiddleware.ts";
+import { UseCaseResponseSchema } from "$lib/common/usecase";
+import { ApiResponse } from "$lib/common/api/ApiResponse";
 
 export const ListRecipeByIdEndpoint = endpointsFactory
-  .addMiddleware(authMiddleware)
-  .build({
-    method: "get",
-    input: GetRecipeByIdInputSchema,
-    output: GetRecipeByIdOutputSchema,
-    handler: async ({ input, logger, options }) => {
-      const { id } = input;
+	.addMiddleware(authMiddleware)
+	.build({
+		method: "get",
+		input: GetRecipeByIdInputSchema,
+		output: UseCaseResponseSchema,
+		handler: async ({ input, options }) => {
+			const response = await ListRecipeByIdUseCase({
+				recipeRepository: RecipeRepository(createUserFromOptions(options)),
+			}).execute({ dto: input });
 
-      logger.info(`Fetching recipes with ID: ${id}`);
-
-      const response = await ListRecipeByIdUseCase({
-        recipeRepository: RecipeRepository(createUserFromOptions(options)),
-      }).execute({ id, apiKey: options.apiKey });
-
-      if (!response.isSuccess) {
-        throw new Error(response.message);
-      }
-
-      logger.info(`Fetched recipe with ID: ${id}`);
-
-      return response.data;
-    },
-  });
+			return ApiResponse.send(response);
+		},
+	});

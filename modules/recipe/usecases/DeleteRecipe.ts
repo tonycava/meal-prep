@@ -28,14 +28,20 @@ export const DeleteRecipeUseCase: UseCase<Input, Output> = (dependencies) => {
 					"Recipe is used in one or more menus and cannot be deleted.",
 				);
 
-			const [error] = await tryCatch(recipeRepository.delete(data.dto));
+			const [error, result] = await tryCatch(recipeRepository.delete(data.dto));
 			if (error)
 				return UseCaseResponseBuilder.error(
-					HttpCode.INTERNAL_SERVER_ERROR,
+					HttpCode.NOT_FOUND,
 					error.userFriendlyMessage,
 				);
 
-			return UseCaseResponseBuilder.success(HttpCode.OK, true);
+			if(!result)
+				return UseCaseResponseBuilder.error(
+					HttpCode.INTERNAL_SERVER_ERROR,
+					"Error during recipe delete",
+				);
+
+			return UseCaseResponseBuilder.success(HttpCode.OK, { message: "Recipe deleted successfully" });
 		},
 	};
 };
