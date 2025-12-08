@@ -37,7 +37,7 @@ jobs:
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: meal-prep.tonycava.dev
-          username: anthony_cavge
+          username: anthonycavagne
           key: ${{ secrets.PRIVATE_SSH_KEY }}
           script: |
             # Pull the new image and restart the service using docker-compose
