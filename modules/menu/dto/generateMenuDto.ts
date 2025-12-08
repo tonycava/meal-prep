@@ -2,7 +2,7 @@ import { z } from "zod";
 import { DietType } from "../../../src/generated/prisma";
 
 const dietTypeValues = Object.values(DietType) as [string, ...string[]];
-const dietTypeSchema = z.enum(dietTypeValues);
+const dietTypeSchema = z.string().transform((val) => val.toUpperCase()).pipe(z.enum(dietTypeValues));
 
 export const GenerateMenuInputSchema = z.object({
   duration: z.string().optional().transform((val) => (val ? parseInt(val, 10) : 7)).pipe(z.number().min(1, { message: "La durée doit être au minimum de 1 jour" })),
