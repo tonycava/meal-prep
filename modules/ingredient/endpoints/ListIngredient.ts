@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { prisma } from "$lib/db";
-import { Prisma } from "../../../src/generated/prisma";
+import { Prisma } from "../../../generated/client";
 import {
   IngredientListQueryDto,
   IngredientResponseDto,

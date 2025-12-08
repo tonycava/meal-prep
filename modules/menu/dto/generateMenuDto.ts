@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { DietType } from "../../../src/generated/prisma";
+import { DietType } from "../../../generated/client";
 
 const dietTypeValues = Object.values(DietType) as [string, ...string[]];
 const dietTypeSchema = z.string().transform((val) => val.toUpperCase()).pipe(z.enum(dietTypeValues));

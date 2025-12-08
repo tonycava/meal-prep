@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { DietType, RecipeCategory, UnitType } from "../../../src/generated/prisma";
+import { DietType, RecipeCategory, UnitType } from "../../../generated/client";
 
 const recipeUnitalues = Object.values(UnitType) as [string, ...string[]];
 const recipeUnitchema = z.enum(recipeUnitalues);

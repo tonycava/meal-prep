@@ -4,7 +4,7 @@ import { RecipeWithIngredients } from "../entities/Recipe";
 import { prisma } from "$lib/db";
 import { DeleteRecipeDto } from "$modules/recipe/dto/deleteRecipeDto";
 import { AppError } from "$lib/errors/AppError";
-import { DietType, Prisma, RecipeCategory, UnitType, } from "../../../src/generated/prisma";
+import { DietType, Prisma, RecipeCategory, UnitType, } from "../../../generated/client";
 import { UpdateRecipeDto } from "$modules/recipe/dto/updateRecipeDto";
 import { User } from "$lib/common/User";
 import { WithPagination } from "$lib/common/types/WithPagination";
@@ -116,6 +116,7 @@ export const RecipeRepository = (user: User): IRecipeRepository => {
           data: {
             title: recipeDto.title,
             description: recipeDto.description,
+            imageUrl: recipeDto.imageUrl ?? "",
             isPublic: recipeDto.isPublic,
             servings: recipeDto.servings,
             category: recipeDto.category as RecipeCategory,

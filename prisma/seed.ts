@@ -7,7 +7,7 @@ import {
   UnitType,
   MineralType,
   VitaminType,
-} from "../src/generated/prisma";
+} from "../generated/client";
 import fs from "node:fs";
 import path from "node:path";
 import readline from "node:readline";

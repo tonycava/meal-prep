@@ -2,227 +2,228 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-      provider = "prisma-client-js"
-      output   = "../src/generated/prisma"
+  provider      = "prisma-client-js"
+  output        = "../generated/client"
+  binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
 }
 
 datasource db {
-      provider = "sqlite"
-      url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
 }
 
 enum IngredientCategory {
-      MEAT
-      FISH
-      FRUIT
-      VEGETABLE
-      GRAIN
-      NUT
-      DAIRY
-      SPICE
-      OTHER
+  MEAT
+  FISH
+  FRUIT
+  VEGETABLE
+  GRAIN
+  NUT
+  DAIRY
+  SPICE
+  OTHER
 }
 
 enum RecipeCategory {
-      STARTER
-      MAIN_COURSE
-      DESSERT
-      OTHER
+  STARTER
+  MAIN_COURSE
+  DESSERT
+  OTHER
 }
 
 enum DietType {
-      VEGETARIAN
-      VEGAN
-      GLUTEN_FREE
-      DAIRY_FREE
-      KETO
-      PALEO
-      LOW_CARB
-      OTHER
+  VEGETARIAN
+  VEGAN
+  GLUTEN_FREE
+  DAIRY_FREE
+  KETO
+  PALEO
+  LOW_CARB
+  OTHER
 }
 
 enum MealType {
-      BREAKFAST
-      LUNCH
-      DINNER
-      SNACK
-      OTHER
+  BREAKFAST
+  LUNCH
+  DINNER
+  SNACK
+  OTHER
 }
 
 enum MineralType {
-      CALCIUM
-      IRON
-      MAGNESIUM
-      POTASSIUM
-      SODIUM
-      ZINC
-      PHOSPHORUS
-      OTHER
+  CALCIUM
+  IRON
+  MAGNESIUM
+  POTASSIUM
+  SODIUM
+  ZINC
+  PHOSPHORUS
+  OTHER
 }
 
 enum VitaminType {
-      VITAMIN_A
-      VITAMIN_B1
-      VITAMIN_B2
-      VITAMIN_B3
-      VITAMIN_B6
-      VITAMIN_B12
-      VITAMIN_C
-      VITAMIN_D
-      VITAMIN_E
-      VITAMIN_K
-      OTHER
+  VITAMIN_A
+  VITAMIN_B1
+  VITAMIN_B2
+  VITAMIN_B3
+  VITAMIN_B6
+  VITAMIN_B12
+  VITAMIN_C
+  VITAMIN_D
+  VITAMIN_E
+  VITAMIN_K
+  OTHER
 }
 
 enum UnitType {
-      GRAM
-      KILOGRAM
-      MILLILITER
-      LITER
-      TEASPOON
-      TABLESPOON
-      CUP
-      PIECE
-      SLICE
-      PINCH
-      OTHER
+  GRAM
+  KILOGRAM
+  MILLILITER
+  LITER
+  TEASPOON
+  TABLESPOON
+  CUP
+  PIECE
+  SLICE
+  PINCH
+  OTHER
 }
 
 model ApiKey {
-      id        String    @id @default(uuid())
-      key       String    @unique
-      name      String?
-      role      String    @default("user")
-      isActive  Boolean   @default(true)
-      createdAt DateTime  @default(now())
-      expiresAt DateTime?
+  id        String    @id @default(uuid())
+  key       String    @unique
+  name      String?
+  role      String    @default("user")
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  expiresAt DateTime?
 
-      menus   Menu[]
-      recipes Recipe[]
-      meals   Meal[]
+  menus   Menu[]
+  recipes Recipe[]
+  meals   Meal[]
 }
 
 model Menu {
-      id          String   @id @default(uuid())
-      name        String
-      description String?
-      duration    Int?
-      apiKeyId    String
-      createdAt   DateTime @default(now())
-      updatedAt   DateTime @updatedAt
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  duration    Int?
+  apiKeyId    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-      apiKey ApiKey @relation(fields: [apiKeyId], references: [id], onDelete: Cascade)
+  apiKey ApiKey @relation(fields: [apiKeyId], references: [id], onDelete: Cascade)
 
-      menuMeals MenuMeal[]
+  menuMeals MenuMeal[]
 }
 
 model MenuMeal {
-      id        String @id @default(uuid())
-      menuId    String
-      mealId    String
-      dayNumber Int
+  id        String @id @default(uuid())
+  menuId    String
+  mealId    String
+  dayNumber Int
 
-      menu Menu @relation(fields: [menuId], references: [id], onDelete: Cascade)
-      meal Meal @relation(fields: [mealId], references: [id], onDelete: Cascade)
+  menu Menu @relation(fields: [menuId], references: [id], onDelete: Cascade)
+  meal Meal @relation(fields: [mealId], references: [id], onDelete: Cascade)
 
-      @@unique([menuId, mealId, dayNumber])
+  @@unique([menuId, mealId, dayNumber])
 }
 
 model Meal {
-      id       String   @id @default(uuid())
-      mealType MealType
-      apiKeyId String
-      apiKey   ApiKey   @relation(fields: [apiKeyId], references: [id], onDelete: Cascade)
+  id       String   @id @default(uuid())
+  mealType MealType
+  apiKeyId String
+  apiKey   ApiKey   @relation(fields: [apiKeyId], references: [id], onDelete: Cascade)
 
-      menuMeals   MenuMeal[]
-      recipeMeals RecipeMeal[]
+  menuMeals   MenuMeal[]
+  recipeMeals RecipeMeal[]
 }
 
 model RecipeMeal {
-      id       String @id @default(uuid())
-      recipeId String
-      mealId   String
-      type     String
+  id       String @id @default(uuid())
+  recipeId String
+  mealId   String
+  type     String
 
-      recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
-      meal   Meal   @relation(fields: [mealId], references: [id], onDelete: Cascade)
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  meal   Meal   @relation(fields: [mealId], references: [id], onDelete: Cascade)
 
-      @@unique([recipeId, mealId])
+  @@unique([recipeId, mealId])
 }
 
 model Recipe {
-      id           String          @id @default(uuid())
-      title        String
-      description  String
-      instructions String
-      imageUrl     String
-      prepTimeMin  Int?
-      cookTimeMin  Int?
-      servings     Int             @default(1)
-      isPublic     Boolean         @default(false)
-      category     RecipeCategory?
-      diet         DietType?
-      apiKeyId     String
-      createdAt    DateTime        @default(now())
-      updatedAt    DateTime        @updatedAt
+  id           String          @id @default(uuid())
+  title        String
+  description  String
+  instructions String
+  imageUrl     String
+  prepTimeMin  Int?
+  cookTimeMin  Int?
+  servings     Int             @default(1)
+  isPublic     Boolean         @default(false)
+  category     RecipeCategory?
+  diet         DietType?
+  apiKeyId     String
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
 
-      apiKey ApiKey @relation(fields: [apiKeyId], references: [id], onDelete: Cascade)
+  apiKey ApiKey @relation(fields: [apiKeyId], references: [id], onDelete: Cascade)
 
-      ingredients RecipeIngredient[]
-      recipeMeals RecipeMeal[]
+  ingredients RecipeIngredient[]
+  recipeMeals RecipeMeal[]
 }
 
 model Ingredient {
-      id       String              @id @default(uuid())
-      name     String              @unique
-      category IngredientCategory?
+  id       String              @id @default(uuid())
+  name     String              @unique
+  category IngredientCategory?
 
-      proteins  Float    @default(0)
-      fats      Float    @default(0)
-      carbs     Float    @default(0)
-      sugars    Float    @default(0)
-      fiber     Float    @default(0)
-      salt      Float    @default(0)
-      calories  Float    @default(0)
-      createdAt DateTime @default(now())
-      updatedAt DateTime @updatedAt
+  proteins  Float    @default(0)
+  fats      Float    @default(0)
+  carbs     Float    @default(0)
+  sugars    Float    @default(0)
+  fiber     Float    @default(0)
+  salt      Float    @default(0)
+  calories  Float    @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-      recipes  RecipeIngredient[]
-      minerals IngredientMineral[]
-      vitamins IngredientVitamin[]
+  recipes  RecipeIngredient[]
+  minerals IngredientMineral[]
+  vitamins IngredientVitamin[]
 }
 
 model IngredientMineral {
-      id           String      @id @default(uuid())
-      ingredientId String
-      mineralType  MineralType
-      value        Float
+  id           String      @id @default(uuid())
+  ingredientId String
+  mineralType  MineralType
+  value        Float
 
-      ingredient Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
 
-      @@unique([ingredientId, mineralType])
+  @@unique([ingredientId, mineralType])
 }
 
 model IngredientVitamin {
-      id           String      @id @default(uuid())
-      ingredientId String
-      vitaminType  VitaminType
-      value        Float
+  id           String      @id @default(uuid())
+  ingredientId String
+  vitaminType  VitaminType
+  value        Float
 
-      ingredient Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
 
-      @@unique([ingredientId, vitaminType])
+  @@unique([ingredientId, vitaminType])
 }
 
 model RecipeIngredient {
-      recipeId     String
-      ingredientId String
-      quantity     Float
-      unit         UnitType @default(GRAM)
-      notes        String?
+  recipeId     String
+  ingredientId String
+  quantity     Float
+  unit         UnitType @default(GRAM)
+  notes        String?
 
-      recipe     Recipe     @relation(fields: [recipeId], references: [id], onDelete: Cascade)
-      ingredient Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
+  recipe     Recipe     @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
 
-      @@id([recipeId, ingredientId])
+  @@id([recipeId, ingredientId])
 }

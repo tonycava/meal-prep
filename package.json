@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "node dist/index.js",
-    "prestart": "npx prisma generate",
+    "db:generate": "prisma generate",
     "dev": "tsx --watch src/index.ts",
     "build:docs": "tsx src/docs/generate-documentation.ts",
     "build": "tsup",
@@ -21,7 +21,8 @@
     "format:check": "prettier --check .",
     "test:run": "vitest --run",
     "test:ui": "vitest --ui",
-    "test:watch": "vitest --watch"
+    "test:watch": "vitest --watch",
+    "pipeline": "docker buildx build --platform linux/amd64 -t tonycava/meal-prep:latest --push . && ssh anthony_cavge@34.155.126.58 'docker compose pull && docker compose up -d'"
   },
   "dependencies": {
     "@openrouter/ai-sdk-provider": "^1.2.3",
@@ -34,6 +35,7 @@
     "helmet": "^8.1.0",
     "http-errors": "^2.0.0",
     "swagger-ui-express": "^5.0.1",
+    "typescript": "^5.9.3",
     "zod": "^4.1.12"
   },
   "devDependencies": {
@@ -49,7 +51,6 @@
     "prisma": "^6.18.0",
     "tsup": "^8.5.1",
     "tsx": "^4.20.6",
-    "typescript": "^5.9.3",
     "typescript-eslint": "^8.47.0",
     "vitest": "^4.0.11"
   },

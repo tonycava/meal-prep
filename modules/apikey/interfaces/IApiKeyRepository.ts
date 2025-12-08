@@ -1,4 +1,4 @@
-import { ApiKey } from "../../../src/generated/prisma";
+import { ApiKey } from "../../../generated/client";
 import { RegisterApiKeyInput } from "../dto/registerApiKey.dto";
 
 export type IApiKeyRepositoryCreate = {

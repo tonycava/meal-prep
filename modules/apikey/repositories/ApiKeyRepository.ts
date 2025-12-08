@@ -1,5 +1,5 @@
 import { prisma } from "$lib/db";
-import { ApiKey } from "../../../src/generated/prisma";
+import { ApiKey } from "../../../generated/client";
 import crypto from "crypto";
 import { AppError } from "$lib/errors/AppError";
 import { IApiKeyRepository } from "../interfaces/IApiKeyRepository";

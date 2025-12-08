@@ -1,4 +1,4 @@
-import { IngredientCategory } from "src/generated/prisma";
+import { IngredientCategory } from "../../../generated/client";
 import { z } from "zod";
 
 export const MineralTypeEnum = z.enum([

@@ -1,4 +1,4 @@
-import { RecipeCategory, DietType } from "../../../src/generated/prisma";
+import { RecipeCategory, DietType } from "../../../generated/client";
 import z from "zod";
 
 
