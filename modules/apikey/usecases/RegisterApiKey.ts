@@ -33,7 +33,7 @@ export const RegisterApiKeyUseCase: UseCase<Input, Output> = (dependencies) => {
       }
 
       return UseCaseResponseBuilder.success(
-        HttpCode.OK,
+        HttpCode.CREATED,
         apiKey,
       );
     },
