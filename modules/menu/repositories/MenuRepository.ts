@@ -7,49 +7,76 @@ import { AppError } from "$lib/errors/AppError.ts";
 import { CreateMenuPartialDtoWithId } from "$modules/menu/dto/createMenuDto";
 import { User } from "$lib/common/User";
 import { GenerateMenuOutput, IMenuGenerationFilters } from "../dto/generateMenuDto";
-import { MealType, DietType } from "../../../generated/client";
+import { MealType, DietType } from "$generated/client";
 
 export const MenuRepository = (user: User): IMenuRepository => {
 
   return {
-    async update(menuDto: CreateMenuPartialDtoWithId): Promise<void> {
+    async update(menuDto: CreateMenuPartialDtoWithId): Promise<Menu> {
       const menu = await this.getOne(menuDto.id)
-      if (!menu) return;
-      const mealsToDelete = menu.menuMeals.filter(child => !menuDto.mealIds?.some(c => c.mealId === child.mealId));
-      for (const mealsToDeleteElement of mealsToDelete) {
-        await prisma.menuMeal.delete({ where: { menuId_mealId_dayNumber: { menuId: menuDto.id, mealId: mealsToDeleteElement.mealId, dayNumber: mealsToDeleteElement.dayNumber } } });
+      if (!menu) {
+        throw new AppError(
+          "Not Found",
+          "Menu not found or you don't have permission to update it",
+          "Menu non trouvé ou vous n'avez pas la permission de le modifier.",
+          "warn",
+        );
       }
 
-      const mealsToAdd = menuDto.mealIds?.filter(
-        newMeal => !menu.menuMeals.some(existing => existing.mealId === newMeal.mealId)
-      ) || [];
+      // Only update menuMeals if menuMeals is provided in the DTO
+      if (menuDto.menuMeals !== undefined) {
+        const mealsToDelete = menu.menuMeals.filter(child => !menuDto.menuMeals!.some(c => c.mealId === child.mealId));
+        for (const mealsToDeleteElement of mealsToDelete) {
+          await prisma.menuMeal.delete({ where: { menuId_mealId_dayNumber: { menuId: menuDto.id, mealId: mealsToDeleteElement.mealId, dayNumber: mealsToDeleteElement.dayNumber } } });
+        }
 
+        const mealsToAdd = menuDto.menuMeals.filter(
+          newMeal => !menu.menuMeals.some(existing => existing.mealId === newMeal.mealId)
+        );
 
-      for (const mealToAdd of mealsToAdd) {
-        await prisma.menuMeal.create({
-          data: {
-            menuId: menu.id,
-            mealId: mealToAdd.mealId,
-            dayNumber: mealToAdd.dayNumber
-          }
+        for (const mealToAdd of mealsToAdd) {
+          await prisma.menuMeal.create({
+            data: {
+              menuId: menu.id,
+              mealId: mealToAdd.mealId,
+              dayNumber: mealToAdd.dayNumber
+            }
+          })
+        }
+      }
+
+      // Only update fields that are provided
+      const updateData: any = {};
+      if (menuDto.name !== undefined) updateData.name = menuDto.name;
+      if (menuDto.description !== undefined) updateData.description = menuDto.description;
+      if (menuDto.duration !== undefined) updateData.duration = menuDto.duration;
+
+      if (Object.keys(updateData).length > 0) {
+        await prisma.menu.update({
+          data: updateData,
+          where: { id: menuDto.id },
         })
       }
 
-      await prisma.menu.update({
-        data: {
-          name: menuDto.name,
-          description: menuDto.description,
-          duration: menuDto.duration,
-        },
-        where: { id: menuDto.id },
-      })
+      // Get the updated menu
+      const updatedMenu = await this.getOne(menuDto.id);
+      if (!updatedMenu) {
+        throw new AppError(
+          "Internal Server Error",
+          "Failed to retrieve updated menu",
+          "Échec de la récupération du menu mis à jour.",
+          "error",
+        );
+      }
 
-
-      return;
+      return updatedMenu;
     },
     async getOne(menuId: string): Promise<Menu | null> {
       const menu = await prisma.menu.findFirst({
-        where: { id: menuId },
+        where: {
+          id: menuId,
+          apiKeyId: user.apiKeyId,
+        },
         orderBy: { createdAt: "desc" },
         include: {
           menuMeals: {
@@ -125,7 +152,7 @@ export const MenuRepository = (user: User): IMenuRepository => {
 						duration: menuDto.duration,
 						apiKey: { connect: { key: user.apiKey } },
 						menuMeals: {
-							create: menuDto.mealIds.map((item) => ({
+							create: menuDto.menuMeals.map((item) => ({
 								meal: { connect: { id: item.mealId } },
 								dayNumber: item.dayNumber,
 							})),
@@ -221,7 +248,7 @@ export const MenuRepository = (user: User): IMenuRepository => {
 				const nutrition = recipe.ingredients.reduce(
 					(acc, ri) => {
 						const ing = ri.ingredient;
-						const quantity = ri.quantity || 100; // Quantité en grammes
+						const quantity = ri.quantity || 100;
 						const factor = quantity / 100;
 
 						return {
@@ -277,7 +304,11 @@ export const MenuRepository = (user: User): IMenuRepository => {
 				MealType.LUNCH,
 				MealType.DINNER,
 			];
-			const generatedMeals: Array<{ mealId: string; dayNumber: number }> = [];
+			const generatedMeals: Array<{
+				mealType: string;
+				recipeId: string;
+				dayNumber: number;
+			}> = [];
 
 			for (let day = 1; day <= duration; day++) {
 				for (const mealType of mealTypes) {
@@ -286,21 +317,9 @@ export const MenuRepository = (user: User): IMenuRepository => {
 							Math.floor(Math.random() * filteredRecipes.length)
 						];
 
-					const meal = await prisma.meal.create({
-						data: {
-							mealType: mealType,
-							apiKeyId: user.apiKeyId,
-							recipeMeals: {
-								create: {
-									recipeId: randomRecipe.id,
-									type: "MAIN_COURSE",
-								},
-							},
-						},
-					});
-
 					generatedMeals.push({
-						mealId: meal.id,
+						mealType: mealType,
+						recipeId: randomRecipe.id,
 						dayNumber: day,
 					});
 				}
@@ -315,7 +334,7 @@ export const MenuRepository = (user: User): IMenuRepository => {
 				duration: duration,
 				createdAt: new Date().toISOString(),
 				updatedAt: new Date(),
-				menuMeals: generatedMeals,
+				meals: generatedMeals,
 			};
 		}
 	};

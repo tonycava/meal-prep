@@ -1,4 +1,4 @@
-import { defaultEndpointsFactory } from "express-zod-api";
+import { endpointsFactory } from "$lib/common/endpointFactory";
 import { ListMealsInputSchema } from "../dto/mealDto";
 import { ListMealsUseCase } from "../usecases/ListMeals";
 import { MealRepository } from "../repositories/MealRepository";
@@ -6,8 +6,9 @@ import { authMiddleware } from "$lib/middlewares/authMiddleware";
 import { ApiResponse } from "$lib/common/api/ApiResponse";
 import { UseCaseResponseSchema } from "$lib/common/usecase";
 import { MealType } from "../../../generated/client";
+import {createUserFromOptions} from "$lib/common/User.ts";
 
-export const ListMealsEndpoint = defaultEndpointsFactory
+export const ListMealsEndpoint = endpointsFactory
   .addMiddleware(authMiddleware)
   .build({
     method: "get",
@@ -22,12 +23,11 @@ export const ListMealsEndpoint = defaultEndpointsFactory
       };
 
       const response = await ListMealsUseCase({
-        mealRepository: MealRepository(),
+        mealRepository: MealRepository(createUserFromOptions(options)),
       }).execute({
         limit,
         offset,
         filters: Object.keys(filters).length > 0 ? filters : undefined,
-        apiKey: options.apiKey,
       });
 
       return ApiResponse.send(response);

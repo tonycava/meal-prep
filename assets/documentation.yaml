@@ -421,7 +421,7 @@ paths:
                   error: { type: object, properties: { message: { type: string, example: "Menu not found" } } }
         "500":
           $ref: "#/components/responses/InternalError"
-    put:
+    patch:
       tags:
         - Menus
       summary: Modifier un menu

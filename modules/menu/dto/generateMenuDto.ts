@@ -30,9 +30,10 @@ export const GenerateMenuOutputSchema = z.object({
   duration: z.number().nullable(),
   createdAt: z.string(),
   updatedAt: z.coerce.date(),
-  menuMeals: z.array(
+  meals: z.array(
     z.object({
-      mealId: z.uuid(),
+      mealType: z.string(),
+      recipeId: z.uuid(),
       dayNumber: z.number(),
     })
   ),

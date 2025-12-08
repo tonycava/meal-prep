@@ -5,6 +5,7 @@ import { authMiddleware } from "$lib/middlewares/authMiddleware";
 import { endpointsFactory } from "$lib/common/endpointFactory";
 import { SaveMealUseCase } from "../usecases/SaveMeal";
 import { MealRepository } from "../repositories/MealRepository";
+import {createUserFromOptions} from "$lib/common/User.ts";
 
 export const CreateMealEndpoint = endpointsFactory
   .addMiddleware(authMiddleware)
@@ -14,8 +15,8 @@ export const CreateMealEndpoint = endpointsFactory
     output: UseCaseResponseSchema,
     handler: async ({ input, options }) => {
       const saveMealResponse = await SaveMealUseCase({
-        mealRepository: MealRepository(),
-      }).execute({ dto: input, apiKey: options.apiKey });
+        mealRepository: MealRepository(createUserFromOptions(options)),
+      }).execute({ dto: input });
 
       return ApiResponse.send(saveMealResponse);
     },

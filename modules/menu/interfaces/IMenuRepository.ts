@@ -8,7 +8,7 @@ export type CreateMenuDto = {
   name: string;
   description?: string;
   duration?: number;
-  mealIds: {
+  menuMeals: {
     mealId: string;
     dayNumber: number;
   }[];
@@ -27,7 +27,7 @@ export type IMenuRepositorySave = {
 };
 
 export type IMenuRepositoryUpdate = {
-  update(menuDto: CreateMenuPartialDtoWithId): Promise<void>;
+  update(menuDto: CreateMenuPartialDtoWithId): Promise<Menu>;
 };
 
 export type IMenuRepositoryGetOne = {

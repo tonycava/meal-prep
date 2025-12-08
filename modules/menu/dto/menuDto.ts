@@ -1,5 +1,11 @@
 import { z } from "zod";
 
+export const GetMenuByIdInputSchema = z.object({
+  id: z.uuid({
+    message: "Invalid menu ID format",
+  }),
+});
+
 export const ListMenusInputSchema = z.object({
   limit: z
     .string()
@@ -57,6 +63,12 @@ export const MenuWithMealsSchema = z.object({
   meals: z.array(MealSchema),
 });
 
+export const GetMenuByIdOutputSchema = z.object({
+  menu: MenuDTOSchema,
+});
+
+export type GetMenuByIdInput = z.infer<typeof GetMenuByIdInputSchema>;
+export type GetMenuByIdOutput = z.infer<typeof GetMenuByIdOutputSchema>;
 export type ListMenusInput = z.infer<typeof ListMenusInputSchema>;
 export type MenuDTO = z.infer<typeof MenuDTOSchema>;
 export type ListMenusOutput = z.infer<typeof ListMenusOutputSchema>;

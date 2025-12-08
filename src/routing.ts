@@ -6,7 +6,8 @@ import { UpdateRecipeEndpoint } from "$modules/recipe/endpoints/UpdateRecipe";
 import { DeleteRecipeEndPoint } from "$modules/recipe/endpoints/DeleteRecipe";
 import { ListMenusEndpoint } from "$modules/menu/endpoints/ListMenus";
 import { CreateMenuEndpoint } from "$modules/menu/endpoints/CreateMenu";
-import { DeleteMenuEndpoint } from "$modules/menu/endpoints/DeleteMenu"
+import { DeleteMenuEndpoint } from "$modules/menu/endpoints/DeleteMenu";
+import { GetMenuEndpoint } from "$modules/menu/endpoints/GetMenu";
 import { ListIngredientEndpoint } from "$modules/ingredient/endpoints/ListIngredient";
 import { CreateIngredientEndpoint } from "$modules/ingredient/endpoints/CreateIngredient";
 import { DeleteIngredientEndpoint } from "$modules/ingredient/endpoints/DeleteIngredient";
@@ -18,6 +19,7 @@ import { CreateMealEndpoint } from "$modules/meal/endpoints/CreateMeal";
 import { GetMealByIdEndpoint } from "$modules/meal/endpoints/GetMealById";
 import { UpdateMealEndpoint } from "$modules/meal/endpoints/UpdateMeal";
 import { DeleteMealEndpoint } from "$modules/meal/endpoints/DeleteMeal";
+import { GenerateMealEndpoint } from "$modules/meal/endpoints/GenerateMeal";
 import { HomeEndpoint } from "$lib/common/endpoints/HomeEndpoint";
 import { UpdateMenuEndpoint } from "$modules/menu/endpoints/UpdateMenu";
 import { GenerateMenuEndpoint } from "$modules/menu/endpoints/GenerateMenu";
@@ -46,6 +48,7 @@ export const routing: Routing = {
 				get: GenerateMenuEndpoint,
 			}),
 			"/:id": new DependsOnMethod({
+				get: GetMenuEndpoint,
 				patch: UpdateMenuEndpoint,
 				delete: DeleteMenuEndpoint
 			})
@@ -65,6 +68,9 @@ export const routing: Routing = {
 			"/": new DependsOnMethod({
 				get: ListMealsEndpoint,
 				post: CreateMealEndpoint,
+			}),
+			generate: new DependsOnMethod({
+				get: GenerateMealEndpoint,
 			}),
 			"/:id": new DependsOnMethod({
 				get: GetMealByIdEndpoint,

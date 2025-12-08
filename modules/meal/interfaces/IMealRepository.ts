@@ -13,7 +13,7 @@ import {
 } from "../dto/generateMealDto";
 
 export type IMealRepositorySave = {
-  save(mealDto: CreateMealDto, apiKey: string): Promise<Meal>;
+  save(mealDto: CreateMealDto): Promise<Meal>;
 };
 
 export type IMealRepositoryList = {
@@ -21,7 +21,6 @@ export type IMealRepositoryList = {
     limit: number,
     offset: number,
     filters: IMealFilters,
-    apiKey: string,
   ): Promise<ListMealsOutput>;
 };
 
@@ -34,7 +33,7 @@ export type IMealRepositoryDelete = {
 };
 
 export type IMealRepositoryUpdate = {
-  update(mealDto: UpdateMealDto): Promise<void>;
+  update(mealDto: UpdateMealDto): Promise<Meal>;
 };
 
 export type IMealRepositoryGenerate = {

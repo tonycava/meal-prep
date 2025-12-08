@@ -13,7 +13,7 @@ export const createMenuDto = z.object({
   name: z.string().nonempty("Un nom est requis pour le menu."),
   description: z.string().optional(),
   duration: z.number().int().positive().optional(),
-  mealIds: z.array(menuMealSchema).min(1, "Au moins un repas est requis."),
+  menuMeals: z.array(menuMealSchema).min(1, "Au moins un repas est requis."),
 });
 
 export const createMenuPartialDtoWithId =  createMenuDto.partial().extend({

@@ -1,9 +1,16 @@
 import { z } from "zod";
-import { MealType } from "../../../generated/client";
+import { MealType, RecipeCategory } from "$generated/client";
 
 const RecipeMeal = z.object({
   recipeId: z.uuid("L'ID de la recette doit être un UUID valide."),
-  type: z.string().nonempty("Le type est requis."),
+  type: z.preprocess(
+    (val) => (typeof val === "string" ? val.toUpperCase() : val),
+    z.enum(Object.values(RecipeCategory) as [string, ...string[]], {
+      errorMap: () => ({
+        message: "Le type doit être STARTER, MAIN_COURSE, DESSERT ou OTHER"
+      }),
+    }),
+  ),
 });
 
 export const createMealDto = z.object({

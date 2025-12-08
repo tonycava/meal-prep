@@ -19,9 +19,46 @@ import {
 
 export const MealRepository = (user: User): IMealRepository => {
   return {
-    async update(mealDto: UpdateMealDto): Promise<void> {
+    async update(mealDto: UpdateMealDto): Promise<Meal> {
       try {
-        await prisma.meal.update({
+        const existingMeal = await prisma.meal.findFirst({
+          where: {
+            id: mealDto.id,
+            apiKeyId: user.apiKeyId,
+          },
+        });
+
+        if (!existingMeal) {
+          throw new AppError(
+            "Not Found",
+            "Meal not found or you don't have permission to update it",
+            "Repas non trouvé ou vous n'avez pas la permission de le modifier.",
+            "warn",
+          );
+        }
+
+        if (mealDto.recipeIds) {
+          const recipeIds = mealDto.recipeIds.map((rm) => rm.recipeId);
+          const existingRecipes = await prisma.recipe.findMany({
+            where: {
+              id: { in: recipeIds },
+            },
+            select: { id: true },
+          });
+
+          if (existingRecipes.length !== recipeIds.length) {
+            const existingIds = existingRecipes.map((r) => r.id);
+            const missingIds = recipeIds.filter((id) => !existingIds.includes(id));
+            throw new AppError(
+              "Bad Request",
+              `Recipes not found: ${missingIds.join(", ")}`,
+              `Recettes non trouvées : ${missingIds.join(", ")}`,
+              "warn",
+            );
+          }
+        }
+
+        const updatedMeal = await prisma.meal.update({
           data: {
             ...(mealDto.mealType && { mealType: mealDto.mealType as MealType }),
             ...(mealDto.recipeIds && {
@@ -34,9 +71,23 @@ export const MealRepository = (user: User): IMealRepository => {
               },
             }),
           },
-          where: { id: mealDto.id },
+          where: {
+            id: mealDto.id,
+          },
+          include: {
+            recipeMeals: true,
+          },
         });
+
+        return {
+          id: updatedMeal.id,
+          mealType: updatedMeal.mealType,
+          recipeMeals: updatedMeal.recipeMeals,
+        };
       } catch (error) {
+        if (error instanceof AppError) {
+          throw error;
+        }
         throw new AppError(
           "Internal Server Error",
           "An error occurred while updating meal",
@@ -47,10 +98,31 @@ export const MealRepository = (user: User): IMealRepository => {
     },
     async delete(mealDto: DeleteMealDto): Promise<void> {
       try {
+        const existingMeal = await prisma.meal.findFirst({
+          where: {
+            id: mealDto.id,
+            apiKeyId: user.apiKeyId,
+          },
+        });
+
+        if (!existingMeal) {
+          throw new AppError(
+            "Not Found",
+            "Meal not found or you don't have permission to delete it",
+            "Repas non trouvé ou vous n'avez pas la permission de le supprimer.",
+            "warn",
+          );
+        }
+
         await prisma.meal.delete({
-          where: { id: mealDto.id },
+          where: {
+            id: mealDto.id,
+          },
         });
       } catch (error) {
+        if (error instanceof AppError) {
+          throw error;
+        }
         throw new AppError(
           "Internal Server Error",
           "An error occurred while deleting meal",
@@ -59,12 +131,31 @@ export const MealRepository = (user: User): IMealRepository => {
         );
       }
     },
-    async save(mealDto: CreateMealDto, apiKey: string): Promise<Meal> {
+    async save(mealDto: CreateMealDto): Promise<Meal> {
       try {
+        const recipeIds = mealDto.recipeIds.map((rm) => rm.recipeId);
+        const existingRecipes = await prisma.recipe.findMany({
+          where: {
+            id: { in: recipeIds },
+          },
+          select: { id: true },
+        });
+
+        if (existingRecipes.length !== recipeIds.length) {
+          const existingIds = existingRecipes.map((r) => r.id);
+          const missingIds = recipeIds.filter((id) => !existingIds.includes(id));
+          throw new AppError(
+            "Bad Request",
+            `Recipes not found: ${missingIds.join(", ")}`,
+            `Recettes non trouvées : ${missingIds.join(", ")}`,
+            "warn",
+          );
+        }
+
         const createdMeal = await prisma.meal.create({
           data: {
             mealType: mealDto.mealType as MealType,
-            apiKey: { connect: { key: apiKey } },
+            apiKeyId: user.apiKeyId,
             recipeMeals: {
               create: mealDto.recipeIds.map((rm) => ({
                 recipeId: rm.recipeId,
@@ -84,6 +175,9 @@ export const MealRepository = (user: User): IMealRepository => {
         };
       } catch (error) {
         console.log("Error saving meal:", error);
+        if (error instanceof AppError) {
+          throw error;
+        }
         throw new AppError(
           "Internal Server Error",
           "An error occurred while saving meal",
@@ -96,14 +190,10 @@ export const MealRepository = (user: User): IMealRepository => {
       limit: number,
       offset: number,
       filters: IMealFilters,
-      apiKey: string,
     ): Promise<ListMealsOutput> {
-      const apiKeyRecord = await prisma.apiKey.findUnique({
-        where: { key: apiKey },
-      });
 
       const where = {
-        ...(apiKeyRecord && { apiKeyId: apiKeyRecord.id }),
+        apiKeyId: user.apiKeyId,
         ...(filters.mealType && { mealType: filters.mealType as MealType }),
       };
 
@@ -127,8 +217,8 @@ export const MealRepository = (user: User): IMealRepository => {
       const data = meals.map((meal) => ({
         id: meal.id,
         mealType: meal.mealType,
-        createdAt: new Date().toISOString(), // Fallback as Meal schema lacks this
-        updatedAt: new Date().toISOString(), // Fallback
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
         recipeMeals: meal.recipeMeals.map((rm) => ({
           recipeId: rm.recipeId,
           type: rm.type as any,
@@ -149,6 +239,7 @@ export const MealRepository = (user: User): IMealRepository => {
       const meal = await prisma.meal.findFirst({
         where: {
           id,
+          apiKeyId: user.apiKeyId,
         },
         include: {
           recipeMeals: {
@@ -282,29 +373,15 @@ export const MealRepository = (user: User): IMealRepository => {
         ? (mealType as MealType)
         : MealType.LUNCH;
 
-      const meal = await prisma.meal.create({
-        data: {
-          mealType: selectedMealType,
-          apiKeyId: user.apiKeyId,
-          recipeMeals: {
-            create: {
-              recipeId: randomRecipe.id,
-              type: "MAIN_COURSE",
-            },
-          },
-        },
-        include: {
-          recipeMeals: true,
-        },
-      });
-
       return {
-        id: meal.id,
-        mealType: meal.mealType,
-        recipeMeals: meal.recipeMeals.map((rm) => ({
-          recipeId: rm.recipeId,
-          type: rm.type,
-        })),
+        id: crypto.randomUUID(),
+        mealType: selectedMealType,
+        recipeMeals: [
+          {
+            recipeId: randomRecipe.id,
+            type: "MAIN_COURSE",
+          },
+        ],
       };
     },
   };

@@ -9,7 +9,7 @@ type Input = InputFactory<
 	{ dto: DeleteMenuDto },
 	{ menuRepository: IMenuRepositoryDelete }
 >;
-type Output = OutputFactory<boolean>;
+type Output = OutputFactory<{ message: string }>;
 
 export const DeleteMenuUseCase: UseCase<Input, Output> = (dependencies) => {
 	const { menuRepository } = dependencies;
@@ -29,7 +29,9 @@ export const DeleteMenuUseCase: UseCase<Input, Output> = (dependencies) => {
 				return UseCaseResponseBuilder.error(status, error.userFriendlyMessage);
 			}
 
-			return UseCaseResponseBuilder.success(HttpCode.OK, true);
+			return UseCaseResponseBuilder.success(HttpCode.OK, {
+				message: "Menu deleted successfully"
+			});
 		}
 	}
 }
