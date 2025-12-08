@@ -1,13 +1,14 @@
 import { createConfig } from "express-zod-api";
 import ui from "swagger-ui-express";
 import helmet from "helmet";
-import RateLimit from "$lib/common/api/RateLimit.ts";
+import RateLimit from "$lib/common/api/RateLimit";
 
 export const config = createConfig({
   http: { listen: 8090 }, // port, UNIX socket or Net::ListenOptions
   cors: false, // decide whether to enable CORS
   inputSources: {
     patch: ["body", "query", "params"],
+    get: ["body", "query", "params"],
   },
   beforeRouting: ({ app }) => {
     app.use(helmet());

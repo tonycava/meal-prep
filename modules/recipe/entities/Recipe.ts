@@ -1,26 +1,26 @@
-import { DietType, RecipeCategory, UnitType } from "src/generated/prisma";
-
-export type RecipeIngredients = {
-	id: string,
-	name: string,
-	quantity: number,
-	unit: UnitType
+export type RecipeIngredient = {
+  id: string;
+  quantity: number;
+  unit: string;
 }
 
+
 export type Recipe = {
-	id: string;
-	title: string;
-	description: string;
-	instructions: string;
-	imageUrl: string | null;
-	prepTimeMin: number | null;
-	cookTimeMin: number | null;
-	servings: number;
-	category: RecipeCategory | null;
-	diet: DietType | null;
-	isPublic: boolean;
-	createdAt: Date;
-	updatedAt: Date;
-	mealCount: number | 0;
-	ingredients: RecipeIngredients
+  id: string;
+  title: string;
+  description: string | null;
+  imageUrl: string | null;
+  prepTimeMin: number | null;
+  cookTimeMin: number | null;
+  instructions: string | null;
+  category: string | null;
+  diet: string | null;
+  servings: number;
+  isPublic: boolean;
+  createdAt: Date;
+  updatedAt: Date;
 };
+
+export type RecipeWithIngredients = Recipe & {
+  recipeIngredients: RecipeIngredient[];
+}

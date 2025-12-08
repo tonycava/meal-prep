@@ -1,10 +1,10 @@
 import { CreateIngredientDto } from "../dto/ingredient.dto";
 import { CreateIngredientUseCase } from "../usecases/CreateIngredient";
 import { IngredientRepository } from "../repositories/IngredientRepository";
-import { ApiResponse } from "$lib/common/api/ApiResponse.ts";
-import { UseCaseResponseSchema } from "$lib/common/usecase.ts";
-import { authMiddleware } from "$lib/middlewares/authMiddleware.ts";
-import { endpointsFactory } from "$lib/common/endpointFactory.ts";
+import { ApiResponse } from "$lib/common/api/ApiResponse";
+import { UseCaseResponseSchema } from "$lib/common/usecase";
+import { authMiddleware } from "$lib/middlewares/authMiddleware";
+import { endpointsFactory } from "$lib/common/endpointFactory";
 
 export const CreateIngredientEndpoint = endpointsFactory
 	.addMiddleware(authMiddleware)

@@ -1,11 +1,10 @@
-import { createMenuPartialDtoWithId } from "../dto/createMenuDto";
-import { MenuRepository } from "$modules/menu/repositories/MenuRepository.ts";
-import { authMiddleware } from "$lib/middlewares/authMiddleware.ts";
-import { ApiResponse } from "$lib/common/api/ApiResponse.ts";
-import { UseCaseResponseSchema } from "$lib/common/usecase.ts";
-import { endpointsFactory } from "$lib/common/endpointFactory.ts";
+import { createMenuPartialDtoWithId } from "../dto/createMenu.dto";
+import { MenuRepository } from "$modules/menu/repositories/MenuRepository";
+import { authMiddleware } from "$lib/middlewares/authMiddleware";
+import { ApiResponse } from "$lib/common/api/ApiResponse";
+import { UseCaseResponseSchema } from "$lib/common/usecase";
+import { endpointsFactory } from "$lib/common/endpointFactory";
 import { UpdateMenuUseCase } from "../usecases/UpdateMenu";
-import { createUserFromOptions } from "$lib/common/User.ts";
 
 export const UpdateMenuEndpoint = endpointsFactory
   .addMiddleware(authMiddleware)
@@ -13,9 +12,9 @@ export const UpdateMenuEndpoint = endpointsFactory
     method: "patch",
     input: createMenuPartialDtoWithId,
     output: UseCaseResponseSchema,
-    handler: async ({ input, options }) => {
+    handler: async ({ input }) => {
       const saveMenuResponse = await UpdateMenuUseCase({
-        menuRepository: MenuRepository(createUserFromOptions(options)),
+        menuRepository: MenuRepository(),
       }).execute({ dto: input });
 
       return ApiResponse.send(saveMenuResponse);

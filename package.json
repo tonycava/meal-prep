@@ -7,10 +7,11 @@
     "seed": "tsx prisma/seed.ts"
   },
   "scripts": {
-    "start": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "prestart": "npx prisma generate",
     "dev": "tsx --watch src/index.ts",
     "build:docs": "tsx src/docs/generate-documentation.ts",
-    "build": "tsc",
+    "build": "tsup",
     "import:csv": "node import-csv.js",
     "db:seed": "prisma db seed",
     "db:reset": "prisma migrate reset --force",
@@ -46,6 +47,7 @@
     "globals": "^16.5.0",
     "prettier": "3.6.2",
     "prisma": "^6.18.0",
+    "tsup": "^8.5.1",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.47.0",

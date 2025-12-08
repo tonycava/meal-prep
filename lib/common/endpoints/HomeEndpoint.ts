@@ -2,7 +2,7 @@ import { ApiResponse } from "$lib/common/api/ApiResponse";
 import { UseCaseResponseSchema } from "$lib/common/usecase";
 import { z } from "zod";
 import { UseCaseResponseBuilder } from "../usecase";
-import { endpointsFactory } from "$lib/common/endpointFactory.ts";
+import { endpointsFactory } from "$lib/common/endpointFactory";
 
 export const HomeEndpoint = endpointsFactory.build({
   method: "get",

@@ -7,7 +7,7 @@ import {
 import { ListMenusOutput } from "../dto/menuDto";
 import { IMenuRepositoryList } from "../interfaces/IMenuRepository";
 import { tryCatch } from "$lib/errors/tryCatch";
-import { HttpCode } from "$lib/common/api/HttpCode.ts";
+import { HttpCode } from "$lib/common/api/HttpCode";
 
 type Input = InputFactory<
   { limit: number; offset: number; role: string },

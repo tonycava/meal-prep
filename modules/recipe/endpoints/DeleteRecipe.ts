@@ -1,11 +1,11 @@
-import { authMiddleware } from "$lib/middlewares/authMiddleware.ts";
+import { authMiddleware } from "$lib/middlewares/authMiddleware";
 import { deleteRecipeDto } from "../dto/deleteRecipeDto";
-import { DeleteRecipeUseCase } from "$modules/recipe/usecases/DeleteRecipe.ts";
-import { RecipeRepository } from "$modules/recipe/repositories/RecipeRepository.ts";
-import { UseCaseResponseSchema } from "$lib/common/usecase.ts";
-import { ApiResponse } from "$lib/common/api/ApiResponse.ts";
-import { createUserFromOptions } from "$lib/common/User.ts";
-import { endpointsFactory } from "$lib/common/endpointFactory.ts";
+import { DeleteRecipeUseCase } from "$modules/recipe/usecases/DeleteRecipe";
+import { RecipeRepository } from "$modules/recipe/repositories/RecipeRepository";
+import { UseCaseResponseSchema } from "$lib/common/usecase";
+import { ApiResponse } from "$lib/common/api/ApiResponse";
+import { createUserFromOptions } from "$lib/common/User";
+import { endpointsFactory } from "$lib/common/endpointFactory";
 
 export const DeleteRecipeEndPoint = endpointsFactory
 	.addMiddleware(authMiddleware)

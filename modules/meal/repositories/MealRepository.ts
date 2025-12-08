@@ -2,18 +2,13 @@ import { IMealRepository } from "../interfaces/IMealRepository";
 import { CreateMealDto } from "../dto/createMealDto";
 import { Meal } from "../entities/Meal";
 import { prisma } from "$lib/db";
-import { DeleteMealDto } from "$modules/meal/dto/deleteMealDto.ts";
-import { AppError } from "$lib/errors/AppError.ts";
-import {
-  ListMealsOutput,
-  IMealFilters,
-  GetMealByIdOutput,
-} from "../dto/mealDto";
+import { DeleteMealDto } from "$modules/meal/dto/deleteMealDto";
+import { AppError } from "$lib/errors/AppError";
+import { ListMealsOutput, IMealFilters, MealDto } from "../dto/mealDto";
 import { MealType } from "../../../src/generated/prisma";
-import { UpdateMealDto } from "$modules/meal/dto/updateMealDto.ts";
-import { User } from "$lib/common/User.ts";
+import { UpdateMealDto } from "$modules/meal/dto/updateMealDto";
 
-export const MealRepository = (user: User): IMealRepository => {
+export const MealRepository = (): IMealRepository => {
   return {
     async update(mealDto: UpdateMealDto): Promise<void> {
       try {
@@ -33,11 +28,12 @@ export const MealRepository = (user: User): IMealRepository => {
           where: { id: mealDto.id },
         });
       } catch (error) {
+        console.error("An error occurred while updating meal", error);
         throw new AppError(
           "Internal Server Error",
           "An error occurred while updating meal",
           "Une erreur est survenue lors de la mise à jour du repas.",
-          "error"
+          "error",
         );
       }
     },
@@ -47,11 +43,12 @@ export const MealRepository = (user: User): IMealRepository => {
           where: { id: mealDto.id },
         });
       } catch (error) {
+        console.error("An error occurred while deleting meal", error);
         throw new AppError(
           "Internal Server Error",
           "An error occurred while deleting meal",
           "Une erreur est survenue lors de la suppression du repas.",
-          "error"
+          "error",
         );
       }
     },
@@ -84,7 +81,7 @@ export const MealRepository = (user: User): IMealRepository => {
           "Internal Server Error",
           "An error occurred while saving meal",
           "Une erreur est survenue lors de la sauvegarde du repas.",
-          "error"
+          "error",
         );
       }
     },
@@ -92,7 +89,7 @@ export const MealRepository = (user: User): IMealRepository => {
       limit: number,
       offset: number,
       filters: IMealFilters,
-      apiKey: string
+      apiKey: string,
     ): Promise<ListMealsOutput> {
       const apiKeyRecord = await prisma.apiKey.findUnique({
         where: { key: apiKey },
@@ -126,7 +123,7 @@ export const MealRepository = (user: User): IMealRepository => {
 
         recipeMeals: meal.recipeMeals.map((rm) => ({
           recipeId: rm.recipeId,
-          type: rm.type,
+          type: +rm.type,
         })),
       }));
 
@@ -140,10 +137,15 @@ export const MealRepository = (user: User): IMealRepository => {
       };
     },
 
-    async findById(id: string): Promise<GetMealByIdOutput> {
+    async findById(id: string, apiKey: string): Promise<MealDto> {
+      const apiKeyRecord = await prisma.apiKey.findUnique({
+        where: { key: apiKey },
+      });
+
       const meal = await prisma.meal.findFirst({
         where: {
           id,
+          ...(apiKeyRecord && { apiKeyId: apiKeyRecord.id }),
         },
         include: {
           recipeMeals: {
@@ -159,7 +161,7 @@ export const MealRepository = (user: User): IMealRepository => {
           "Not Found",
           "Meal not found",
           "Repas non trouvé.",
-          "warn"
+          "warn",
         );
       }
 
@@ -168,13 +170,11 @@ export const MealRepository = (user: User): IMealRepository => {
         mealType: meal.mealType,
         recipeMeals: meal.recipeMeals.map((rm) => ({
           recipeId: rm.recipeId,
-          type: rm.type,
+          type: +rm.type,
         })),
       };
 
-      return {
-        meal: mealDetailDto,
-      };
+      return mealDetailDto;
     },
   };
 };
