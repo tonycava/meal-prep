@@ -23,8 +23,6 @@ export const GetRecipeByIdUseCase: UseCase<Input, Output> = (dependencies) => {
         recipeRepository.findById(data.id),
       );
 
-      console.log("GetRecipeByIdUseCase: recipe =", recipe, error);
-
       if (error)
         return UseCaseResponseBuilder.error(
           HttpCode.INTERNAL_SERVER_ERROR,

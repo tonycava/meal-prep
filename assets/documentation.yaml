@@ -1884,7 +1884,7 @@ components:
         createdAt: { type: string, format: date-time }
         updatedAt: { type: string, format: date-time }
         mealCount: { type: integer, default: 0 }
-        ingredients:
+        recipeIngredients:
           type: array
           items:
             type: object
@@ -1910,7 +1910,6 @@ components:
               properties:
                 total: { type: integer, default: 1 }
                 offset: { type: integer }
-                limit: { type: integer, default: 10 }
 
     SingleRecipeResponse:
       type: object
