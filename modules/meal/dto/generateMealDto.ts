@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { DietType, MealType } from "../../../src/generated/prisma";
+import { DietType, MealType } from "$generated/client";
 
 const dietTypeValues = Object.values(DietType) as [string, ...string[]];
 const dietTypeSchema = z

@@ -1,5 +1,5 @@
 import z from "zod";
-import { MealType } from "../../../generated/client";
+import { MealType } from "$generated/client";
 
 const mealTypeValues = Object.values(MealType);
 
