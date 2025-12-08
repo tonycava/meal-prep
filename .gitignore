@@ -12,6 +12,9 @@ yarn-error.log*
 
 .idea
 /src/generated/prisma
+/prisma/generated
+generated
 /prisma/dev.db
 .env
 package-lock.json
+dist
