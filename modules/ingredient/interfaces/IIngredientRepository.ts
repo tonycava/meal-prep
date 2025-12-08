@@ -24,6 +24,11 @@ export type IIngredientRepositoryUpdate = {
 	update(ingredientDto: UpdateIngredientDtoType): Promise<IngredientResponseDtoType | null>;
 };
 
+export type IIngredientRepositoryUpdateWithPut = {
+	updateWithPut(ingredientDto: UpdateIngredientDtoType): Promise<IngredientResponseDtoType | null>;
+};
+
+
 export type IIngredientRepositoryDelete = {
 	delete(id: string): Promise<boolean>;
 };

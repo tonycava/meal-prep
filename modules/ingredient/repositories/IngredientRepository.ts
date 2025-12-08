@@ -156,6 +156,52 @@ export const IngredientRepository = (): IIngredientRepository => {
 			return updatedIngredient as IngredientResponseDtoType;
 		},
 
+		async updateAll(
+			ingredientDto: PatchIngredientDtoType,
+		): Promise<IngredientResponseDtoType | null> {
+			const dto = ingredientDto as PatchIngredientDtoType & { id: string };
+
+			const existingIngredient = await prisma.ingredient.findUnique({
+				where: {
+					id: dto.id
+				}
+			});
+
+			if (!existingIngredient) {
+				return null;
+			}
+
+			const { id, minerals, vitamins, ...updateData } = dto;
+
+			const prismaUpdateData: any = {
+				...updateData,
+			};
+
+			if (minerals !== undefined) {
+				prismaUpdateData.minerals = {
+					deleteMany: {},
+					create: minerals,
+				};
+			}
+
+			if (vitamins !== undefined) {
+				prismaUpdateData.vitamins = {
+					deleteMany: {},
+					create: vitamins,
+				};
+			}
+
+			const updatedIngredient = await prisma.ingredient.update({
+				where: { id },
+				data: prismaUpdateData,
+				include: {
+					minerals: true,
+					vitamins: true,
+				},
+			});
+			return updatedIngredient as IngredientResponseDtoType;
+		},
+
 		async delete(id: string): Promise<boolean> {
 			// Check if ingredient exists
 			const existingIngredient = await prisma.ingredient.findUnique({
