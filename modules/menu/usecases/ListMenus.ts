@@ -10,7 +10,7 @@ import { tryCatch } from "$lib/errors/tryCatch";
 import { HttpCode } from "$lib/common/api/HttpCode";
 
 type Input = InputFactory<
-  { limit: number; offset: number; role: string },
+  { limit: number; offset: number; role: string, apiKey: string },
   { menuRepository: IMenuRepositoryList }
 >;
 type Output = OutputFactory<ListMenusOutput>;
@@ -20,7 +20,7 @@ export const ListMenusUseCase: UseCase<Input, Output> = (dependencies) => {
   return {
     async execute(data): Promise<Output> {
       const [error, result] = await tryCatch(
-        menuRepository.list(data.limit, data.offset, data.role),
+        menuRepository.list(data.limit, data.offset, data.apiKey, data.role),
       );
       if (error)
         return UseCaseResponseBuilder.error(

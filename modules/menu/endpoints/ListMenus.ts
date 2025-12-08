@@ -1,10 +1,10 @@
 import { defaultEndpointsFactory } from "express-zod-api";
-import { ListMenusInputSchema } from "../dto/menu.dto";
 import { MenuRepository } from "$modules/menu/repositories/MenuRepository";
 import { ListMenusUseCase } from "$modules/menu/usecases/ListMenus";
 import { authMiddleware } from "$lib/middlewares/authMiddleware";
 import { ApiResponse } from "$lib/common/api/ApiResponse";
 import { UseCaseResponseSchema } from "$lib/common/usecase";
+import { ListMenusInputSchema } from "$modules/menu/dto/menuDto";
 
 export const ListMenusEndpoint = defaultEndpointsFactory
   .addMiddleware(authMiddleware)

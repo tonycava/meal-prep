@@ -1,10 +1,10 @@
-import { createMenuPartialDtoWithId } from "../dto/createMenu.dto";
 import { MenuRepository } from "$modules/menu/repositories/MenuRepository";
 import { authMiddleware } from "$lib/middlewares/authMiddleware";
 import { ApiResponse } from "$lib/common/api/ApiResponse";
 import { UseCaseResponseSchema } from "$lib/common/usecase";
 import { endpointsFactory } from "$lib/common/endpointFactory";
 import { UpdateMenuUseCase } from "../usecases/UpdateMenu";
+import { createMenuPartialDtoWithId } from "$modules/menu/dto/createMenuDto";
 
 export const UpdateMenuEndpoint = endpointsFactory
   .addMiddleware(authMiddleware)
