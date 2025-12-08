@@ -852,6 +852,60 @@ paths:
                   error: { type: object, properties: { message: { type: string, example: "Recipe not found" } } }
         "500":
           $ref: "#/components/responses/InternalError"
+  /v1/recipes/{id}/nutrition:
+    get:
+      tags:
+        - Recettes
+      summary: Détails d'une recette
+      description: Récupère une recette donnée via son identifiant
+      operationId: getNutrition
+      security:
+        - ApiKeyAuth: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Détails de la recette récupérés avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, const: "success" }
+                  data:
+                    $ref: "#/components/schemas/NutritionInfo"
+        "400":
+          description: Requête invalide
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, const: 400 }
+                  error: { type: object, properties: { message: { type: string, example: "An id is required" } } }
+        "401":
+          description: API key manquante ou invalide
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, const: 401 }
+                  error: { type: object, properties: { message: { type: string, example: "API key is required in 'x-api-key' header" } } }
+        "404":
+          description: Recette non trouvée
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, const: 404 }
+                  error: { type: object, properties: { message: { type: string, example: "Recipe not found" } } }
+        "500":
+          $ref: "#/components/responses/InternalError"
 
   /v1/meals:
     get:
@@ -2138,24 +2192,6 @@ components:
         calories:
           type: number
           description: Calories totales (kcal)
-        minerals:
-          type: array
-          items:
-            type: object
-            properties:
-              mineralType:
-                type: string
-              value:
-                type: number
-        vitamins:
-          type: array
-          items:
-            type: object
-            properties:
-              vitaminType:
-                type: string
-              value:
-                type: number
 
   responses:
     BadRequest:
