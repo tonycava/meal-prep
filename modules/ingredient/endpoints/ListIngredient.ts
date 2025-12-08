@@ -1,65 +1,24 @@
-import { z } from "zod";
-import { prisma } from "$lib/db";
-import { Prisma } from "../../../generated/client";
 import {
   IngredientListQueryDto,
-  IngredientResponseDto,
 } from "../dto/ingredient.dto";
 import { endpointsFactory } from "$lib/common/endpointFactory";
 import { authMiddleware } from "$lib/middlewares/authMiddleware";
+import { UseCaseResponseSchema } from "$lib/common/usecase.ts";
+import { ApiResponse } from "$lib/common/api/ApiResponse.ts";
+import { ListIngredientsUseCase } from "$modules/ingredient/usecases/ListIngredients.ts";
+import { IngredientRepository } from "$modules/ingredient/repositories/IngredientRepository.ts";
 
 export const ListIngredientEndpoint = endpointsFactory
   .addMiddleware(authMiddleware)
   .build({
     method: "get",
     input: IngredientListQueryDto,
-    output: z.object({
-      ingredients: z.array(IngredientResponseDto),
-      total: z.number(),
-      limit: z.number(),
-      offset: z.number(),
-    }),
-    handler: async ({
-      input: { category, search, limit = 20, offset = 0 },
-      logger,
-    }) => {
-      const where: Prisma.IngredientWhereInput = {};
+    output: UseCaseResponseSchema,
+    handler: async ({ input: { category, search, limit = 20, offset = 0 }, }) => {
+      const listIngredientsResponse = await ListIngredientsUseCase({
+        ingredientRepository: IngredientRepository()
+      }).execute({ limit, offset, filters: { category, search } });
 
-      if (category) {
-        where.category = category;
-      }
-
-      if (search) {
-        where.name = {
-          contains: search,
-        };
-      }
-
-      const [ingredients, total] = await Promise.all([
-        prisma.ingredient.findMany({
-          where,
-          take: limit,
-          skip: offset,
-          orderBy: {
-            name: "asc",
-          },
-          include: {
-            minerals: true,
-            vitamins: true,
-          },
-        }),
-        prisma.ingredient.count({ where }),
-      ]);
-
-      logger.debug(
-        `Retrieved ${ingredients.length} ingredients out of ${total}`,
-      );
-
-      return {
-        ingredients,
-        total,
-        limit,
-        offset,
-      };
+      return ApiResponse.send(listIngredientsResponse);
     },
   });
