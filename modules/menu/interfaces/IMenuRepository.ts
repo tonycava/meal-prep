@@ -1,6 +1,8 @@
 import { Menu } from "../entities/Menu";
-import { ListMenusOutput } from "../dto/menu.dto";
-import { CreateMenuPartialDtoWithId } from "$modules/menu/dto/createMenu.dto";
+import { ListMenusOutput } from "../dto/menuDto";
+import { DeleteMenuDto } from "$modules/menu/dto/deleteMenuDto"
+import { CreateMenuPartialDtoWithId } from "$modules/menu/dto/createMenuDto";
+import { GenerateMenuOutput, IMenuGenerationFilters } from "../dto/generateMenuDto";
 
 export type CreateMenuDto = {
   name: string;
@@ -16,13 +18,12 @@ export type IMenuRepositoryList = {
   list(
     limit: number,
     offset: number,
-    apiKey: string,
     role: string,
   ): Promise<ListMenusOutput>;
 };
 
 export type IMenuRepositorySave = {
-  save(menuDto: CreateMenuDto, apiKey: string): Promise<Menu>;
+  save(menuDto: CreateMenuDto): Promise<Menu>;
 };
 
 export type IMenuRepositoryUpdate = {
@@ -31,9 +32,20 @@ export type IMenuRepositoryUpdate = {
 
 export type IMenuRepositoryGetOne = {
   getOne(menuId: string): Promise<Menu | null>;
+}
+
+export type IMenuRepositoryDelete = {
+  delete(menuDto: DeleteMenuDto): Promise<void>;
 };
 
-export type IMenuRepository = IMenuRepositoryList &
+export type IMenuRepositoryGenerate = {
+  generate(duration: number, filters: IMenuGenerationFilters): Promise<GenerateMenuOutput>;
+};
+
+export type IMenuRepository =
+  IMenuRepositoryList &
   IMenuRepositorySave &
   IMenuRepositoryGetOne &
-  IMenuRepositoryUpdate;
+  IMenuRepositoryUpdate &
+  IMenuRepositoryDelete &
+  IMenuRepositoryGenerate;

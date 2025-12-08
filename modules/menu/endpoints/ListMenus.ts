@@ -1,10 +1,11 @@
 import { defaultEndpointsFactory } from "express-zod-api";
+import { ListMenusInputSchema } from "../dto/menuDto";
 import { MenuRepository } from "$modules/menu/repositories/MenuRepository";
 import { ListMenusUseCase } from "$modules/menu/usecases/ListMenus";
 import { authMiddleware } from "$lib/middlewares/authMiddleware";
-import { ApiResponse } from "$lib/common/api/ApiResponse";
-import { UseCaseResponseSchema } from "$lib/common/usecase";
-import { ListMenusInputSchema } from "$modules/menu/dto/menuDto";
+import {ApiResponse} from "$lib/common/api/ApiResponse";
+import {UseCaseResponseSchema} from "$lib/common/usecase";
+import { createUserFromOptions } from "$lib/common/User";
 
 export const ListMenusEndpoint = defaultEndpointsFactory
   .addMiddleware(authMiddleware)
@@ -16,9 +17,9 @@ export const ListMenusEndpoint = defaultEndpointsFactory
       logger.info(`Fetching menus with limit ${limit} and offset ${offset}`);
 
       const response = await ListMenusUseCase({
-        menuRepository: MenuRepository(),
-      }).execute({ limit, offset, apiKey: options.apiKey, role: options.role });
+        menuRepository: MenuRepository(createUserFromOptions(options)),
+      }).execute({ limit, offset, role: options.role });
 
       return ApiResponse.send(response);
-    },
-  });
+    }
+});

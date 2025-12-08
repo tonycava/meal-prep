@@ -1,4 +1,4 @@
-import { endpointsFactory } from "$lib/common/endpointFactory.ts";
+import { endpointsFactory } from "$lib/common/endpointFactory";
 import { authMiddleware } from "$lib/middlewares/authMiddleware";
 import { deleteMenuDto } from "../dto/deleteMenuDto";
 import { DeleteMenuUseCase } from "$modules/menu/usecases/DeleteMenu";

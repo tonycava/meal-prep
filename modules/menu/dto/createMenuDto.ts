@@ -16,12 +16,10 @@ export const createMenuDto = z.object({
   mealIds: z.array(menuMealSchema).min(1, "Au moins un repas est requis."),
 });
 
-export const createMenuPartialDtoWithId = createMenuDto.partial().extend({
-  id: z.uuid("L'id doit être valide."),
+export const createMenuPartialDtoWithId =  createMenuDto.partial().extend({
+  id: z.uuid("L'id doit être valide.")
 });
 
-export type CreateMenuPartialDtoWithId = z.infer<
-  typeof createMenuPartialDtoWithId
->;
+export type CreateMenuPartialDtoWithId = z.infer<typeof createMenuPartialDtoWithId>;
 
 export type CreateMenuDto = z.infer<typeof createMenuDto>;

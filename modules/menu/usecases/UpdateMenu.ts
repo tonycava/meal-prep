@@ -6,8 +6,8 @@ import {
 } from "$lib/common/usecase";
 import { IMenuRepositoryUpdate } from "../interfaces/IMenuRepository";
 import { tryCatch } from "$lib/errors/tryCatch";
-import { HttpCode } from "$lib/common/api/HttpCode";
-import { CreateMenuPartialDtoWithId } from "../dto/createMenu.dto";
+import { HttpCode } from "$lib/common/api/HttpCode.ts";
+import { CreateMenuPartialDtoWithId } from "../dto/createMenuDto";
 
 type Input = InputFactory<
   { dto: CreateMenuPartialDtoWithId },
@@ -19,7 +19,9 @@ export const UpdateMenuUseCase: UseCase<Input, Output> = (dependencies) => {
   const { menuRepository } = dependencies;
   return {
     async execute(data): Promise<Output> {
-      const [error] = await tryCatch(menuRepository.update(data.dto));
+      const [error] = await tryCatch(
+        menuRepository.update(data.dto),
+      );
       if (error)
         return UseCaseResponseBuilder.error(
           HttpCode.INTERNAL_SERVER_ERROR,

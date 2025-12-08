@@ -18,12 +18,10 @@ export const MenuDTOSchema = z.object({
   duration: z.number().nullable(),
   createdAt: z.string(),
   updatedAt: z.coerce.date(),
-  menuMeals: z.array(
-    z.object({
-      mealId: z.uuid(),
-      dayNumber: z.number(),
-    }),
-  ),
+  menuMeals: z.array(z.object({
+    mealId: z.uuid(),
+    dayNumber: z.number(),
+  })),
 });
 
 export const ListMenusOutputSchema = z.object({
