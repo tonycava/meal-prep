@@ -1021,10 +1021,14 @@ paths:
                   type: string
                   enum: [breakfast, lunch, dinner, snack]
                 recipeIds:
-                  type: object
-                  properties:
-                    recipeId: { type: string, format: uuid }
-                    type: { type: string, example: "Plat" }
+                  type: array
+                  description: Liste des IDs de recette à inclure dans le repas
+                  items:
+                    type: object
+                    required: [ recipeId, type ]
+                    properties:
+                      recipeId: { type: string, format: uuid }
+                      type: { type: string, example: "Plat" }
       responses:
         "201":
           description: Repas créé avec succès
@@ -1263,10 +1267,14 @@ paths:
                   type: string
                   enum: [breakfast, lunch, dinner, snack]
                 recipeIds:
-                  type: object
-                  properties:
-                    recipeId: { type: string, format: uuid }
-                    type: { type: string, example: "Plat" }
+                  type: array
+                  description: Liste des IDs de recette à inclure dans le repas
+                  items:
+                    type: object
+                    required: [ recipeId, type ]
+                    properties:
+                      recipeId: { type: string, format: uuid }
+                      type: { type: string, example: "Plat" }
       responses:
         "200":
           description: Repas modifié avec succès
