@@ -15,4 +15,5 @@ yarn-error.log*
 /prisma/dev.db
 .env
 package-lock.json
+dist
 /dist
