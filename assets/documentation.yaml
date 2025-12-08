@@ -221,6 +221,15 @@ paths:
                 properties:
                   status: { type: string, const: 401 }
                   message: { type: string, example: "Invalid API key" }
+        "403":
+          description: API key inactive
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, const: 403 }
+                  error: { type: object, properties: { message: { type: string, example: "API key is inactive" } } }
         "404":
           description: Repas non trouvé
           content:
@@ -347,7 +356,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: err404or }
+                  status: { type: string, const: 404 }
                   error: { type: object, properties: { message: { type: string, example: "No recipes found matching criteria" } } }
         "500":
           $ref: "#/components/responses/InternalError"
@@ -372,6 +381,15 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MenuDetailResponse"
+        "400":
+          description: Requête invalide
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, const: 400 }
+                  error: { type: object, properties: { message: { type: string, example: "An id is required" } } }
         "401":
           description: API key manquante ou invalide
           content:
@@ -689,7 +707,7 @@ paths:
           schema: { type: string, format: uuid }
       responses:
         "200":
-          description: Détails de la recette récupérés avec succès
+          description: Détails de la recette récupérée avec succès
           content:
             application/json:
               schema:
@@ -712,6 +730,15 @@ paths:
                 properties:
                   status: { type: string, const: 401 }
                   error: { type: object, properties: { message: { type: string, example: "API key is required in 'x-api-key' header" } } }
+        "403":
+          description: API key non autorisée
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, const: 403 }
+                  error: { type: object, properties: { message: { type: string, example: "API key is not authorized" } } }
         "404":
           description: Recette non trouvée
           content:
@@ -874,7 +901,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, const: "success" }
+                  status: { type: string, const: "200" }
                   data:
                     $ref: "#/components/schemas/NutritionInfo"
         "400":
@@ -895,6 +922,15 @@ paths:
                 properties:
                   status: { type: string, const: 401 }
                   error: { type: object, properties: { message: { type: string, example: "API key is required in 'x-api-key' header" } } }
+        "403":
+          description: API key non autorisée
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, const: 403 }
+                  error: { type: object, properties: { message: { type: string, example: "API key is not authorized" } } }
         "404":
           description: Recette non trouvée
           content:
@@ -995,7 +1031,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SingleMealResponse"
+                $ref: "#/components/schemas/SingleCreateMealResponse"
         "400":
           description: Requête invalide
           content:
@@ -1024,7 +1060,7 @@ paths:
                   status: { type: string, const: 403 }
                   error: { type: object, properties: { message: { type: string, example: "API key is inactive" } } }
         "404":
-          description: Recettes non trouvées
+          description: Recette(s) non trouvée(s)
           content:
             application/json:
               schema:
@@ -1691,6 +1727,15 @@ paths:
                 properties:
                   status: { type: string, const: 401 }
                   error: { type: object, properties: { message: { type: string, example: "API key is required in 'x-api-key' header" } } }
+        "403":
+          description: API key non autorisée
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, const: 403 }
+                  error: { type: object, properties: { message: { type: string, example: "API key is not authorized" } } }
         "404":
           description: Ressource non trouvée
           content:
@@ -1754,6 +1799,15 @@ paths:
                 properties:
                   status: { type: string, const: 401 }
                   error: { type: object, properties: { message: { type: string, example: "API key is required in 'x-api-key' header" } } }
+        "403":
+          description: API key non autorisée
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, const: 403 }
+                  error: { type: object, properties: { message: { type: string, example: "API key is not authorized" } } }
         "404":
           description: Ressource non trouvée
           content:
@@ -1888,38 +1942,23 @@ components:
     MealListResponse:
       type: object
       properties:
-        status: { type: string, const: success }
+        status: { type: string, const: 200 }
         data:
-          type: object
-          properties:
-            meals:
-              type: array
-              items:
-                $ref: "#/components/schemas/MealSummary"
-            meta:
-              type: object
-              properties:
-                total: { type: integer, default: 1 }
-                offset: { type: integer }
-                limit: { type: integer, default: 10 }
+          $ref: "#/components/schemas/MealSummary"
 
     SingleMealResponse:
       type: object
       properties:
-        status: { type: string, const: success }
+        status: { type: string, const: 200 }
         data:
-          type: object
-          properties:
-            meals:
-              type: array
-              items:
-                $ref: "#/components/schemas/MealSummary"
-            meta:
-              type: object
-              properties:
-                total: { type: integer, const: 1 }
-                offset: { type: integer, const: 0 }
-                limit: { type: integer, const: 10 }
+           $ref: "#/components/schemas/MealSummary"
+
+    SingleCreateMealResponse:
+      type: object
+      properties:
+        status: { type: string, const: 201 }
+        data:
+           $ref: "#/components/schemas/MealSummary"
 
     RecipeSummary:
       type: object
@@ -1968,7 +2007,7 @@ components:
     SingleRecipeResponse:
       type: object
       properties:
-        status: { type: string, const: success }
+        status: { type: string, const: 201 }
         data:
           $ref: "#/components/schemas/RecipeSummary"
 
@@ -1997,13 +2036,13 @@ components:
     MenuDetailResponse:
       type: object
       properties:
-        status: { type: string, const: success }
+        status: { type: string, const: 200 }
         data: { $ref: "#/components/schemas/MenuDetail" }
 
     MenuGenerationResponse:
       type: object
       properties:
-        status: { type: string, const: success }
+        status: { type: string, const: 200 }
         data: { $ref: "#/components/schemas/MenuDetail" }
         _links:
           type: object
