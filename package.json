@@ -22,7 +22,7 @@
     "test:run": "vitest --run",
     "test:ui": "vitest --ui",
     "test:watch": "vitest --watch",
-    "pipeline": "docker buildx build --platform linux/amd64 -t tonycava/meal-prep:latest --push . && ssh anthony_cavge@34.155.126.58 'docker compose pull && docker compose up -d'"
+    "pipeline": "docker buildx build --platform linux/amd64 -t tonycava/meal-prep:latest --push . && ssh anthony_cavge@meal-prep.tonycava.dev 'docker compose pull && docker compose up -d'"
   },
   "dependencies": {
     "@openrouter/ai-sdk-provider": "^1.2.3",
