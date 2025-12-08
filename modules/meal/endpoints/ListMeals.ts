@@ -5,7 +5,7 @@ import { MealRepository } from "../repositories/MealRepository";
 import { authMiddleware } from "$lib/middlewares/authMiddleware";
 import { ApiResponse } from "$lib/common/api/ApiResponse";
 import { UseCaseResponseSchema } from "$lib/common/usecase";
-import { MealType } from "../../../src/generated/prisma";
+import { MealType } from "../../../generated/client";
 
 export const ListMealsEndpoint = defaultEndpointsFactory
   .addMiddleware(authMiddleware)

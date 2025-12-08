@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { MealType } from "../../../src/generated/prisma";
+import { MealType } from "../../../generated/client";
 
 const RecipeMeal = z.object({
   recipeId: z.uuid("L'ID de la recette doit être un UUID valide."),

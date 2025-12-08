@@ -1,5 +1,5 @@
 import z from "zod";
-import { MealType } from "../../../src/generated/prisma";
+import { MealType } from "../../../generated/client";
 
 const mealTypeValues = Object.values(MealType);
 

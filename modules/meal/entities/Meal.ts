@@ -1,4 +1,4 @@
-import { MealType, RecipeMeal } from "../../../src/generated/prisma";
+import { MealType, RecipeMeal } from "../../../generated/client";
 
 export type Meal = {
   id: string;

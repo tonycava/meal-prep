@@ -7,7 +7,7 @@ import { AppError } from "$lib/errors/AppError.ts";
 import { CreateMenuPartialDtoWithId } from "$modules/menu/dto/createMenuDto";
 import { User } from "$lib/common/User";
 import { GenerateMenuOutput, IMenuGenerationFilters } from "../dto/generateMenuDto";
-import { MealType, DietType } from "../../../src/generated/prisma";
+import { MealType, DietType } from "../../../generated/client";
 
 export const MenuRepository = (user: User): IMenuRepository => {
 

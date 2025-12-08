@@ -2,7 +2,7 @@ import { IIngredientRepository } from "../interfaces/IIngredientRepository";
 import { CreateIngredientDtoType, IngredientResponseDtoType, IIngredientFilters, ListIngredientsOutput } from "$modules/ingredient/dto/ingredient.dto";
 import { PatchIngredientDtoType } from "$modules/ingredient/dto/patchIngredient.dto";
 import { prisma } from "$lib/db";
-import { IngredientCategory, Prisma } from "src/generated/prisma"
+import { IngredientCategory, Prisma } from "../../../generated/client"
 import { AppError } from "$lib/errors/AppError";
 
 export const IngredientRepository = (): IIngredientRepository => {
