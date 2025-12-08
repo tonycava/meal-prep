@@ -41,6 +41,7 @@ jobs:
           key: ${{ secrets.PRIVATE_SSH_KEY }}
           script: |
             # Pull the new image and restart the service using docker-compose
+            cd /home/anthony_cavge
             docker compose pull
             docker compose up -d
             echo "Deployment complete!"
