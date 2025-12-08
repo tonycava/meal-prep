@@ -20,10 +20,10 @@ export const MealRepository = (user: User): IMealRepository => {
         await prisma.meal.update({
           data: {
             ...(mealDto.mealType && { mealType: mealDto.mealType as MealType }),
-            ...(mealDto.recipeMeals && {
+            ...(mealDto.recipeIds && {
               recipeMeals: {
                 deleteMany: {},
-                create: mealDto.recipeMeals.map((rm) => ({
+                create: mealDto.recipeIds.map((rm) => ({
                   recipeId: rm.recipeId,
                   type: rm.type,
                 })),
@@ -62,7 +62,7 @@ export const MealRepository = (user: User): IMealRepository => {
             mealType: mealDto.mealType as MealType,
             apiKey: { connect: { key: apiKey } },
             recipeMeals: {
-              create: mealDto.recipeMeals.map((rm) => ({
+              create: mealDto.recipeIds.map((rm) => ({
                 recipeId: rm.recipeId,
                 type: rm.type,
               })),
