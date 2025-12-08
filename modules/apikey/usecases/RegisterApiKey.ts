@@ -33,9 +33,11 @@ export const RegisterApiKeyUseCase: UseCase<Input, Output> = (dependencies) => {
       }
 
       return UseCaseResponseBuilder.success(
-        HttpCode.INTERNAL_SERVER_ERROR,
+        HttpCode.OK,
         apiKey,
       );
     },
   };
 };
+
+

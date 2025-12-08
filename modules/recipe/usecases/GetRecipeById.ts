@@ -4,14 +4,18 @@ import {
   UseCaseResponseBuilder,
   OutputFactory,
 } from "$lib/common/usecase";
-import { IRecipeRepositoryFindById } from "../interfaces/IRecipeRepository";
+import {
+  IRecipeRepositoryExist,
+  IRecipeRepositoryFindById,
+  IRecipeRepositoryIsOwnedByUser
+} from "../interfaces/IRecipeRepository";
 import { tryCatch } from "$lib/errors/tryCatch";
 import { HttpCode } from "$lib/common/api/HttpCode";
 import { RecipeWithIngredients } from "$modules/recipe/entities/Recipe";
 
 type Input = InputFactory<
   { id: string; apiKey: string },
-  { recipeRepository: IRecipeRepositoryFindById }
+  { recipeRepository: IRecipeRepositoryFindById & IRecipeRepositoryIsOwnedByUser & IRecipeRepositoryExist }
 >;
 type Output = OutputFactory<{ recipe: RecipeWithIngredients }>;
 
@@ -19,6 +23,16 @@ export const GetRecipeByIdUseCase: UseCase<Input, Output> = (dependencies) => {
   const { recipeRepository } = dependencies;
   return {
     async execute(data): Promise<Output> {
+      const recipeExists = await recipeRepository.exist(data.id);
+      if (!recipeExists) {
+        return UseCaseResponseBuilder.error(HttpCode.NOT_FOUND, "Cette recette n'existe pas.");
+      }
+
+      const isOwnedByUser = await recipeRepository.isOwnedByUser(data.id,);
+      if (!isOwnedByUser) {
+        return UseCaseResponseBuilder.error(HttpCode.FORBIDDEN, "Vous n'avez pas la permission d'accéder à cette recette.");
+      }
+
       const [error, recipe] = await tryCatch(
         recipeRepository.findById(data.id),
       );

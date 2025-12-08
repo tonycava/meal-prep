@@ -9,6 +9,8 @@ info:
 servers:
   - url: http://localhost:8090
     description: Development server
+  - url: https://meal-prep.tonycava.dev
+    description: Production server
 
 tags:
   - name: API Keys

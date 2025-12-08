@@ -2,6 +2,8 @@ services:
   app:
     image: tonycava/meal-prep:latest
     container_name: meal-prep-app
+    volumes:
+      - web-services:./prisma/dev.db
     build:
       context: .
       dockerfile: Dockerfile
@@ -9,3 +11,6 @@ services:
     ports:
       - "8090:8090"
     env_file: .env
+
+volumes:
+  web-services:

@@ -1,9 +1,8 @@
 import { CreateRecipeDto } from "../dto/createRecipeDto";
-import { Recipe } from "../entities/Recipe";
+import { Recipe, RecipeWithIngredients } from "../entities/Recipe";
 import { DeleteRecipeDto } from "$modules/recipe/dto/deleteRecipeDto.ts";
 import { UpdateRecipeDto, UpdateRecipeOutput } from "$modules/recipe/dto/updateRecipeDto.ts";
 import {
-	GetRecipeByIdDto,
 	GetRecipeByIdOutput,
 	IRecipeFilters,
 	ListRecipesOutput,
@@ -22,7 +21,7 @@ export type IRecipeRepositoryList = {
 };
 
 export type IRecipeRepositoryFindById = {
-	findById(recipeDto: GetRecipeByIdDto): Promise<GetRecipeByIdOutput>;
+	findById(recipeId: string): Promise<RecipeWithIngredients>;
 };
 
 export type IRecipeRepositoryDelete = {
@@ -37,9 +36,19 @@ export type IRecipeRepositoryIsUseInOneMenu = {
 	isUseInOneMenu(recipeId: string): Promise<boolean>;
 };
 
+export type IRecipeRepositoryIsOwnedByUser = {
+  isOwnedByUser(recipeId: string): Promise<boolean>;
+};
+
+export type IRecipeRepositoryExist = {
+  exist(recipeId: string): Promise<boolean>;
+}
+
 export type IRecipeRepository = IRecipeRepositorySave &
 	IRecipeRepositoryDelete &
 	IRecipeRepositoryList &
 	IRecipeRepositoryUpdate &
 	IRecipeRepositoryFindById &
-	IRecipeRepositoryIsUseInOneMenu;
+	IRecipeRepositoryIsUseInOneMenu &
+  IRecipeRepositoryIsOwnedByUser &
+  IRecipeRepositoryExist;

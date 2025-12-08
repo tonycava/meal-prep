@@ -1,4 +1,4 @@
-import { DietType, RecipeCategory, UnitType } from "src/generated/prisma";
+import { DietType, RecipeCategory, UnitType } from "$generated/client";
 
 export type RecipeIngredients = {
 	id: string,
@@ -22,5 +22,9 @@ export type Recipe = {
 	createdAt: Date;
 	updatedAt: Date;
 	mealCount: number | 0;
-	ingredients: RecipeIngredients
+};
+
+
+export type RecipeWithIngredients = Recipe & {
+  recipeIngredients: RecipeIngredients[];
 };

@@ -14,10 +14,10 @@ export const GetRecipeByIdEndpoint = endpointsFactory
     input: getByIdDto,
     output: UseCaseResponseSchema,
     handler: async ({ input, options }) => {
-      const response = await GetRecipeByIdUseCase({
+      const getRecipeByIdResponse = await GetRecipeByIdUseCase({
         recipeRepository: RecipeRepository(createUserFromOptions(options)),
       }).execute({ id: input.id, apiKey: options.apiKey });
 
-      return ApiResponse.send(response);
+      return ApiResponse.send(getRecipeByIdResponse);
     },
   });
