@@ -13,7 +13,9 @@
       "$lib/*": ["./lib/*"],
       "$lib": ["./lib"],
       "$modules/*": ["./modules/*"],
-      "$modules": ["./modules"]
+      "$modules": ["./modules"],
+      "$generated/*": ["./generated/*"],
+      "$generated": ["./generated"]
     }
   },
   "include": ["src"]

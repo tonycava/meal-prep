@@ -9,7 +9,7 @@ import {
   IMealFilters,
   GetMealByIdOutput,
 } from "../dto/mealDto";
-import { MealType, DietType } from "../../../src/generated/prisma";
+import { MealType, DietType } from "$generated/client";
 import { UpdateMealDto } from "$modules/meal/dto/updateMealDto";
 import { User } from "$lib/common/User";
 import {
