@@ -9,6 +9,7 @@ export const config = createConfig({
     ...defaultHeaders,
     "Access-Control-Max-Age": "5000",
     "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Headers": "*",
   }),
   inputSources: {
     patch: ["body", "query", "params"],
