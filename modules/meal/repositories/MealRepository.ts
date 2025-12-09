@@ -189,13 +189,15 @@ export const MealRepository = (user: User): IMealRepository => {
     async list(
       limit: number,
       offset: number,
+      role: string,
       filters: IMealFilters,
     ): Promise<ListMealsOutput> {
 
-      const where = {
-        apiKeyId: user.apiKeyId,
-        ...(filters.mealType && { mealType: filters.mealType as MealType }),
-      };
+      const where = role.toLowerCase() === "user" ? { apiKey: { key: user.apiKey } } : {};
+
+      if (filters.mealType) {
+        Object.assign(where, { mealType: filters.mealType as MealType });
+      }
 
       const [meals, total] = await Promise.all([
         prisma.meal.findMany({

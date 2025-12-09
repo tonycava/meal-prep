@@ -9,7 +9,7 @@ import { IMealFilters, ListMealsOutput } from "../dto/mealDto";
 import { tryCatch } from "$lib/errors/tryCatch";
 
 type Input = InputFactory<
-  { limit: number; offset: number; filters?: IMealFilters; },
+  { limit: number; offset: number; role: string; filters?: IMealFilters; },
   { mealRepository: IMealRepositoryList }
 >;
 
@@ -23,6 +23,7 @@ export const ListMealsUseCase: UseCase<Input, Output> = (dependencies) => {
         mealRepository.list(
           data.limit,
           data.offset,
+          data.role,
           data.filters || {},
         ),
       );

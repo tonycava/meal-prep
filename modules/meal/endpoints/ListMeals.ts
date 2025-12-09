@@ -27,6 +27,7 @@ export const ListMealsEndpoint = endpointsFactory
       }).execute({
         limit,
         offset,
+          role: options.role,
         filters: Object.keys(filters).length > 0 ? filters : undefined,
       });
 

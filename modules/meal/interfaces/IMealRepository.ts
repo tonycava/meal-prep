@@ -20,6 +20,7 @@ export type IMealRepositoryList = {
   list(
     limit: number,
     offset: number,
+    role: string,
     filters: IMealFilters,
   ): Promise<ListMealsOutput>;
 };

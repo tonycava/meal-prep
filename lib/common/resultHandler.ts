@@ -54,7 +54,7 @@ export const mealPrepResultHandler = new ResultHandler({
 		if (responseData && typeof responseData === 'object' && 'meta' in responseData) {
 			const { meta, ...rest } = responseData;
 			return void response.status(output.status as number).json({
-				status: "success",
+				status: output.status as number,
 				data: rest,
 				meta
 			} as any);
